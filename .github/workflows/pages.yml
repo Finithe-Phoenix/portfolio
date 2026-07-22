@@ -1,4 +1,4 @@
-name: Deploy portfolio to GitHub Pages
+name: Publish portfolio
 
 on:
   push:
@@ -6,22 +6,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: "pages"
+  group: "portfolio-publish"
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout main
         uses: actions/checkout@v4
 
       - name: Validate static site
@@ -30,18 +25,19 @@ jobs:
           test -f index.html
           test -f styles.css
           test -f script.js
-          grep -q '<!DOCTYPE html>' index.html
+          grep -qi '<!doctype html>' index.html
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+      - name: Prepare static publishing files
+        shell: bash
+        run: |
+          touch .nojekyll
+          rm -rf .git .github
+
+      - name: Publish to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          enablement: true
-
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "."
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: .
+          force_orphan: true
+          enable_jekyll: false

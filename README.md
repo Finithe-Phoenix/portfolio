@@ -1,47 +1,46 @@
-# Daniel González — Professional Portfolio
+# Daniel González — Clarity through complexity
 
-A fast, responsive and accessible professional portfolio built for GitHub Pages.
+A static-first professional portfolio: editorial typography, a procedural network, three evidence-linked case studies and an interactive resilience model.
 
-## Positioning
+## Run
 
-The site presents Daniel as a hands-on Technical Lead and Full Stack Engineer with experience in:
+Node.js 22 or newer (CI uses Node 24).
 
-- Mission-critical and Tier 0 systems
-- Java, Spring Boot and distributed architectures
-- Frontend development with Angular, React and TypeScript
-- Cloud, containers, CI/CD and DevSecOps
-- Real-time payment platforms
-- AI-assisted engineering enablement
-- E-commerce and WooCommerce exploration
-- Technical leadership, ownership and stakeholder communication
+    npm ci
+    npm run check
+    npm run preview
 
-## Local preview
+Open http://127.0.0.1:4175/portfolio/.
 
-Open `index.html` directly in a browser or run a local static server:
+    npx playwright install chromium
+    npm run test:e2e
 
-```bash
-python -m http.server 8080
-```
+The browser suite generates desktop/mobile screenshots, a printable profile PDF, an Open Graph image and an accessibility report in test-results/. npm run build produces dist/ without any production dependencies. The browser suite requires Playwright and axe-core only for development.
 
-Then visit `http://localhost:8080`.
+## Edit
 
-## GitHub Pages
+- content/profile.json: identity, project narratives, source links and optional LinkedIn/CV.
+- scripts/build.mjs: generates index.html, profile.html and sitemap.xml.
+- styles.css: one responsive visual system.
+- script.js: navigation, motion preferences, native case-study links and procedural Canvas.
+- lab.mjs: deterministic educational scenarios, independently tested.
+- assets/social-card.svg: original social composition; browser-check generates its PNG.
+- docs/CONTENT_SOURCES.md: claim provenance and remaining author inputs.
+- docs/VALIDATION.md: measured results and limits.
+- docs/IMPLEMENTATION.md: architecture, design and acceptance map.
 
-The workflow in `.github/workflows/pages.yml` deploys the site from the `main` branch through GitHub Actions.
+The HTML is generated and committed for direct static hosting. Run npm run build after editing content or templates. Do not edit index.html directly.
 
-Repository: https://github.com/Finithe-Phoenix/portfolio
-Expected site URL: https://finithe-phoenix.github.io/portfolio/
+## Motion and resilience
 
-## Content principles
+Content and native details work without JavaScript. The optional Canvas initializes after first paint, caps device-pixel ratio, and stops when hidden or outside the viewport. The operating-system reduced-motion setting takes precedence over the persistent local toggle. Storage failures do not prevent use.
 
-- English-first for international recruiters
-- No unsupported claims or fabricated metrics
-- Strong emphasis on measurable impact and transferable engineering depth
-- Clear distinction between deep enterprise experience and hands-on WooCommerce exploration
+The lab is an educational state model. Its values are constants, not observed production metrics. The clinic case is explicitly a synthetic demo. Project descriptions are based on linked public artifacts, not a claim that their complete test suites ran during the portfolio review.
 
-## Structure
+## Delivery
 
-- `index.html` — semantic content and portfolio sections
-- `styles.css` — responsive visual system
-- `script.js` — lightweight reveal animations and dynamic copyright year
-- `.github/workflows/pages.yml` — GitHub Pages deployment
+GitHub Actions validates builds, internal links, scenario behavior, browser journeys and automated WCAG A/AA checks. Only successful main runs publish dist/ to the existing gh-pages branch. Pull requests and feature branches validate without publishing.
+
+Live URL: https://finithe-phoenix.github.io/portfolio/
+
+For rollback, revert the source change on main and let the same validation/publishing workflow run. Preserve the previously reviewed commit rather than resetting shared history.

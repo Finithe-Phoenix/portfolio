@@ -1,0 +1,129 @@
+{
+  "name": "Daniel González",
+  "role": "Technical Lead & Full Stack Engineer",
+  "headline": "Clarity through complexity.",
+  "intro": "I connect systems, product decisions and people. My focus: dependable software, thoughtful interfaces and teams that can move with confidence.",
+  "location": "Toluca, México",
+  "github": "https://github.com/Finithe-Phoenix",
+  "linkedin": null,
+  "cv": null,
+  "projects": [
+    {
+      "id": "prisma",
+      "number": "01",
+      "category": "Systems engineering",
+      "title": "Across architectures.",
+      "name": "Prisma",
+      "stack": [
+        "C++",
+        "Rust",
+        "ARM64",
+        "Lean 4"
+      ],
+      "status": "Research & development",
+      "summary": "Exploring the boundary between machine instructions and portable execution.",
+      "diagram": [
+        "x86_64",
+        "Decode",
+        "IR",
+        "ARM64"
+      ],
+      "color": "cyan",
+      "problem": "How can a binary built for one instruction set execute on another while preserving its behavior?",
+      "approach": "The repository separates decoding, an intermediate representation, optimization, emission and runtime responsibilities. That decomposition makes each boundary inspectable.",
+      "tradeoff": "Translation performance competes with correctness and compatibility. A staged pipeline makes validation explicit, while adding intermediate structures and engineering complexity.",
+      "outcome": "The public repository contains the translation pipeline, a formal specification area and a Rust migration. It is an evolving research project, not a claim of complete application compatibility.",
+      "lesson": "Ambitious systems benefit from small, testable contracts between stages. The most useful artifact is often the boundary that makes a failure understandable.",
+      "repo": "https://github.com/Finithe-Phoenix/prisma",
+      "demo": null,
+      "evidence": [
+        {
+          "label": "Repository & architecture",
+          "url": "https://github.com/Finithe-Phoenix/prisma/blob/main/README.md"
+        },
+        {
+          "label": "Engineering decisions",
+          "url": "https://github.com/Finithe-Phoenix/prisma/tree/main/docs"
+        }
+      ]
+    },
+    {
+      "id": "clinic",
+      "number": "02",
+      "category": "Product engineering",
+      "title": "Carefully connected.",
+      "name": "Clinic platform",
+      "stack": [
+        "Angular",
+        "Java",
+        "PostgreSQL",
+        "Keycloak"
+      ],
+      "status": "Synthetic demonstration",
+      "summary": "Connecting appointments, inventory and purchasing in a deliberately bounded product demo.",
+      "diagram": [
+        "Appointment",
+        "Inventory",
+        "Purchase",
+        "Audit"
+      ],
+      "color": "lime",
+      "problem": "Clinic workflows cross several operational boundaries. A useful demonstration must show those connections without suggesting it is ready for real patient care.",
+      "approach": "The project separates the public synthetic demonstration from a local private portal and API. Inventory and purchasing model explicit state changes, permissions and audit records.",
+      "tradeoff": "Browser-local demo data makes exploration easy, but cannot provide shared persistence or server authorization. The private API provides a separate path for those concerns.",
+      "outcome": "The repository documents public demo workflows and a local authenticated portal. Production identity and deployment remain separate work; all demonstration data is fictitious.",
+      "lesson": "A convincing product includes its operating limits. Showing what is simulated helps a reviewer assess the architecture honestly.",
+      "repo": "https://github.com/Finithe-Phoenix/PulmonogyClinic",
+      "demo": "https://finithe-phoenix.github.io/PulmonogyClinic/",
+      "evidence": [
+        {
+          "label": "Scope & implementation",
+          "url": "https://github.com/Finithe-Phoenix/PulmonogyClinic/blob/main/README.md"
+        },
+        {
+          "label": "Validation record & limits",
+          "url": "https://github.com/Finithe-Phoenix/PulmonogyClinic/blob/main/docs/VALIDATION.md"
+        }
+      ]
+    },
+    {
+      "id": "devops",
+      "number": "03",
+      "category": "Engineering enablement",
+      "title": "Knowledge that ships.",
+      "name": "DevOps learning lab",
+      "stack": [
+        "Docker",
+        "Kubernetes",
+        "CI/CD",
+        "Observability"
+      ],
+      "status": "Educational laboratory",
+      "summary": "One application. An entire delivery lifecycle. A practical way to teach systems thinking.",
+      "diagram": [
+        "Code",
+        "Container",
+        "Deploy",
+        "Observe"
+      ],
+      "color": "violet",
+      "problem": "Teaching tools in isolation makes it difficult to understand how software becomes an operated service.",
+      "approach": "A single application travels from source control through containers, delivery automation, orchestration, monitoring and security. The course includes bilingual guides and debugging exercises.",
+      "tradeoff": "A coherent learning path prioritizes a small reproducible environment over the complexity of a production platform. Intentional failure exercises make the limits teachable.",
+      "outcome": "The repository provides a four-day curriculum, application examples, deployment manifests, instructor material and troubleshooting exercises. Learning outcomes are not inferred from attendance.",
+      "lesson": "Technical leadership scales through artifacts people can use independently: runnable examples, decision guides and clear recovery paths.",
+      "repo": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso",
+      "demo": null,
+      "evidence": [
+        {
+          "label": "Curriculum & source",
+          "url": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso/blob/main/README.md"
+        },
+        {
+          "label": "Hands-on guides",
+          "url": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso/tree/main/guias"
+        }
+      ]
+    }
+  ]
+}

@@ -1,43 +1,54 @@
-name: Publish portfolio
-
+name: Portfolio quality and publishing
 on:
   push:
-    branches: ["main"]
+    branches: [main, "feat/**"]
+  pull_request:
   workflow_dispatch:
-
 permissions:
-  contents: write
-
+  contents: read
 concurrency:
-  group: "portfolio-publish"
+  group: portfolio-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  publish:
+  validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v4
-
-      - name: Validate static site
-        shell: bash
-        run: |
-          test -f index.html
-          test -f styles.css
-          test -f script.js
-          grep -qi '<!doctype html>' index.html
-
-      - name: Prepare static publishing files
-        shell: bash
-        run: |
-          touch .nojekyll
-          rm -rf .git .github
-
-      - name: Publish to gh-pages branch
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: portfolio-validation
+          path: test-results/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-site
+          path: dist/
+          include-hidden-files: true
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: portfolio-site
+          path: dist
+      - name: Publish validated static output
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: .
-          force_orphan: true
+          publish_dir: dist
           enable_jekyll: false

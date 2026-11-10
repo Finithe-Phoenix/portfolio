@@ -43,3 +43,8 @@ test('static delivery stays within source budgets',async()=>{
  const budgets={'index.html':40000,'styles.css':26000,'script.js':14000,'lab.mjs':4000};
  for(const [path,max] of Object.entries(budgets))assert.ok((await stat(resolve(root,path))).size<max,path+' exceeds budget');
 });
+
+test('release manifest identifies the artifact source revision',async()=>{
+ const release=JSON.parse(await readFile(resolve(root,'release.json'),'utf8'));
+ assert.equal(release.revision,process.env.GITHUB_SHA||'local');
+});

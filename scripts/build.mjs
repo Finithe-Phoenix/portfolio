@@ -78,3 +78,5 @@ await writeFile(new URL('sitemap.xml',root),'<?xml version="1.0" encoding="UTF-8
 await mkdir(new URL('dist/',root),{recursive:true});
 for(const path of ['index.html','styles.css','script.js','lab.mjs','profile.html','profile.css','profile.js','sitemap.xml','.nojekyll','assets']) await cp(new URL(path,root),new URL('dist/'+path,root),{recursive:true});
 console.log('Built static portfolio → dist/');
+
+await writeFile(new URL('dist/release.json',root),JSON.stringify({revision:process.env.GITHUB_SHA||'local',name:'Daniel Gonzalez portfolio'}));

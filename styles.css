@@ -22,7 +22,7 @@ html[data-motion=reduce]{scroll-behavior:auto}html[data-motion=reduce] *,html[da
 h1.hero-enter{animation:none}
 
 .mobile-flow{display:none}
-@media(max-width:600px){.lab-visual>svg,.lab-legend{display:none}.mobile-flow{display:grid;gap:12px;list-style:none;margin:0;padding:12px}.mobile-flow li{position:relative;border:1px solid #b1bea3;border-radius:4px;padding:12px 15px;background:#f5f6ef;font-size:13px;display:flex;gap:16px;align-items:center}.mobile-flow li+li:before{content:"?";position:absolute;top:-18px;left:50%;font-size:14px;color:#536c3d}.mobile-flow li span{font:10px Consolas,monospace;color:#58614f}.mobile-flow .mobile-service{background:#e4edda;border-color:#587836}.mobile-flow strong{font-weight:600}.lab-visual{padding:15px;min-height:0}}
+@media(max-width:600px){.lab-visual>svg,.lab-legend{display:none}.mobile-flow{display:grid;gap:12px;list-style:none;margin:0;padding:12px}.mobile-flow li{position:relative;border:1px solid #b1bea3;border-radius:4px;padding:12px 15px;background:#f5f6ef;font-size:13px;display:flex;gap:16px;align-items:center}.mobile-flow li+li:before{content:"\2193";position:absolute;top:-18px;left:50%;font-size:14px;color:#536c3d}.mobile-flow li span{font:10px Consolas,monospace;color:#58614f}.mobile-flow .mobile-service{background:#e4edda;border-color:#587836}.mobile-flow strong{font-weight:600}.lab-visual{padding:15px;min-height:0}}
 
 .lab{contain:paint}.lab-result{contain:layout}
 

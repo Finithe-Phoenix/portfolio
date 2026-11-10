@@ -52,3 +52,6 @@ jobs:
           publish_branch: gh-pages
           publish_dir: dist
           enable_jekyll: false
+
+      - name: Verify public release and resources
+        run: node scripts/verify-live.mjs

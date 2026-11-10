@@ -1,0 +1,222 @@
+{
+  "date": "2026-11-10",
+  "checks": [
+    "Desktop renders without overflow or blocking loader",
+    "Project links open native case studies and survive reload",
+    "Failure, recovery and normal scenarios update route, latency and selected state",
+    "Motion preference persists",
+    "System reduced-motion preference respected",
+    "No-JavaScript mobile content, navigation and case studies usable",
+    "Canvas unavailable and blocked storage preserve a usable mobile experience",
+    "Mobile menu, Escape, anchor navigation and 320–1024px layout",
+    "Keyboard skip link and scenario controls",
+    "Printable profile exports as PDF",
+    "1200×630 social preview generated",
+    "Automated WCAG A/AA checks have no violations",
+    "No page errors or failed local resources"
+  ],
+  "errors": [],
+  "accessibility": {
+    "violations": [],
+    "incomplete": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "targets": [
+          [
+            ".motion-toggle > span[aria-hidden=\"true\"]"
+          ],
+          [
+            ".subtle-link > span[aria-hidden=\"true\"]"
+          ],
+          [
+            ".label-architecture"
+          ],
+          [
+            ".label-execution"
+          ],
+          [
+            ".label-people"
+          ],
+          [
+            ".art-cyan > .label-0.art-label"
+          ],
+          [
+            ".art-cyan > .label-1.art-label"
+          ],
+          [
+            ".art-cyan > .label-2.art-label"
+          ],
+          [
+            ".art-cyan > .label-3.art-label"
+          ],
+          [
+            ".art-cyan > .art-caption"
+          ],
+          [
+            "a[href$=\"#case-prisma\"] > .project-copy > .read-case > span[aria-hidden=\"true\"]"
+          ],
+          [
+            ".art-lime > .label-0.art-label"
+          ],
+          [
+            ".art-lime > .label-1.art-label"
+          ],
+          [
+            ".art-lime > .label-2.art-label"
+          ],
+          [
+            ".art-lime > .label-3.art-label"
+          ],
+          [
+            ".art-lime > .art-caption"
+          ],
+          [
+            "a[href$=\"#case-clinic\"] > .project-copy > .read-case > span[aria-hidden=\"true\"]"
+          ],
+          [
+            ".art-violet > .art-core"
+          ],
+          [
+            ".art-violet > .label-0.art-label"
+          ],
+          [
+            ".art-violet > .label-1.art-label"
+          ],
+          [
+            ".art-violet > .label-2.art-label"
+          ],
+          [
+            ".art-violet > .label-3.art-label"
+          ],
+          [
+            ".art-violet > .art-caption"
+          ],
+          [
+            "a[href$=\"#case-devops\"] > .project-copy > .read-case > span[aria-hidden=\"true\"]"
+          ],
+          [
+            "text[x=\"75\"][y=\"180\"]"
+          ],
+          [
+            ".node-small[x=\"75\"][y=\"201\"]"
+          ],
+          [
+            "text[x=\"295\"][y=\"180\"]"
+          ],
+          [
+            ".node-small[x=\"295\"][y=\"201\"]"
+          ],
+          [
+            "text[y=\"85\"]"
+          ],
+          [
+            "text[y=\"106\"]"
+          ],
+          [
+            "text[y=\"275\"]"
+          ],
+          [
+            "text[y=\"296\"]"
+          ],
+          [
+            "text[x=\"700\"][y=\"180\"]"
+          ],
+          [
+            ".node-small[x=\"700\"][y=\"201\"]"
+          ],
+          [
+            ".lab-legend > span:nth-child(1)"
+          ],
+          [
+            ".lab-legend > span:nth-child(2)"
+          ]
+        ]
+      }
+    ],
+    "passes": 23
+  },
+  "performance": {
+    "note": "Local Chromium lab measurements. Mobile: 4x CPU, 1.6 Mbps download, 150ms latency. Event durations are a synthetic interaction sample, not field INP.",
+    "samples": [
+      {
+        "mode": "desktop",
+        "run": 1,
+        "lcp": 1676,
+        "cls": 0.0011650621202256945,
+        "eventDurations": [
+          104,
+          104,
+          104
+        ],
+        "frameMedianMs": 3.300000000000182,
+        "frameP95Ms": 3.5
+      },
+      {
+        "mode": "desktop",
+        "run": 2,
+        "lcp": 332,
+        "cls": 0.0011650621202256945,
+        "eventDurations": [
+          40,
+          40,
+          40
+        ],
+        "frameMedianMs": 3.300000000000182,
+        "frameP95Ms": 3.5
+      },
+      {
+        "mode": "desktop",
+        "run": 3,
+        "lcp": 348,
+        "cls": 0.0011650621202256945,
+        "eventDurations": [
+          40,
+          40,
+          40
+        ],
+        "frameMedianMs": 3.300000000000182,
+        "frameP95Ms": 3.5
+      },
+      {
+        "mode": "mobile",
+        "run": 1,
+        "lcp": 2424,
+        "cls": 0,
+        "eventDurations": [
+          152,
+          152,
+          152
+        ],
+        "frameMedianMs": 3.300000000000182,
+        "frameP95Ms": 9.800000000000182
+      },
+      {
+        "mode": "mobile",
+        "run": 2,
+        "lcp": 2164,
+        "cls": 0,
+        "eventDurations": [
+          120,
+          120,
+          120
+        ],
+        "frameMedianMs": 3.399999999999636,
+        "frameP95Ms": 6.800000000000182
+      },
+      {
+        "mode": "mobile",
+        "run": 3,
+        "lcp": 2284,
+        "cls": 0,
+        "eventDurations": [
+          104,
+          104,
+          104
+        ],
+        "frameMedianMs": 3.399999999999636,
+        "frameP95Ms": 9.899999999999636
+      }
+    ]
+  }
+}

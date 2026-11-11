@@ -16,6 +16,12 @@ Date: 2026-11-10. Branch: feat/epic-motion-i18n.
 
 ## Latest performance sample
 
+### Interactive story / PR 5
+
+The new default chapter view, reading-mode fallback and native project carousel are covered in six locale/viewport journeys (EN/ES/PT × 390/1440 px), plus an axe audit of the guided mobile controls. These supplement the existing 18 browser checks and ten Node cases. Chapter tests include keyboard navigation, back/forward history, case-study reload, lab interaction, project scene mounting and 320–430 px reflow.
+
+Same-machine comparison (three samples; uncompressed local server; 4× CPU/1.6 Mbps/150 ms mobile): desktop median LCP 720 → 396 ms; mobile median LCP 3088 → 2636 ms. Largest sampled mobile interaction, median: 392 → 160 ms. Initial-load CLS: 0 in all final samples. Mobile individual LCP values remain 2556–2808 ms, so the 2.5 s target is not claimed as consistently met. Full samples and methodology: performance-comparison.json. Initial metrics are captured before programmatic chapter navigation to avoid counting a later chapter as the initial LCP/CLS. These are not field INP or physical-device frame-rate guarantees.
+
 Continuation sample after optical gateways and mobile opt-in (same local, uncompressed methodology): desktop LCP 1144 / 784 / 708 ms, CLS <=0.0021. Mobile LCP 3192 / 2724 / 3476 ms, CLS 0.0381, sampled interaction events 368–392 ms. These mobile samples still exceed the intended loading/interaction targets; they must not be represented as passing field Core Web Vitals. Compact devices now defer WebGL until explicit activation and skip the opening overlay and large text filters. Eighteen functional browser checks pass locally, including mobile activation and keyboard chapter navigation.
 
 Local headless Chromium, three samples per mode. Mobile emulation: 390×844, 4× CPU slowdown, 1.6 Mbps download, 150 ms latency, served uncompressed.

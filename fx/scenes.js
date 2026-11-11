@@ -402,6 +402,7 @@ export function mountScene(canvas, kind, options) {
   const tick = safely(now => {
     raf = null;
     if (!running()) { previous = null; paint(); return; }
+    if(previous!==null&&now-previous<16){raf=view.requestAnimationFrame(tick);return;}
     if (previous !== null) elapsed += Math.max(0, now - previous);
     previous = now;
     paint();

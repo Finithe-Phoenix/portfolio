@@ -12,10 +12,11 @@ const origin='http://127.0.0.1:'+server.address().port;
 const base=origin+'/portfolio/';
 await mkdir('test-results',{recursive:true});
 const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
+const readingContext=async options=>{const context=await browser.newContext(options);await context.addInitScript(()=>{try{sessionStorage.setItem('dg-view','all');}catch{}});return context;};
 const report={checks:[],errors:[],performance:{},accessibility:null};
 const check=(name)=>{report.checks.push(name);console.log('PASS '+name);};
 try{
- const context=await browser.newContext({viewport:{width:1440,height:1000},deviceScaleFactor:1});
+ const context=await readingContext({viewport:{width:1440,height:1000},deviceScaleFactor:1});
  const page=await context.newPage();
  const errors=[];
  page.on('pageerror',e=>errors.push(e.message));
@@ -33,8 +34,8 @@ try{
  assert.ok(await page.locator('h1').isVisible());
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  assert.ok(await page.evaluate(()=>document.documentElement.classList.contains('anim')));
- assert.ok(await page.evaluate(()=>document.documentElement.classList.contains('intro-on')),'Intro plays on the first visit of a session');
- assert.ok(await page.evaluate(()=>document.querySelector('.gallery').classList.contains('pinned')),'Gallery pins on desktop');
+ assert.ok(await page.evaluate(()=>!document.documentElement.classList.contains('intro-on')),'Content appears without an opening overlay');
+ assert.ok(await page.evaluate(()=>!document.querySelector('.gallery').classList.contains('pinned')),'Gallery never consumes vertical scroll');
  await page.waitForTimeout(2600);
  await page.screenshot({path:'test-results/hero.png'});
  // Sections reveal on scroll; walk the page so the full-page capture shows every section.
@@ -87,7 +88,7 @@ try{
  await page.emulateMedia({reducedMotion:'reduce'});
  assert.equal(await page.locator('html').getAttribute('data-motion'),'reduce');
  check('System reduced-motion preference respected');
- const noJS=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+ const noJS=await readingContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
  const staticPage=await noJS.newPage();
  await staticPage.goto(base);
  assert.ok(await staticPage.locator('h1').isVisible());
@@ -95,7 +96,7 @@ try{
  await staticPage.locator('#case-clinic summary').click();
  assert.ok(await staticPage.locator('#case-clinic .case-body').isVisible());
  check('No-JavaScript mobile content, navigation and case studies usable');
- const mobileFx=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,reducedMotion:'no-preference'});
+ const mobileFx=await readingContext({viewport:{width:390,height:844},hasTouch:true,reducedMotion:'no-preference'});
  const mobileFxPage=await mobileFx.newPage();
  await mobileFxPage.goto(base);
  await mobileFxPage.locator('html.fx-done').waitFor({state:'attached'});
@@ -105,7 +106,7 @@ try{
  await mobileFx.close();
  check('Mobile defers the cinematic engine until the visitor enables it');
  await noJS.close();
- const limited=await browser.newContext({viewport:{width:390,height:844}});
+ const limited=await readingContext({viewport:{width:390,height:844}});
  await limited.addInitScript(()=>{
    HTMLCanvasElement.prototype.getContext=()=>null;
    Storage.prototype.getItem=()=>{throw new DOMException('Blocked','SecurityError');};
@@ -113,6 +114,7 @@ try{
  });
  const fallback=await limited.newPage();
  await fallback.goto(base);
+ await fallback.locator('.journey-mode').click();
  assert.ok(await fallback.locator('.network-fallback').isVisible());
  await fallback.locator('.motion-toggle').click();
  assert.equal(await fallback.locator('html').getAttribute('data-motion'),'reduce');
@@ -142,6 +144,7 @@ try{
  // Focus is also exercised directly to avoid browser-specific initial tab order.
  await page.locator('.skip-link').focus();
  await page.keyboard.press('Enter');
+ await page.waitForURL('**/#main');
  assert.ok(page.url().endsWith('#main'));
  await page.locator('[data-scenario="failed"]').focus();
  await page.keyboard.press('Enter');

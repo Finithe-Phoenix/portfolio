@@ -20,6 +20,10 @@ Locales: content/locales/{en,es,pt}.json share one structure. The build writes /
 
 ## Architecture
 
+The default experience is now a guided, eight-chapter story with native anchors, a localized selector, previous/next controls, browser history and a full-reading option. `journey.mjs` enhances the same semantic document; content remains fully accessible without JavaScript. A small head initializer selects the first/deep-linked chapter before paint. The project gallery uses native horizontal scrolling and dedicated buttons instead of pinning vertical scroll.
+
+Rendering work is demand-driven: project scenes mount only when visible; particle shapes retain the original point counts and shader but are generated/uploaded when their pair is needed. World dimensions belong to ResizeObserver rather than per-frame layout reads. Effect drawing is capped at the display target (60 desktop/30 compact), while scroll geometry is cached on structural resize. A static JPEG captured from the original procedural scene preserves the mobile visual before optional live rendering, without initializing a GPU context.
+
 No runtime packages or framework migration. Node built-ins generate static HTML from profile.json; build copies an explicit allowlist to dist. Tests/docs/development dependencies never enter the publish directory.
 
 The source snapshot was recovered via the GitHub connector because direct Git HTTPS was unavailable in the local shell. The local baseline commit is a snapshot, not a clone of remote history. Remote changes must be based on the real upstream commit, checked again before publishing.

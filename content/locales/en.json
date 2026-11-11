@@ -630,5 +630,37 @@
       }
     ],
     "credentials": "Credentials & community"
+  },
+  "journey": {
+    "label": "Explore the story",
+    "names": [
+      "The idea",
+      "The impact",
+      "The experience",
+      "AI in practice",
+      "The work",
+      "Try the system",
+      "The person",
+      "Let’s connect"
+    ],
+    "lines": [
+      "Start with the idea. See how I turn complexity into working systems.",
+      "Understand the impact behind the engineering.",
+      "Follow the experience that shaped my approach.",
+      "See how reusable AI workflows support engineering teams.",
+      "Choose a project. Explore its decisions and evidence.",
+      "Change a condition. See how the system responds.",
+      "Meet the person and principles behind the work.",
+      "Have a challenge in mind? Start a conversation."
+    ],
+    "previous": "← Back",
+    "next": "Continue →",
+    "end": "You’re here",
+    "readAll": "Read everything",
+    "story": "Story mode",
+    "previousProject": "← Previous project",
+    "nextProject": "Next project →",
+    "effects": "Enable cinematic effects",
+    "replay": "Rebuild sculpture"
   }
 }

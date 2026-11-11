@@ -2,7 +2,7 @@ import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
 const root=resolve(process.env.SITE_DIR||'dist');
-const types={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.xml':'application/xml','.pdf':'application/pdf'};
+const types={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.xml':'application/xml','.pdf':'application/pdf'};
 const port=Number(process.env.PORT||4175);
 export function serverFor(directory=root) {
  return createServer(async(req,res)=>{

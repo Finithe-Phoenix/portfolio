@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {serverFor} from './serve.mjs';
 const require=createRequire(import.meta.url);
 const {chromium}=require(process.env.PLAYWRIGHT_PATH||'playwright');
-const server=serverFor(resolve('dist'));await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const server=serverFor(resolve(process.env.PERFORMANCE_DIR||'dist'));await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
 const results=[];
 try {
@@ -25,14 +25,16 @@ for(const mode of ['desktop','mobile']){
   const frames=await page.evaluate(()=>new Promise(resolve=>{
    let prior=performance.now();const deltas=[];function sample(now){deltas.push(now-prior);prior=now;if(deltas.length<90)requestAnimationFrame(sample);else resolve(deltas.slice(1));}requestAnimationFrame(sample);
   }));
+  const initialMetrics=await page.evaluate(()=>({lcp:window.metrics.lcp,cls:window.metrics.cls}));
+  if(await page.locator('#journey-select').count()) await page.locator('#journey-select').selectOption('lab');
   await page.locator('[data-scenario="failed"]').click();
   await page.waitForTimeout(200);
   const metrics=await page.evaluate(()=>window.metrics);
   const sorted=frames.sort((a,b)=>a-b);
-  results.push({mode,run:run+1,...metrics,frameMedianMs:sorted[Math.floor(sorted.length/2)],frameP95Ms:sorted[Math.floor(sorted.length*.95)]});
+  results.push({mode,run:run+1,...metrics,...initialMetrics,frameMedianMs:sorted[Math.floor(sorted.length/2)],frameP95Ms:sorted[Math.floor(sorted.length*.95)]});
   await context.close();
  }
 }
 console.log(JSON.stringify(results,null,2));
-await writeFile('test-results/performance.json',JSON.stringify({note:'Local Chromium lab measurements. Mobile: 4x CPU, 1.6 Mbps download, 150ms latency. Event durations are a synthetic interaction sample, not field INP.',samples:results},null,2));
+await writeFile(process.env.PERFORMANCE_REPORT||'test-results/performance.json',JSON.stringify({note:'Local Chromium lab measurements. Mobile: 4x CPU, 1.6 Mbps download, 150ms latency. Event durations are a synthetic interaction sample, not field INP.',samples:results},null,2));
 }finally{await browser.close();await new Promise(r=>server.close(r));}

@@ -1,7 +1,7 @@
 // Native navigation, enhanced as a chapter-by-chapter story. No rendering dependencies.
 export function mountJourney(scenes, copy, options={}) {
  const root=document.documentElement, main=document.querySelector('main');
- let guided=true,index=0,project=0;
+ let guided=true,index=0,project=0,projectTarget=null;
  try { guided=sessionStorage.getItem('dg-view')!=='all'; }catch{}
  const bar=document.createElement('nav');bar.className='journey-bar';bar.setAttribute('aria-label',copy.label);
  const label=document.createElement('label');label.htmlFor='journey-select';label.textContent=copy.label;
@@ -79,6 +79,7 @@ export function mountJourney(scenes, copy, options={}) {
  }
  function goProject(i){
   i=Math.max(0,Math.min(cards.length-1,i));
+  projectTarget=i;
   const c=cards[i].getBoundingClientRect(),t=track.getBoundingClientRect();
   const left=track.scrollLeft+c.left-t.left-(track.clientWidth-c.width)/2;
   updateProject(i);track.scrollTo({left,behavior:reduced()?'instant':'smooth'});
@@ -86,9 +87,13 @@ export function mountJourney(scenes, copy, options={}) {
  back.addEventListener('click',()=>goProject(project-1));forward.addEventListener('click',()=>goProject(project+1));
  track.addEventListener('keydown',event=>{if(event.target!==track||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();goProject(project+(event.key==='ArrowRight'?1:-1));});
  if('IntersectionObserver'in window){
-  const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting&&e.intersectionRatio>=.6)updateProject(cards.indexOf(e.target));},{root:track,threshold:[.6,.8,1]});
+  const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting&&e.intersectionRatio>=.6){const i=cards.indexOf(e.target);if(projectTarget===null||i===projectTarget)updateProject(i);}},{root:track,threshold:[.6,.8,1]});
   cards.forEach(card=>observer.observe(card));
  }
  updateProject(0);
+ track.addEventListener('scrollend',()=>{projectTarget=null;});
+ track.addEventListener('pointerdown',()=>{projectTarget=null;},{passive:true});
+ track.addEventListener('wheel',()=>{projectTarget=null;},{passive:true});
+ track.addEventListener('focusin',()=>{projectTarget=null;});
  return {get guided(){return guided;},get index(){return index;},sync(i){if(!guided&&i!==index){index=i;select.value=scenes[i].id;status.textContent=copy.lines[i];previous.disabled=i===0;next.disabled=i===scenes.length-1;}}};
 }

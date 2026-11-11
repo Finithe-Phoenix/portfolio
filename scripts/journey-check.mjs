@@ -59,6 +59,14 @@ try{
   console.log('PASS guided story, gallery, lab, deep link, history, reading mode: '+(lang||'en')+' '+width);
   await context.close();
  }
+ const rapidContext=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,reducedMotion:'no-preference'});
+ const rapidPage=await rapidContext.newPage();await rapidPage.goto(base);
+ await rapidPage.locator('#journey-select').selectOption('work');
+ const rapidNext=rapidPage.locator('.project-controls button').last();
+ await rapidNext.click();await rapidNext.click();await rapidNext.click();
+ await rapidPage.waitForFunction(()=>document.querySelector('.project-controls p').textContent.startsWith('4 / 8'));
+ await rapidPage.waitForFunction(()=>{const c=document.querySelectorAll('.project-card')[3].getBoundingClientRect(),t=document.querySelector('.gallery-track').getBoundingClientRect();return Math.abs((c.left+c.width/2)-(t.left+t.width/2))<5;});
+ await rapidContext.close();console.log('PASS rapid project controls keep the intended destination during smooth scrolling');
  // Audit the new controls in the default experience, not only the full reading path.
  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
  const page=await context.newPage();await page.goto(base+'es/');

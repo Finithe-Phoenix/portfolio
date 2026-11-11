@@ -19,6 +19,7 @@ Date: 2026-11-10. Branch: feat/epic-motion-i18n.
 ### Interactive story / PR 5
 
 The new default chapter view, reading-mode fallback and native project carousel are covered in six locale/viewport journeys (EN/ES/PT × 390/1440 px), plus an axe audit of the guided mobile controls. These supplement the existing 18 browser checks and ten Node cases. Chapter tests include keyboard navigation, back/forward history, case-study reload, lab interaction, project scene mounting and 320–430 px reflow.
+A further normal-motion mobile journey checks three rapid project-next taps and verifies the fourth card settles at the intended destination. Intermediate IntersectionObserver entries cannot overwrite an active programmatic destination; native touch, wheel and focus input release that target. Browser Back/Forward also restores the opening chapter when its URL has no fragment.
 
 Same-machine comparison (three samples; uncompressed local server; 4× CPU/1.6 Mbps/150 ms mobile): desktop median LCP 720 → 396 ms; mobile median LCP 3088 → 2636 ms. Largest sampled mobile interaction, median: 392 → 160 ms. Initial-load CLS: 0 in all final samples. Mobile individual LCP values remain 2556–2808 ms, so the 2.5 s target is not claimed as consistently met. Full samples and methodology: performance-comparison.json. Initial metrics are captured before programmatic chapter navigation to avoid counting a later chapter as the initial LCP/CLS. These are not field INP or physical-device frame-rate guarantees.
 

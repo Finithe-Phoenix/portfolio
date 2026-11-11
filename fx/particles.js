@@ -269,7 +269,7 @@ export function mountParticles(canvas, options = {}) {
     const specs = Array.isArray(options.shapes) && options.shapes.length
       ? options.shapes.map((s) => ({ type: s?.type || 'sphere', text: s?.text }))
       : [{ type: 'sphere' }];
-    const positions = specs.map((s, i) => makeShape(s, count, i));
+    const positions = specs.map(() => null);
     const rand = random(0x23feda), seeds = new Float32Array(count * 3);
     for (let i = 0; i < seeds.length; i++) seeds[i] = rand();
     let program = null, buffers = [], shaders = [], attributes = {}, uniforms = {};
@@ -309,7 +309,7 @@ export function mountParticles(canvas, options = {}) {
         const buffer = gl.createBuffer();
         if (!buffer) throw new Error('buffer');
         buffers.push(buffer); gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, data || count*3*4, gl.STATIC_DRAW);
       }
       gl.disable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE);
       gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
@@ -326,6 +326,7 @@ export function mountParticles(canvas, options = {}) {
       gl.useProgram(program);
       const value = clamp(shape.value, 0, specs.length - 1), a = Math.floor(value);
       const b = Math.min(a + 1, specs.length - 1);
+      for(const index of [a,b])if(!positions[index]){positions[index]=makeShape(specs[index],count,index);gl.bindBuffer(gl.ARRAY_BUFFER,buffers[index]);gl.bufferData(gl.ARRAY_BUFFER,positions[index],gl.STATIC_DRAW);}
       if (pair !== a) {
         bind('aFrom', buffers[a]); bind('aTo', buffers[b]); bind('aSeed', buffers[specs.length]); pair = a;
       }
@@ -356,7 +357,7 @@ export function mountParticles(canvas, options = {}) {
       frame = 0;
       if (dead || lost || reduced || document.hidden) { last = 0; return; }
       const elapsed = last ? (now - last) / 1000 : 1 / 60;
-      if (compact && last && elapsed < 1 / 30 - 0.001) { frame = requestAnimationFrame(tick); return; }
+      if (last && elapsed < 1 / (compact ? 30 : 60) - 0.001) { frame = requestAnimationFrame(tick); return; }
       last = now;
       const dt = Math.min(elapsed, 0.05);
       time += dt; entrance = Math.min(1, entrance + dt / 2.2); pointerAge += dt;

@@ -630,5 +630,37 @@
       }
     ],
     "credentials": "Certificaciones y comunidad"
+  },
+  "journey": {
+    "label": "Explora la historia",
+    "names": [
+      "La idea",
+      "El impacto",
+      "La experiencia",
+      "IA en práctica",
+      "Los proyectos",
+      "Prueba el sistema",
+      "La persona",
+      "Conversemos"
+    ],
+    "lines": [
+      "Empieza por la idea: convertir complejidad en sistemas que funcionan.",
+      "Conoce el impacto detrás de la ingeniería.",
+      "Recorre la experiencia que dio forma a mi enfoque.",
+      "Descubre cómo los flujos reutilizables de IA apoyan a los equipos.",
+      "Elige un proyecto. Explora sus decisiones y evidencias.",
+      "Cambia una condición y observa cómo responde el sistema.",
+      "Conoce a la persona y los principios detrás del trabajo.",
+      "¿Tienes un reto en mente? Iniciemos una conversación."
+    ],
+    "previous": "← Anterior",
+    "next": "Continuar →",
+    "end": "Llegaste",
+    "readAll": "Leer todo",
+    "story": "Modo historia",
+    "previousProject": "← Proyecto anterior",
+    "nextProject": "Siguiente proyecto →",
+    "effects": "Activar efectos cinematográficos",
+    "replay": "Reconstruir escultura"
   }
 }

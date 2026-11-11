@@ -43,7 +43,7 @@ function page(t, locale) {
     .map(([cls, d]) => `<path d="${d}" class="route ${cls}"/><path d="${d}" pathLength="100" class="pulse ${cls}"/>`).join('');
   const principles = t.about.principles.map((p, i) => `<article class="reveal" style="--i:${i}"><span>${String(i + 1).padStart(2, '0')}</span><div><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`).join('');
   const credentials = t.about.credentials.map((c, i) => `<article class="reveal" style="--i:${i}"><span>${esc(c.label)}</span><h3>${esc(c.title)}</h3><p>${esc(c.text)}</p></article>`).join('');
-  const clientData = JSON.stringify({ motionOn: t.ui.motionOn, motionReduced: t.ui.motionReduced, motionAriaOn: t.ui.motionAriaOn, motionAriaReduced: t.ui.motionAriaReduced, scenarios: t.lab.scenarios }).replace(/</g, '\\u003c');
+  const clientData = JSON.stringify({ journey:t.journey, motionOn: t.ui.motionOn, motionReduced: t.ui.motionReduced, motionAriaOn: t.ui.motionAriaOn, motionAriaReduced: t.ui.motionAriaReduced, scenarios: t.lab.scenarios }).replace(/</g, '\\u003c');
   const resume = `<a class="text-link" href="profile.html">${esc(t.contact.resume)} ${arrow}</a>`;
   return `<!doctype html>
 <html lang="${t.lang}"><head>
@@ -60,7 +60,7 @@ function page(t, locale) {
 <link rel="canonical" href="${url}">${alternates}
 <link rel="icon" href="${base}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="${base}styles.css">
 <title>${esc(t.meta.title)}</title>
-<script>document.documentElement.classList.add('js');try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&localStorage.getItem('portfolio-motion')!=='reduce'&&!sessionStorage.getItem('dg-intro')){document.documentElement.classList.add('intro-on');sessionStorage.setItem('dg-intro','1')}}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{if(sessionStorage.getItem('dg-view')!=='all'){document.documentElement.classList.add('guided');let id=location.hash.slice(1);document.documentElement.dataset.chapter=id.startsWith('case-')?'work':(['top','impact','experience','ai','work','lab','about','contact'].includes(id)?id:'top')}}catch{document.documentElement.classList.add('guided');document.documentElement.dataset.chapter='top'}</script>
 <script type="application/json" id="i18n">${clientData}</script><script src="${base}script.js" type="module"></script>
 </head><body>
 <a class="skip-link" href="#main">${esc(t.ui.skip)}</a>
@@ -79,7 +79,7 @@ function page(t, locale) {
 <p class="eyebrow hero-enter" style="--i:0"><span class="status-dot" aria-hidden="true"></span> ${esc(t.hero.eyebrow)}</p>
 <h1 id="hero-title" aria-label="${esc(t.hero.title.join(' '))}"><span aria-hidden="true">${title}</span></h1>
 <div class="hero-row"><p class="hero-intro hero-enter" style="--i:1">${esc(t.hero.intro)}</p>
-<div class="hero-actions hero-enter" style="--i:2"><a class="button button-blue magnetic" href="#impact">${esc(t.hero.ctaPrimary)} <span aria-hidden="true">↘</span></a><a class="subtle-link" href="#lab">${esc(t.hero.ctaSecondary)} <span aria-hidden="true">→</span></a></div></div>
+<div class="hero-actions hero-enter" style="--i:2"><a class="button button-blue magnetic" href="#impact">${esc(t.hero.ctaPrimary)} <span aria-hidden="true">↘</span></a><a class="subtle-link" href="#lab">${esc(t.hero.ctaSecondary)} <span aria-hidden="true">→</span></a><button class="sculpture-replay" type="button">${esc(t.journey.effects)}</button></div></div>
 <div class="hero-art" aria-hidden="true"><svg class="network-fallback" viewBox="0 0 600 600"><g fill="none" stroke="#55c5ff" stroke-width="1"><ellipse cx="300" cy="300" rx="215" ry="215"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(-35 300 300)"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(35 300 300)"/><path d="M85 300H515M300 85V515"/></g><circle cx="300" cy="300" r="52" fill="#55c5ff"/></svg></div>
 <div class="hero-bottom"><span>${esc(t.hero.role)}</span><span>${esc(t.hero.location)} <span class="tiny-dot">·</span> ${esc(t.hero.locationNote)}</span><a href="#impact">${esc(t.ui.scroll)} ↓</a></div></div></section>
 <section id="impact" class="stats" aria-label="${esc(t.stats.label)}"><div class="wrap"><ul>${stats}</ul><p class="stats-source">${esc(t.stats.source)}</p></div></section>
@@ -144,6 +144,6 @@ for (const locale of site.locales) {
 }
 await writeFile(new URL('sitemap.xml', root), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${outputs.map(o => `<url><loc>${site.siteUrl}${o.replace(/index\.html$/, '')}</loc></url>`).join('')}</urlset>`);
 await mkdir(new URL('dist/', root), { recursive: true });
-for (const path of [...outputs, 'styles.css', 'script.js', 'lab.mjs', 'fx', 'profile.css', 'profile.js', 'sitemap.xml', '.nojekyll', 'assets']) await cp(new URL(path, root), new URL('dist/' + path, root), { recursive: true });
+for (const path of [...outputs, 'styles.css', 'script.js', 'journey.mjs', 'lab.mjs', 'fx', 'profile.css', 'profile.js', 'sitemap.xml', '.nojekyll', 'assets']) await cp(new URL(path, root), new URL('dist/' + path, root), { recursive: true });
 await writeFile(new URL('dist/release.json', root), JSON.stringify({ revision: process.env.GITHUB_SHA || 'local', name: 'Daniel Gonzalez portfolio' }));
 console.log(`Built ${outputs.length} pages for ${site.locales.length} locales → dist/`);

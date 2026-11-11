@@ -19,6 +19,8 @@ The browser suite generates desktop/mobile screenshots, a printable profile PDF,
 
 ## Edit
 
+The default experience is an eight-chapter story with a persistent selector and previous/next controls. Choose the full-reading option for the complete document. Project browsing uses native horizontal scrolling, touch gestures and explicit buttons. `journey.mjs` owns navigation/history; localized chapter narratives live in each locale's `journey` object. Mobile retains a capture of the original rendered scene before optional live effects. See docs/performance-comparison.json for measured limits.
+
 - content/profile.json: identity, contact links and the list of locales.
 - content/locales/en.json, es.json, pt.json: every visible string, the experience timeline, impact figures and project narratives. All three files must keep the same structure (enforced by a test).
 - scripts/build.mjs: generates index.html and profile.html for each locale (/, /es/, /pt/) plus sitemap.xml.

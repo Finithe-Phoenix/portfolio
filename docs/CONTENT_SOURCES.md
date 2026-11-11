@@ -36,6 +36,7 @@ Spanish (Mexico) and Brazilian Portuguese were machine-translated from en.json a
 ## Assets and data
 
 All illustrations are original SVG/CSS/Canvas compositions. System fonts only, no third-party font requests.
+The mobile cinematic JPEG is a direct screenshot of this project's original WebGL world and particle sculpture, captured without interface text. It provides the same visual composition before optional GPU initialization; it is not an external photograph or an image of an unrelated product.
 The resilience model uses synthetic constants (40 / 85 / 45 ms) and a repeatable ±4 ms jitter for the trace. The request counters are simulated. These are instructional, not measurements.
 The applied-AI pipeline animation illustrates the seven stages named in the résumé; it does not depict the internal system.
 No analytics, tracking, authentication, external API calls or contact form submissions. Contact is a mailto link.

@@ -1,0 +1,164 @@
+{
+  "date": "2026-11-10",
+  "method": "Three local uncompressed Chromium samples per mode. Mobile: 4x CPU, 1.6 Mbps, 150 ms latency. Load is captured before chapter navigation; events measure the failure control. Shared hardware; not field INP or physical-device FPS.",
+  "before": [
+    {
+      "mode": "desktop",
+      "run": 1,
+      "lcp": 1464,
+      "cls": 0.0013148721832110558,
+      "eventDurations": [
+        200,
+        200,
+        200
+      ],
+      "frameMedianMs": 6.599999999999909,
+      "frameP95Ms": 46.5
+    },
+    {
+      "mode": "desktop",
+      "run": 2,
+      "lcp": 720,
+      "cls": 0.001972786348601918,
+      "eventDurations": [
+        72,
+        72,
+        72
+      ],
+      "frameMedianMs": 6.600000000000364,
+      "frameP95Ms": 10.099999999999909
+    },
+    {
+      "mode": "desktop",
+      "run": 3,
+      "lcp": 688,
+      "cls": 0.0019631486544196986,
+      "eventDurations": [
+        80,
+        80,
+        80
+      ],
+      "frameMedianMs": 6.599999999999909,
+      "frameP95Ms": 9.900000000000091
+    },
+    {
+      "mode": "mobile",
+      "run": 1,
+      "lcp": 3384,
+      "cls": 0.03808954460557075,
+      "eventDurations": [
+        392,
+        392,
+        392
+      ],
+      "frameMedianMs": 6.699999999999818,
+      "frameP95Ms": 10
+    },
+    {
+      "mode": "mobile",
+      "run": 2,
+      "lcp": 3088,
+      "cls": 0.03808954460557075,
+      "eventDurations": [
+        480,
+        480,
+        480
+      ],
+      "frameMedianMs": 6.700000000000728,
+      "frameP95Ms": 10.199999999999818
+    },
+    {
+      "mode": "mobile",
+      "run": 3,
+      "lcp": 2484,
+      "cls": 0.03808954460557075,
+      "eventDurations": [
+        312,
+        312,
+        312
+      ],
+      "frameMedianMs": 6.699999999999818,
+      "frameP95Ms": 13.400000000000546
+    }
+  ],
+  "after": [
+    {
+      "mode": "desktop",
+      "run": 1,
+      "lcp": 804,
+      "cls": 0,
+      "eventDurations": [
+        104,
+        104,
+        104
+      ],
+      "frameMedianMs": 3.300000000000182,
+      "frameP95Ms": 3.5
+    },
+    {
+      "mode": "desktop",
+      "run": 2,
+      "lcp": 396,
+      "cls": 0,
+      "eventDurations": [
+        40,
+        40,
+        40
+      ],
+      "frameMedianMs": 3.300000000000182,
+      "frameP95Ms": 3.5
+    },
+    {
+      "mode": "desktop",
+      "run": 3,
+      "lcp": 380,
+      "cls": 0,
+      "eventDurations": [
+        40,
+        40,
+        40
+      ],
+      "frameMedianMs": 3.300000000000182,
+      "frameP95Ms": 3.400000000000091
+    },
+    {
+      "mode": "mobile",
+      "run": 1,
+      "lcp": 2636,
+      "cls": 0,
+      "eventDurations": [
+        152,
+        152,
+        152
+      ],
+      "frameMedianMs": 3.300000000000182,
+      "frameP95Ms": 3.5
+    },
+    {
+      "mode": "mobile",
+      "run": 2,
+      "lcp": 2556,
+      "cls": 0,
+      "eventDurations": [
+        160,
+        160,
+        160
+      ],
+      "frameMedianMs": 3.300000000000182,
+      "frameP95Ms": 3.5
+    },
+    {
+      "mode": "mobile",
+      "run": 3,
+      "lcp": 2808,
+      "cls": 0,
+      "eventDurations": [
+        200,
+        200,
+        200
+      ],
+      "frameMedianMs": 3.300000000000182,
+      "frameP95Ms": 3.5
+    }
+  ]
+}

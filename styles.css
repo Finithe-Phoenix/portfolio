@@ -539,3 +539,10 @@ html.anim .hud{display:block}
 h1 .line-em em{color:var(--ice);text-shadow:0 2px 22px #050811}
 @media(max-width:1100px){.scene-dock{display:none}}
 @media print{.scene-dock,.sculpture-replay{display:none!important}}
+@media(max-width:600px){
+ .intro,.grain{display:none!important}
+ .site-header{backdrop-filter:none;background:#050811}
+ h1 em{filter:none!important;animation:none!important;background:none;-webkit-text-fill-color:var(--ice)}
+ .agents i,.stages li,.aurora,.status-dot{animation:none}
+ .ai-section,.thinking-section,.contact-section,.stats{animation:none!important;clip-path:none!important}
+}

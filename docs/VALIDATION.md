@@ -16,6 +16,8 @@ Date: 2026-11-10. Branch: feat/epic-motion-i18n.
 
 ## Latest performance sample
 
+Continuation sample after optical gateways and mobile opt-in (same local, uncompressed methodology): desktop LCP 1144 / 784 / 708 ms, CLS <=0.0021. Mobile LCP 3192 / 2724 / 3476 ms, CLS 0.0381, sampled interaction events 368–392 ms. These mobile samples still exceed the intended loading/interaction targets; they must not be represented as passing field Core Web Vitals. Compact devices now defer WebGL until explicit activation and skip the opening overlay and large text filters. Eighteen functional browser checks pass locally, including mobile activation and keyboard chapter navigation.
+
 Local headless Chromium, three samples per mode. Mobile emulation: 390×844, 4× CPU slowdown, 1.6 Mbps download, 150 ms latency, served uncompressed.
 
 | Measurement | Desktop | Mobile emulation |

@@ -5,7 +5,8 @@ Date: 2026-11-10. Branch: feat/epic-motion-i18n.
 ## Executed locally
 
 - Build completed using Node 24.16.0: six pages (index and résumé for en, es, pt).
-- Eight Node test cases passed: scenario transitions, repeatable latency trace, identical locale structure, all local links/resources/fragments in every page, server-rendered content per language (including a guard that no phone number is published), motion safety rules in CSS, source-size budgets and the release manifest.
+- Second pass (cinematic layer): ten Node test cases and the same sixteen browser checks pass with the WebGL world, eight project scenes, intro, pinned gallery and manifesto in place. New guards: only allowlisted public repositories are linked, and dist/fx holds only the two effect modules.
+- Eight Node test cases passed (first pass): scenario transitions, repeatable latency trace, identical locale structure, all local links/resources/fragments in every page, server-rendered content per language (including a guard that no phone number is published), motion safety rules in CSS, source-size budgets and the release manifest.
 - Sixteen Chromium browser checks passed: scroll reveals and counters, desktop rendering, deep-link reload, three lab scenarios, simulated traffic, persistent motion preference (reveals shown and simulation paused when reduced), OS motion preference, mobile without JavaScript, unavailable Canvas/blocked storage, mobile menu/Escape/anchors, 320–1024px overflow, keyboard controls, Spanish and Portuguese rendering with a localized lab and language switching at 320–1440px, PDF export, social PNG generation, accessibility and resource checks.
 - axe-core 4.13.0: zero automated WCAG A/AA violations on /, /es/, /pt/ and the résumé page. This is not a complete accessibility certification.
 - Desktop and mobile screenshots of every section were visually inspected in English; the Spanish full page was inspected on desktop.
@@ -21,6 +22,8 @@ Local headless Chromium, three samples per mode. Mobile emulation: 390×844, 4×
 | CLS | 0.002 or less | 0 |
 | Largest sampled interaction event, each run | 32 / 32 / 32 ms | 128 / 80 / 56 ms |
 | requestAnimationFrame interval, p95 | 16.8 ms | 67–83 ms under 4× CPU throttle |
+
+Cinematic layer, same method: desktop LCP 232–272 ms, CLS under 0.003; mobile emulation LCP 1488 / 2748 / 3052 ms, CLS under 0.002, interaction events 136–232 ms. Headless Chromium renders WebGL in software: the world ran at about 20 fps at full quality until the quality governor halved its resolution, after which frames returned to 16.7 ms. Performance on real GPUs and phones has not been measured.
 
 These are lab measurements on a shared machine, not field data. Mobile LCP varied between runs and one of three exceeded the 2.5 s target; the local server does not compress, while GitHub Pages does. The phone layout skips the hero text entrance so copy paints immediately. Throttled mobile frame intervals are well below 60 fps; the canvas is capped at about 30 updates/s on compact screens.
 

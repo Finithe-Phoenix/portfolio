@@ -13,7 +13,7 @@ for(let attempt=1;attempt<=16;attempt++){
  if(attempt<16)await delay(15000);
 }
 assert.ok(ready,'Pages did not expose the expected source revision');
-for(const path of ['','es/','pt/','styles.css','script.js','lab.mjs','profile.html','es/profile.html','pt/profile.html','assets/social-card.png','sitemap.xml']){
+for(const path of ['','es/','pt/','styles.css','script.js','lab.mjs','fx/world.js','fx/scenes.js','profile.html','es/profile.html','pt/profile.html','assets/social-card.png','sitemap.xml']){
  const response=await fetch(base+path+'?revision='+expected,{signal:AbortSignal.timeout(15000),cache:'no-store'});
  assert.equal(response.status,200,path+' must return HTTP 200');
  const content=await response.arrayBuffer();assert.ok(content.byteLength>0,path+' is empty');

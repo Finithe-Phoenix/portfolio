@@ -6,16 +6,12 @@ const site = await readJson('content/profile.json');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const arrow = '<span aria-hidden="true">↗</span>';
 const external = (href, label, cls = 'text-link') => `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${label} ${arrow}</a>`;
-const heading = t => `${esc(t[0])}<br><em>${esc(t[1])}</em>`;
+// Headings are split into words for the kinetic reveal; aria-label keeps them one phrase for assistive tech.
+let wordIndex = 0;
+const words = text => text.split(' ').map(w => `<span class="w"><span style="--k:${wordIndex++}">${esc(w)}</span></span>`).join(' ');
+const h2 = (id, t, extra = '') => { wordIndex = 0; return `<h2 id="${id}" class="kinetic" aria-label="${esc(t[0] + ' ' + t[1])}"><span aria-hidden="true">${words(t[0])}<br><em>${words(t[1])}</em>${extra}</span></h2>`; };
+const sectionHead = (id, eyebrow, t, lead) => `<div class="section-heading reveal"><span class="ghost-num" aria-hidden="true">${esc(eyebrow.slice(0, 2))}</span><div><p class="eyebrow">${esc(eyebrow)}</p>${h2(id, t)}</div><p>${esc(lead)}</p></div>`;
 const tags = list => `<div class="tags">${list.map(t => `<span>${esc(t)}</span>`).join('')}</div>`;
-
-// Card illustration: four stages joined by three routes, each carrying a travelling pulse.
-const routes = ['M146 62H214', 'M270 80C270 112 90 108 90 140', 'M146 158H214'];
-const nodes = [[90, 62], [270, 62], [90, 158], [270, 158]];
-const diagram = (p, t) => `<div class="project-art art-${p.color}" aria-hidden="true"><div class="art-grid"></div><span class="art-ghost">${p.number}</span>
-<svg viewBox="0 0 360 220">${routes.map((d, i) => `<path class="art-route" d="${d}"/><path class="art-pulse" style="--d:${i * .5}s" pathLength="100" d="${d}"/>`).join('')}
-${p.diagram.map((label, i) => `<g class="art-node" style="--i:${i}"><rect x="${nodes[i][0] - 56}" y="${nodes[i][1] - 18}" width="112" height="36" rx="6"/><text x="${nodes[i][0]}" y="${nodes[i][1] + 4}">${esc(label)}</text></g>`).join('')}</svg>
-<span class="art-caption">${esc(t.work.map)} / ${p.number}</span></div>`;
 
 function page(t, locale) {
   const base = locale.dir ? '../' : '';
@@ -24,14 +20,23 @@ function page(t, locale) {
   const alternates = site.locales.map(l => `<link rel="alternate" hreflang="${l.code}" href="${site.siteUrl + l.dir}">`).join('') + `<link rel="alternate" hreflang="x-default" href="${site.siteUrl}">`;
   const nav = [['impact', t.ui.nav.impact], ['experience', t.ui.nav.experience], ['work', t.ui.nav.work], ['lab', t.ui.nav.lab], ['about', t.ui.nav.about]]
     .map(([id, label]) => `<a href="#${id}">${esc(label)}</a>`).join('') + `<a href="#contact" class="nav-contact">${esc(t.ui.nav.contact)} ${arrow}</a>`;
-  const title = t.hero.title.map((line, i, all) => `<span class="line"><span style="--i:${i}">${i === all.length - 1 ? `<em>${esc(line)}</em>` : esc(line)}</span></span>`).join(' ');
+  let charIndex = 0;
+  const chars = line => [...line].map(ch => `<span class="ch" style="--c:${charIndex++}">${esc(ch)}</span>`).join('');
+  const title = t.hero.title.map((line, i, all) => i === all.length - 1 ? `<span class="line line-em" data-text="${esc(line)}"><span style="--i:${i}"><em>${esc(line)}</em></span></span>` : `<span class="line">${chars(line)}</span>`).join(' ');
+  const manifesto = t.manifesto.text.split(' ').map(w => `<span>${esc(w)}</span>`).join(' ');
   const stats = t.stats.items.map((s, i) => `<li class="reveal" style="--i:${i}"><strong>${esc(s.prefix || '')}<span class="count" data-count="${s.value}">${s.value}</span>${esc(s.suffix || '')}</strong><span>${esc(s.label)}</span></li>`).join('');
   const marqueeItems = t.marquee.map(m => `<span>${esc(m)}</span><i>✳</i>`).join('');
   const timeline = t.experience.items.map((x, i) => `<li class="tl-item reveal${i < 2 ? ' is-current' : ''}"><div class="tl-when"><span class="tl-period">${esc(x.period)}</span><span class="tl-tag">${esc(x.tag)}</span></div><div class="tl-body"><h3>${esc(x.role)}</h3><p class="tl-company">${esc(x.company)}</p><ul>${x.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>${tags(x.stack)}</div></li>`).join('');
   const stages = t.ai.stages.map((s, i) => `<li style="--i:${i}"><span>${String(i + 1).padStart(2, '0')}</span>${esc(s)}</li>`).join('');
   const facts = t.ai.facts.map((f, i) => `<article class="reveal" style="--i:${i}"><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p></article>`).join('');
-  const cards = t.projects.map((p, i) => `<article class="project-card reveal" style="--i:${i}"><a class="project-open" href="#case-${p.id}">${diagram(p, t)}<div class="project-copy"><div class="project-meta"><span>${p.number} / ${esc(p.category)}</span><span class="project-status">${esc(p.status)}</span></div><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p>${tags(p.stack)}<span class="read-case">${esc(t.work.explore)} ${esc(p.name)} <span aria-hidden="true">→</span></span></div></a></article>`).join('');
-  const cases = t.projects.map(p => `<details class="case-study" id="case-${p.id}"><summary><span class="case-index">${p.number}</span><span><small>${esc(p.category)}</small><strong>${esc(p.name)}</strong></span><span class="case-plus" aria-hidden="true">+</span></summary><div class="case-body"><p class="case-status">${esc(p.status)}</p><div class="case-grid">${['problem', 'approach', 'tradeoff', 'outcome', 'lesson'].map(k => `<section><h4>${esc(t.work.sections[k])}</h4><p>${esc(p[k])}</p></section>`).join('')}</div><div class="case-links">${external(p.repo, esc(t.work.source))}${p.demo ? external(p.demo, esc(t.work.demo)) : ''}</div><div class="evidence"><span>${esc(t.work.evidence)}</span>${p.evidence.map(e => external(e.url, esc(e.label))).join('')}</div></div></details>`).join('');
+  const cards = t.projects.map(p => {
+    const internal = Boolean(p.problem);
+    const href = internal ? '#case-' + p.id : (p.demo || p.repo);
+    const label = internal ? `${esc(t.work.explore)} ${esc(p.name)}` : `${esc(p.name)} — ${esc(p.demo ? t.work.demo : t.work.source)}`;
+    return `<article class="project-card art-${p.color}"><a class="project-open" href="${esc(href)}"${internal ? '' : ' target="_blank" rel="noopener noreferrer"'} data-cursor="${esc(t.work.cursorOpen)}"><div class="project-art" aria-hidden="true"><div class="art-grid"></div><span class="art-ghost">${p.number}</span><canvas class="scene" data-scene="${p.scene}"></canvas></div><div class="project-copy"><div class="project-meta"><span>${p.number} / ${esc(p.category)}</span><span class="project-status">${esc(p.status)}</span></div><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p>${tags(p.stack)}<span class="read-case">${label} <span aria-hidden="true">${internal ? '→' : '↗'}</span></span></div></a></article>`;
+  }).join('');
+  const total = String(t.projects.length).padStart(2, '0');
+  const cases = t.projects.filter(p => p.problem).map(p => `<details class="case-study" id="case-${p.id}"><summary><span class="case-index">${p.number}</span><span><small>${esc(p.category)}</small><strong>${esc(p.name)}</strong></span><span class="case-plus" aria-hidden="true">+</span></summary><div class="case-body"><p class="case-status">${esc(p.status)}</p><div class="case-grid">${['problem', 'approach', 'tradeoff', 'outcome', 'lesson'].map(k => `<section><h4>${esc(t.work.sections[k])}</h4><p>${esc(p[k])}</p></section>`).join('')}</div><div class="case-links">${external(p.repo, esc(t.work.source))}${p.demo ? external(p.demo, esc(t.work.demo)) : ''}</div><div class="evidence"><span>${esc(t.work.evidence)}</span>${p.evidence.map(e => external(e.url, esc(e.label))).join('')}</div></div></details>`).join('');
   const n = t.lab.nodes, sc = t.lab.scenarios.healthy;
   const flowNode = (cls, x, y, w, a, b) => `<g class="flow-node ${cls}"><rect x="${x}" y="${y}" width="${w}" height="74" rx="10"/><text x="${x + w / 2}" y="${y + 32}">${esc(a)}</text><text x="${x + w / 2}" y="${y + 53}" class="node-small">${esc(b)}</text></g>`;
   const flowRoutes = [['common', 'M130 185H240'], ['primary-route', 'M350 185C405 185 390 90 450 90'], ['fallback-route', 'M350 185C405 185 390 280 450 280'], ['primary-route', 'M560 90C625 90 580 185 650 185'], ['fallback-route', 'M560 280C625 280 580 185 650 185']]
@@ -55,12 +60,15 @@ function page(t, locale) {
 <link rel="canonical" href="${url}">${alternates}
 <link rel="icon" href="${base}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="${base}styles.css">
 <title>${esc(t.meta.title)}</title>
+<script>document.documentElement.classList.add('js');try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&localStorage.getItem('portfolio-motion')!=='reduce'&&!sessionStorage.getItem('dg-intro')){document.documentElement.classList.add('intro-on');sessionStorage.setItem('dg-intro','1')}}catch(e){}</script>
 <script type="application/json" id="i18n">${clientData}</script><script src="${base}script.js" type="module"></script>
 </head><body>
 <a class="skip-link" href="#main">${esc(t.ui.skip)}</a>
-<div class="cursor-glow" aria-hidden="true"></div>
+<canvas id="world" aria-hidden="true"></canvas><div class="grain" aria-hidden="true"></div>
+<div class="intro" aria-hidden="true"><i class="intro-shutter"></i><i class="intro-shutter"></i><div class="intro-core"><span class="intro-logo">dg<b>.</b></span><span class="intro-line"><i></i></span><span class="intro-name">${esc(site.name)}</span></div></div>
+<div class="cursor-glow" aria-hidden="true"></div><div class="cursor" aria-hidden="true"><i></i><span></span></div>
 <header class="site-header"><a href="#top" class="brand" aria-label="${esc(t.ui.home)}">dg<span class="brand-dot">.</span></a>
-<button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" hidden>${esc(t.ui.menu)} <span aria-hidden="true">☰</span></button>
+<button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">${esc(t.ui.menu)} <span aria-hidden="true">☰</span></button>
 <nav id="main-nav" aria-label="${esc(t.ui.navLabel)}">${nav}</nav>
 <div class="lang-switch" role="group" aria-label="${esc(t.ui.langLabel)}">${langLinks}</div>
 <button class="motion-toggle" aria-pressed="false" hidden aria-label="${esc(t.ui.motionAriaOn)}"><span aria-hidden="true">◐</span> <span class="motion-label">${esc(t.ui.motionOn)}</span></button>
@@ -68,7 +76,7 @@ function page(t, locale) {
 <main id="main">
 <section class="hero wrap" id="top" aria-labelledby="hero-title"><div class="hero-copy">
 <p class="eyebrow hero-enter" style="--i:0"><span class="status-dot" aria-hidden="true"></span> ${esc(t.hero.eyebrow)}</p>
-<h1 id="hero-title">${title}</h1>
+<h1 id="hero-title" aria-label="${esc(t.hero.title.join(' '))}"><span aria-hidden="true">${title}</span></h1>
 <p class="hero-intro hero-enter" style="--i:1">${esc(t.hero.intro)}</p>
 <div class="hero-actions hero-enter" style="--i:2"><a class="button button-blue magnetic" href="#impact">${esc(t.hero.ctaPrimary)} <span aria-hidden="true">↘</span></a><a class="subtle-link" href="#lab">${esc(t.hero.ctaSecondary)} <span aria-hidden="true">→</span></a></div></div>
 <div class="hero-art" role="img" aria-label="${esc(t.hero.artAlt)}">
@@ -78,21 +86,24 @@ ${t.hero.labels.map((l, i) => `<div class="hero-art-label label-${['architecture
 <div class="art-bottomline"><span class="cross" aria-hidden="true">+</span><span>${esc(t.hero.artBottom)}</span><span class="cross" aria-hidden="true">+</span></div></div>
 <div class="hero-bottom"><span>${esc(t.hero.role)}</span><span>${esc(t.hero.location)} <span class="tiny-dot">·</span> ${esc(t.hero.locationNote)}</span><a href="#impact">${esc(t.ui.scroll)} ↓</a></div></section>
 <section id="impact" class="stats" aria-label="${esc(t.stats.label)}"><div class="wrap"><ul>${stats}</ul><p class="stats-source">${esc(t.stats.source)}</p></div></section>
-<div class="marquee" aria-hidden="true"><div class="marquee-track"><div>${marqueeItems}</div><div>${marqueeItems}</div></div></div>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><div>${marqueeItems}</div><div>${marqueeItems}</div></div><div class="marquee-track reverse"><div>${marqueeItems}</div><div>${marqueeItems}</div></div></div>
+<section class="manifesto" aria-label="${esc(t.manifesto.label)}"><div class="wrap"><p class="eyebrow">${esc(t.manifesto.label)}</p><p class="manifesto-text">${manifesto}</p></div></section>
 <section id="experience" class="experience-section wrap section-space" aria-labelledby="experience-title">
-<div class="section-heading reveal"><div><p class="eyebrow">${esc(t.experience.eyebrow)}</p><h2 id="experience-title">${heading(t.experience.title)}</h2></div><p>${esc(t.experience.lead)}</p></div>
+${sectionHead('experience-title', t.experience.eyebrow, t.experience.title, t.experience.lead)}
 <ol class="timeline"><li class="tl-line" aria-hidden="true"><i></i></li>${timeline}</ol></section>
 <section id="ai" class="ai-section section-space" aria-labelledby="ai-title"><div class="wrap">
-<div class="section-heading reveal"><div><p class="eyebrow">${esc(t.ai.eyebrow)}</p><h2 id="ai-title">${heading(t.ai.title)}</h2></div><p>${esc(t.ai.lead)}</p></div>
+${sectionHead('ai-title', t.ai.eyebrow, t.ai.title, t.ai.lead)}
 <div class="pipeline reveal"><div class="pipeline-top"><span><i class="status-dot" aria-hidden="true"></i> ${esc(t.ai.pipelineLabel)}</span><span class="agents" aria-hidden="true">${'<i></i>'.repeat(19)}</span></div>
 <div class="pipeline-flow"><span class="pipe-end">${esc(t.ai.input)}</span><ol class="stages" aria-label="${esc(t.ai.pipelineAlt)}">${stages}</ol><span class="pipe-end pipe-out">${esc(t.ai.output)}</span></div></div>
 <div class="ai-facts">${facts}</div><p class="fine-print">${esc(t.ai.note)}</p></div></section>
-<section id="work" class="work-section wrap section-space" aria-labelledby="work-title">
-<div class="section-heading reveal"><div><p class="eyebrow">${esc(t.work.eyebrow)}</p><h2 id="work-title">${heading(t.work.title)}</h2></div><p>${esc(t.work.lead)}</p></div>
-<div class="projects">${cards}</div><p class="work-note">${esc(t.work.note)}</p>
-<div class="case-studies" role="region" aria-label="${esc(t.work.casesLabel)}">${cases}</div></section>
+<section id="work" class="work-section section-space" aria-labelledby="work-title"><div class="wrap">
+${sectionHead('work-title', t.work.eyebrow, t.work.title, t.work.lead)}</div>
+<div class="gallery"><div class="gallery-sticky"><div class="gallery-track" role="region" aria-label="${esc(t.work.galleryLabel)}" tabindex="0">${cards}</div>
+<div class="gallery-bar wrap" aria-hidden="true"><span class="gallery-hint">${esc(t.work.hint)}</span><i class="gallery-line"><i></i></i><span class="gallery-count"><b>01</b> / ${total}</span></div></div></div>
+<div class="wrap"><h3 class="deep-title reveal">${esc(t.work.deep)}</h3>
+<div class="case-studies" role="region" aria-label="${esc(t.work.casesLabel)}">${cases}</div></div></section>
 <section id="lab" class="thinking-section section-space" aria-labelledby="lab-title"><div class="wrap">
-<div class="section-heading reveal"><div><p class="eyebrow">${esc(t.lab.eyebrow)}</p><h2 id="lab-title">${heading(t.lab.title)}</h2></div><p>${esc(t.lab.lead)}</p></div>
+${sectionHead('lab-title', t.lab.eyebrow, t.lab.title, t.lab.lead)}
 <div class="lab reveal"><div class="lab-top"><span><i class="status-dot" aria-hidden="true"></i> ${esc(t.lab.topLeft)}</span><span>${esc(t.lab.topRight)}</span></div>
 <div class="lab-layout"><div class="lab-visual" data-state="healthy">
 <svg viewBox="0 0 760 370" role="img" aria-labelledby="flow-title flow-desc"><title id="flow-title">${esc(t.lab.svgTitle)}</title><desc id="flow-desc">${esc(t.lab.svgDesc)}</desc>
@@ -106,12 +117,12 @@ ${flowNode('client-node', 20, 148, 110, n.client, n.clientSub)}${flowNode('route
 <div class="lab-live" hidden><div class="lab-metrics"><span>${esc(t.lab.metricRouted)}<strong id="model-routed">0</strong></span><span>${esc(t.lab.metricRerouted)}<strong id="model-rerouted">0</strong></span></div><p class="spark-label" aria-hidden="true">${esc(t.lab.sparkLabel)}</p><svg class="spark" aria-hidden="true" viewBox="0 0 200 48" preserveAspectRatio="none"><polyline id="spark-line" fill="none" points="0,34 200,34"/></svg></div></div></div>
 <div class="lab-foot"><span>${esc(t.lab.tradeoffLabel)}</span><p id="tradeoff">${esc(sc.tradeoff)}</p></div></div>
 <p class="fine-print">${esc(t.lab.disclaimer)}</p></div></section>
-<section id="about" class="about-section wrap section-space" aria-labelledby="about-title"><div class="about-intro reveal"><p class="eyebrow">${esc(t.about.eyebrow)}</p><h2 id="about-title">${heading(t.about.title)}</h2></div>
+<section id="about" class="about-section wrap section-space" aria-labelledby="about-title"><div class="about-intro section-heading reveal"><span class="ghost-num" aria-hidden="true">${esc(t.about.eyebrow.slice(0, 2))}</span><div><p class="eyebrow">${esc(t.about.eyebrow)}</p>${h2('about-title', t.about.title)}</div></div>
 <div class="about-layout"><div class="about-statement reveal">${t.about.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}<p class="about-small">${esc(t.about.focus)}</p>${resume}</div>
 <div class="principles">${principles}</div></div>
 <div class="credentials">${credentials}</div>
 <div class="capabilities">${t.about.capabilities.map(c => `<span>${esc(c)}</span>`).join('')}</div></section>
-<section id="contact" class="contact-section section-space" aria-labelledby="contact-title"><div class="aurora" aria-hidden="true"></div><div class="wrap"><p class="eyebrow">${esc(t.contact.eyebrow)}</p><h2 id="contact-title" class="reveal">${heading(t.contact.title)}<span class="contact-star" aria-hidden="true">✳</span></h2><div class="contact-bottom"><p>${esc(t.contact.text)}</p><div class="contact-actions"><a class="button button-light magnetic" href="mailto:${esc(site.email)}">${esc(t.contact.email)} <span aria-hidden="true">→</span></a>${external(site.linkedin, esc(t.contact.linkedin))}${external(site.github, esc(t.contact.github))}${resume}</div></div></div></section>
+<section id="contact" class="contact-section section-space" aria-labelledby="contact-title"><div class="aurora" aria-hidden="true"></div><div class="wrap"><p class="eyebrow">${esc(t.contact.eyebrow)}</p><div class="reveal">${h2('contact-title', t.contact.title, '<span class="contact-star">✳</span>')}</div><div class="contact-bottom"><p>${esc(t.contact.text)}</p><div class="contact-actions"><a class="button button-light magnetic" href="mailto:${esc(site.email)}">${esc(t.contact.email)} <span aria-hidden="true">→</span></a>${external(site.linkedin, esc(t.contact.linkedin))}${external(site.github, esc(t.contact.github))}${resume}</div></div></div></section>
 </main><footer class="wrap"><a href="#top" class="brand" aria-label="${esc(t.ui.backTop)}">dg<span class="brand-dot">.</span></a><span>© <span id="year">2026</span> ${esc(site.name)}</span>${external(site.sourceUrl, esc(t.ui.viewSource), 'footer-link')}<a href="#top">${esc(t.ui.backTop)} ↑</a></footer>
 </body></html>`;
 }
@@ -136,6 +147,6 @@ for (const locale of site.locales) {
 }
 await writeFile(new URL('sitemap.xml', root), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${outputs.map(o => `<url><loc>${site.siteUrl}${o.replace(/index\.html$/, '')}</loc></url>`).join('')}</urlset>`);
 await mkdir(new URL('dist/', root), { recursive: true });
-for (const path of [...outputs, 'styles.css', 'script.js', 'lab.mjs', 'profile.css', 'profile.js', 'sitemap.xml', '.nojekyll', 'assets']) await cp(new URL(path, root), new URL('dist/' + path, root), { recursive: true });
+for (const path of [...outputs, 'styles.css', 'script.js', 'lab.mjs', 'fx', 'profile.css', 'profile.js', 'sitemap.xml', '.nojekyll', 'assets']) await cp(new URL(path, root), new URL('dist/' + path, root), { recursive: true });
 await writeFile(new URL('dist/release.json', root), JSON.stringify({ revision: process.env.GITHUB_SHA || 'local', name: 'Daniel Gonzalez portfolio' }));
 console.log(`Built ${outputs.length} pages for ${site.locales.length} locales → dist/`);

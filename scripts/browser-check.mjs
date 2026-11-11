@@ -32,7 +32,9 @@ try{
  assert.equal(await page.locator('h1').count(),1);
  assert.ok(await page.locator('h1').isVisible());
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
- assert.equal(await page.locator('html').getAttribute('class'),'anim');
+ assert.ok(await page.evaluate(()=>document.documentElement.classList.contains('anim')));
+ assert.ok(await page.evaluate(()=>document.documentElement.classList.contains('intro-on')),'Intro plays on the first visit of a session');
+ assert.ok(await page.evaluate(()=>document.querySelector('.gallery').classList.contains('pinned')),'Gallery pins on desktop');
  await page.waitForTimeout(2600);
  await page.screenshot({path:'test-results/hero.png'});
  // Sections reveal on scroll; walk the page so the full-page capture shows every section.
@@ -63,7 +65,9 @@ try{
  await page.locator('.lab').screenshot({path:'test-results/lab.png'});
  await page.locator('.motion-toggle').click();
  assert.equal(await page.locator('html').getAttribute('data-motion'),'reduce');
- assert.equal(await page.locator('html').getAttribute('class'),'');
+ assert.ok(await page.evaluate(()=>!document.documentElement.classList.contains('anim')));
+ assert.ok(await page.evaluate(()=>!document.querySelector('.gallery').classList.contains('pinned')),'Gallery unpins with reduced motion');
+ assert.equal(await page.locator('.intro').evaluate(el=>getComputedStyle(el).display),'none');
  assert.equal(await page.locator('.reveal').last().evaluate(el=>getComputedStyle(el).opacity),'1');
  const routedBefore=await page.locator('#model-routed').textContent();
  await page.waitForTimeout(900);

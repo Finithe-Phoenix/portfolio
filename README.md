@@ -24,6 +24,7 @@ The browser suite generates desktop/mobile screenshots, a printable profile PDF,
 - scripts/build.mjs: generates index.html and profile.html for each locale (/, /es/, /pt/) plus sitemap.xml.
 - styles.css: one responsive visual system.
 - script.js: navigation, motion preferences, scroll reveals, counters, pointer effects, the lab simulation and the procedural Canvas.
+- fx/world.js: WebGL scene behind the whole page (grid, light trails, scroll warp). fx/scenes.js: one Canvas motion scene per project card. Both load after first paint; the page is complete without them, and a quality governor in script.js steps the world down on slow devices.
 - lab.mjs: deterministic scenario behaviour and the repeatable latency trace, independently tested.
 - assets/social-card.svg: original social composition; browser-check generates its PNG.
 - docs/CONTENT_SOURCES.md: claim provenance and remaining author inputs.

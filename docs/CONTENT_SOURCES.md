@@ -18,7 +18,14 @@ Deliberate omissions: phone number (guarded by a test), salary or availability, 
   Reviewed README blob 629b285274366f8f338e8ca1c77c9e555b3ac7d1. Supports synthetic public demo, separated local portal/API, inventory and purchasing. The portfolio does not imply clinical production readiness. Validation record is linked for readers to inspect.
 - DevOps lab: https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso/blob/main/README.md
   Reviewed README blob 3234b3321b4aa706b27f7c2ffef3c0c4c17d9d9a. Identifies Daniel as instructor and documents four-day curriculum, one-application lifecycle, bilingual guides and debugging exercises. No learning-outcome metric is inferred.
-- ChadWallet was reviewed as an alternate candidate. Its README calls it an assignment/demo with no real trades. It was not selected among the three primary cases.
+- Five further public repositories appear as gallery cards (no case study), each described from its README as read on 2026-11-10:
+  - Quality Automation Fleet (Testing-Agents-Worflows): "71 AI agents, 42 skills, 15 suites", coverage gate of at least 90%, Jenkins orchestration. The README also says "68 agents" in one heading; the site uses the headline figure.
+  - NovaPay testing lab (LabNovaTesting): fictional transfer service, tiered fees, idempotency, six-state machine, simulated mainframe core.
+  - NEXUS ONE (Discovery-Nexus-One): multi-operator SIM/eSIM operations demo with fictitious data; live on GitHub Pages.
+  - ChadWallet terminal: an assignment demo; no real trades are executed; live on Vercel.
+  - Playwright in Motion (Playwright-Curso): twelve lessons, approximately 87 minutes.
+  Private repositories are never linked; a test allowlists the public ones.
+  The motion scenes on the cards are illustrations, not screenshots of the projects.
 
 Cases distinguish documented implementation from this portfolio's validation. The explanations of tradeoffs are editorial interpretations of repository structure. Original system-map illustrations are labeled as maps and are not represented as application screenshots.
 

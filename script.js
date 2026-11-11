@@ -63,8 +63,8 @@ function revealCase() {
     requestAnimationFrame(() => detail.scrollIntoView({ block: 'start', behavior: 'instant' }));
   }
 }
-$$('.project-open').forEach(link => link.addEventListener('click', () => {
-  const detail = $(link.getAttribute('href'));
+$$('.project-open[href^="#"]').forEach(link => link.addEventListener('click', () => {
+  const detail = document.getElementById(link.getAttribute('href').slice(1));
   if (detail) detail.open = true;
 }));
 window.addEventListener('hashchange', revealCase);
@@ -102,29 +102,91 @@ if ('IntersectionObserver' in window) {
   links.forEach((_, id) => { const section = document.getElementById(id); if (section) sections.observe(section); });
 }
 
-/* One scroll listener drives the progress bar and the timeline fill. */
+/* One scroll pipeline: progress bar, world dimming, timeline fill, manifesto, pinned gallery and velocity. */
 const timeline = $('.timeline');
-let scrollQueued = false;
-function onScroll() {
-  scrollQueued = false;
-  const scrollable = root.scrollHeight - innerHeight;
-  root.style.setProperty('--scroll', scrollable > 0 ? clamp(scrollY / scrollable).toFixed(4) : 0);
-  const box = timeline.getBoundingClientRect();
-  timeline.style.setProperty('--tl', reduce ? 1 : clamp((innerHeight * .62 - box.top) / box.height).toFixed(4));
+const manifesto = $('.manifesto-text'), manifestoWords = $$('.manifesto-text span');
+const gallery = $('.gallery'), track = $('.gallery-track'), sticky = $('.gallery-sticky'), cards = $$('.project-card');
+const galleryCount = $('.gallery-count b');
+const marquees = $$('.marquee-track');
+let travel = 0, pinTop = 0, pinned = false, centers = [], lastY = scrollY, velocity = 0, lit = 0, loopId = 0;
+function layoutGallery() {
+  pinned = !reduce && finePointer.matches && innerWidth > 900 && innerHeight >= 640;
+  gallery.classList.toggle('pinned', pinned);
+  cards.forEach(card => { card.style.removeProperty('--tilt'); card.style.removeProperty('--zoom'); });
+  track.style.removeProperty('--gx'); track.style.removeProperty('--gs');
+  if (!pinned) { gallery.style.removeProperty('--gallery-height'); return; }
+  sticky.scrollLeft = 0;
+  pinTop = parseFloat(getComputedStyle(sticky).top) || 0;
+  const box = track.getBoundingClientRect();
+  centers = cards.map(card => { const r = card.getBoundingClientRect(); return r.left + r.width / 2 - box.left; });
+  travel = Math.max(0, track.offsetWidth - innerWidth);
+  gallery.style.setProperty('--gallery-height', Math.round(sticky.offsetHeight + travel) + 'px');
 }
-addEventListener('scroll', () => { if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(onScroll); } }, { passive: true });
-addEventListener('resize', onScroll);
-addEventListener('portfolio:motion', onScroll);
-onScroll();
+function frame() {
+  loopId = 0;
+  const y = scrollY;
+  velocity += ((y - lastY) - velocity) * .35; lastY = y;
+  const scrollable = root.scrollHeight - innerHeight;
+  root.style.setProperty('--scroll', scrollable > 0 ? clamp(y / scrollable).toFixed(4) : 0);
+  root.style.setProperty('--world', (1 - .62 * clamp(y / (innerHeight * .9))).toFixed(3));
+  const line = timeline.getBoundingClientRect();
+  timeline.style.setProperty('--tl', reduce ? 1 : clamp((innerHeight * .62 - line.top) / line.height).toFixed(4));
+  // Manifesto words light once and stay lit, so the sentence is never left half-dimmed.
+  const words = manifesto.getBoundingClientRect();
+  const target = reduce ? manifestoWords.length : Math.round(clamp((innerHeight * .82 - words.top) / (words.height + innerHeight * .3)) * manifestoWords.length);
+  while (lit < target) manifestoWords[lit++].classList.add('on');
+  manifestoWords.forEach((word, i) => word.classList.toggle('spark', !reduce && lit < manifestoWords.length && i >= lit - 2 && i < lit));
+  if (pinned) {
+    const progress = travel ? clamp((pinTop - gallery.getBoundingClientRect().top) / travel) : 0;
+    const shift = -progress * travel;
+    track.style.setProperty('--gx', shift.toFixed(1) + 'px');
+    track.style.setProperty('--gs', clamp(velocity * -.035, -3.5, 3.5).toFixed(2) + 'deg');
+    gallery.style.setProperty('--gp', progress.toFixed(4));
+    centers.forEach((center, i) => {
+      const offset = (center + shift - innerWidth / 2) / innerWidth, distance = Math.abs(offset);
+      cards[i].style.setProperty('--tilt', (clamp(offset, -1, 1) * -11).toFixed(2) + 'deg');
+      cards[i].style.setProperty('--zoom', (1 - Math.min(distance, 1) * .09).toFixed(3));
+    });
+    galleryCount.textContent = String(Math.round(progress * (cards.length - 1)) + 1).padStart(2, '0');
+  }
+  // The marquee picks up speed with the scroll.
+  const boost = reduce ? 1 : 1 + Math.min(Math.abs(velocity) * .12, 7);
+  marquees.forEach(row => row.getAnimations().forEach(animation => { animation.playbackRate = boost; }));
+  if (Math.abs(velocity) > .05) queue();
+}
+function queue() { if (!loopId) loopId = requestAnimationFrame(frame); }
+addEventListener('scroll', queue, { passive: true });
+addEventListener('resize', () => { layoutGallery(); queue(); });
+addEventListener('portfolio:motion', () => { layoutGallery(); queue(); });
+finePointer.addEventListener('change', () => { layoutGallery(); queue(); });
+// Keyboard users reach every card: focusing one scrolls the page to where the gallery shows it.
+track.addEventListener('focusin', event => {
+  const index = cards.indexOf(event.target.closest('.project-card'));
+  if (!pinned || index < 0 || !travel) return;
+  sticky.scrollLeft = 0;
+  const wanted = clamp((centers[index] - innerWidth / 2) / travel);
+  scrollTo({ top: gallery.getBoundingClientRect().top + scrollY - pinTop + wanted * travel, behavior: 'instant' });
+});
+layoutGallery();
+frame();
 
 /* Pointer effects: ambient light, card tilt and magnetic buttons. Fine pointers only. */
-const glow = $('.cursor-glow');
+const glow = $('.cursor-glow'), ring = $('.cursor');
 addEventListener('pointermove', event => {
   if (reduce || event.pointerType !== 'mouse') return;
-  glow.classList.add('on');
+  glow.classList.add('on'); ring.classList.add('on');
   glow.style.setProperty('--gx', event.clientX + 'px');
   glow.style.setProperty('--gy', event.clientY + 'px');
+  ring.style.setProperty('--cx', event.clientX + 'px');
+  ring.style.setProperty('--cy', event.clientY + 'px');
 }, { passive: true });
+addEventListener('pointerover', event => {
+  const labelled = event.target.closest?.('[data-cursor]');
+  ring.classList.toggle('label', Boolean(labelled));
+  ring.classList.toggle('hover', !labelled && Boolean(event.target.closest?.('a,button,summary')));
+  if (labelled) $('span', ring).textContent = labelled.dataset.cursor;
+}, { passive: true });
+document.addEventListener('pointerleave', () => ring.classList.remove('on'));
 $$('.project-card').forEach(card => {
   const surface = $('.project-open', card);
   card.addEventListener('pointermove', event => {
@@ -176,6 +238,9 @@ scenarioButtons.forEach(button => button.addEventListener('click', () => {
   const state = scenarioFor(scenario), copy = text.scenarios[scenario];
   scenarioButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
   labVisual.dataset.state = scenario;
+  const lab = $('.lab');
+  lab.classList.remove('hit');
+  if (scenario === 'failed' && !reduce) { void lab.offsetWidth; lab.classList.add('hit'); }
   $('.lab-state').textContent = copy.title;
   $('.lab-description').textContent = copy.description;
   $('#model-latency').textContent = state.latency + ' ms';
@@ -195,7 +260,7 @@ function initNetwork() {
   try { ctx = canvas.getContext('2d'); } catch {}
   if (!ctx) return;
   const art = $('.hero-art');
-  let width = 0, height = 0, frame = 0, visible = true, last = 0, time = 0, born = 0;
+  let width = 0, height = 0, frame = 0, visible = true, last = 0, time = 0, born = root.classList.contains('intro-on') ? 1500 : 0;
   let pointer = { x: 0, y: 0 }, current = { x: 0, y: 0 }, cursor = null;
   const compact = matchMedia('(max-width:600px)').matches;
   const rows = compact ? 9 : 15, cols = compact ? 18 : 28;
@@ -329,3 +394,59 @@ requestAnimationFrame(() => requestAnimationFrame(() => {
   if ('requestIdleCallback' in window) requestIdleCallback(initNetwork, { timeout: 600 });
   else setTimeout(initNetwork, 60);
 }));
+
+/* Cinematic layer: a WebGL world behind the page and a motion scene per project.
+   Both load after first paint and the page is complete without them. */
+const moods = { top: 'blue', impact: 'blue', experience: 'ice', ai: 'violet', work: 'blue', lab: 'red', about: 'ice', contact: 'red' };
+const fx = { world: null, scenes: [] };
+addEventListener('portfolio:motion', () => {
+  fx.world?.setReduced(reduce || fx.still);
+  fx.scenes.forEach(scene => scene.setReduced(reduce));
+});
+function initFx() {
+  const compact = matchMedia('(max-width:600px)').matches;
+  import('./fx/world.js').then(module => {
+    const canvas = $('#world');
+    fx.world = module.mountWorld(canvas, { reduced: reduce, compact });
+    if (!fx.world) return;
+    root.classList.add('world-ready');
+    // Quality governor: sample frame times; a slow device first drops to a quarter of the pixels,
+    // then to a still frame. It only ever steps down.
+    let samples = [], previous = 0, settle = 0;
+    const probe = now => {
+      if (fx.still) return;
+      if (reduce || document.hidden) { previous = 0; samples = []; }
+      else if (previous && ++settle > 45) samples.push(now - previous);
+      previous = now;
+      if (samples.length >= 40) {
+        const median = samples.sort((a, b) => a - b)[20];
+        samples = []; settle = 0;
+        if (median > 30) {
+          if (!canvas.classList.contains('lite')) canvas.classList.add('lite');
+          else { fx.still = true; fx.world.setReduced(true); return; }
+        } else if (canvas.dataset.checked) return;
+        canvas.dataset.checked = '1';
+      }
+      requestAnimationFrame(probe);
+    };
+    requestAnimationFrame(probe);
+    if (!('IntersectionObserver' in window)) return;
+    const watcher = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) fx.world.setMood(moods[entry.target.id]);
+    }), { rootMargin: '-45% 0px -50% 0px' });
+    Object.keys(moods).forEach(id => { const section = document.getElementById(id); if (section) watcher.observe(section); });
+  }).catch(() => {});
+  if (!('IntersectionObserver' in window)) return;
+  import('./fx/scenes.js').then(module => {
+    const byCanvas = new Map();
+    const watcher = new IntersectionObserver(entries => entries.forEach(entry => byCanvas.get(entry.target)?.setActive(entry.isIntersecting)), { threshold: .15 });
+    $$('.scene').forEach(canvas => {
+      const accent = getComputedStyle(canvas).getPropertyValue('--art-color').trim() || '#55c5ff';
+      const scene = module.mountScene(canvas, canvas.dataset.scene, { reduced: reduce, accent });
+      byCanvas.set(canvas, scene); fx.scenes.push(scene);
+      canvas.classList.add('ready');
+      watcher.observe(canvas);
+    });
+  }).catch(() => {});
+}
+requestAnimationFrame(() => setTimeout(initFx, 120));

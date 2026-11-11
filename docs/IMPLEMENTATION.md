@@ -3,7 +3,7 @@
 ## Design
 
 Concept: Clarity through complexity.
-Graphite, warm off-white, pale lime, cyan and violet. Large editorial sans-serif typography with serif emphasis. Three reading depths: hero overview, project summary, expandable evidence.
+Midnight black, electric blue and signal red. Geometric sans-serif typography, illuminated edges and a procedural grid inspired by TRON Legacy. Three reading depths: hero overview, project summary, expandable evidence.
 
 Scenes:
 1. Procedural latitude/longitude network with orbital depth, pointer response and scroll-driven transition toward a lattice.

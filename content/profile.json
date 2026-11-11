@@ -28,7 +28,7 @@
         "IR",
         "ARM64"
       ],
-      "color": "cyan",
+      "color": "blue",
       "problem": "How can a binary built for one instruction set execute on another while preserving its behavior?",
       "approach": "The repository separates decoding, an intermediate representation, optimization, emission and runtime responsibilities. That decomposition makes each boundary inspectable.",
       "tradeoff": "Translation performance competes with correctness and compatibility. A staged pipeline makes validation explicit, while adding intermediate structures and engineering complexity.",
@@ -67,7 +67,7 @@
         "Purchase",
         "Audit"
       ],
-      "color": "lime",
+      "color": "red",
       "problem": "Clinic workflows cross several operational boundaries. A useful demonstration must show those connections without suggesting it is ready for real patient care.",
       "approach": "The project separates the public synthetic demonstration from a local private portal and API. Inventory and purchasing model explicit state changes, permissions and audit records.",
       "tradeoff": "Browser-local demo data makes exploration easy, but cannot provide shared persistence or server authorization. The private API provides a separate path for those concerns.",
@@ -106,7 +106,7 @@
         "Deploy",
         "Observe"
       ],
-      "color": "violet",
+      "color": "ice",
       "problem": "Teaching tools in isolation makes it difficult to understand how software becomes an operated service.",
       "approach": "A single application travels from source control through containers, delivery automation, orchestration, monitoring and security. The course includes bilingual guides and debugging exercises.",
       "tradeoff": "A coherent learning path prioritizes a small reproducible environment over the complexity of a production platform. Intentional failure exercises make the limits teachable.",

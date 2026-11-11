@@ -12,7 +12,7 @@ const html=`<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Daniel González — Technical Lead and Full Stack Engineer. Explore systems engineering, product work and practical engineering leadership.">
-<meta name="theme-color" content="#101312"><meta property="og:type" content="website">
+<meta name="theme-color" content="#050811"><meta property="og:type" content="website">
 <meta property="og:title" content="Daniel González — Clarity through complexity">
 <meta property="og:description" content="Systems thinking. Product care. Engineering that connects the dots.">
 <meta property="og:url" content="https://finithe-phoenix.github.io/portfolio/">
@@ -34,10 +34,10 @@ const html=`<!doctype html>
 <p class="eyebrow hero-enter"><span class="status-dot" aria-hidden="true"></span> DANIEL GONZÁLEZ / ENGINEER & BUILDER</p>
 <h1 id="hero-title" class="hero-enter">Clarity<br>through<br><em>complexity.</em></h1>
 <p class="hero-intro hero-enter">Systems thinking. Product care.<br>I connect the dots — and build what comes next.</p>
-<div class="hero-actions hero-enter"><a class="button button-lime" href="#work">Explore my work <span aria-hidden="true">↘</span></a><a class="subtle-link" href="#thinking">Step inside a system <span aria-hidden="true">→</span></a></div></div>
+<div class="hero-actions hero-enter"><a class="button button-blue" href="#work">Explore my work <span aria-hidden="true">↘</span></a><a class="subtle-link" href="#thinking">Step inside a system <span aria-hidden="true">→</span></a></div></div>
 <div class="hero-art" role="img" aria-label="An abstract network organizing into a connected system">
 <div class="art-topline"><span>COMPLEXITY → CLARITY</span><span class="art-version">EXPLORATION / 001</span></div><canvas id="network" aria-hidden="true"></canvas>
-<svg class="network-fallback" viewBox="0 0 600 600" aria-hidden="true"><g fill="none" stroke="#adc67a" stroke-width="1"><ellipse cx="300" cy="300" rx="215" ry="215"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(-35 300 300)"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(35 300 300)"/><path d="M85 300H515M300 85V515"/></g><circle cx="300" cy="300" r="52" fill="#d4ef9d"/></svg>
+<svg class="network-fallback" viewBox="0 0 600 600" aria-hidden="true"><g fill="none" stroke="#55c5ff" stroke-width="1"><ellipse cx="300" cy="300" rx="215" ry="215"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(-35 300 300)"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(35 300 300)"/><path d="M85 300H515M300 85V515"/></g><circle cx="300" cy="300" r="52" fill="#55c5ff"/></svg>
 <div class="hero-art-label label-architecture">01 / ARCHITECTURE</div><div class="hero-art-label label-execution">02 / EXECUTION</div><div class="hero-art-label label-people">03 / PEOPLE</div>
 <div class="art-bottomline"><span class="cross" aria-hidden="true">+</span><span>MAKE THE CONNECTIONS THAT MATTER.</span><span class="cross" aria-hidden="true">+</span></div></div>
 <div class="hero-bottom"><span>TECHNICAL LEAD & FULL STACK ENGINEER</span><span>TOLUCA, MX <span class="tiny-dot">·</span> GLOBAL MINDSET</span><a href="#work">SCROLL TO DISCOVER ↓</a></div></section>

@@ -442,7 +442,8 @@ export function mountScene(canvas, kind, options) {
       if (!width || !height) return;
       const still = !active || reduced || !visible();
       const duration = kind === 'fleet' ? 9600 : 8400;
-      const p = shot === null ? (still ? .84 : (elapsed % duration) / duration) : Math.min(.9, .08 + shot * .22 + (still ? .06 : (elapsed % 3200) / 3200 * .12));
+      // A selected shot breathes inside its phase instead of snapping back at a loop seam.
+      const p = shot === null ? (still ? .84 : (elapsed % duration) / duration) : .14 + shot * .22 + (still ? 0 : Math.sin(elapsed / 1600) * .04);
       ctx.setTransform(canvas.width / 400, 0, 0, canvas.height / 250, 0, 0);
       ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.setLineDash([]);
       ctx.fillStyle = '#0a1220'; ctx.fillRect(0, 0, 400, 250);
@@ -455,7 +456,7 @@ export function mountScene(canvas, kind, options) {
       // their next opening pose, keeping the illustration present at the seam.
       const periodic = kind === 'translator' || kind === 'trading';
       const reset = still || periodic ? 0 : ramp(p, .92, 1);
-      ctx.save(); ctx.globalAlpha = 1 - reset; scenes[kind](d, p, still); ctx.restore();
+      ctx.save(); ctx.globalAlpha = 1 - reset; scenes[kind](d, p, still && shot === null); ctx.restore();
       if (reset > 0) {
         ctx.save(); ctx.globalAlpha = reset; scenes[kind](d, 0, false); ctx.restore();
       }

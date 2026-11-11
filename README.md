@@ -21,6 +21,8 @@ The browser suite generates desktop/mobile screenshots, a printable profile PDF,
 
 The default experience is an eight-chapter story with a persistent selector and previous/next controls. Choose the full-reading option for the complete document. Project browsing uses native horizontal scrolling, touch gestures and explicit buttons. `journey.mjs` owns navigation/history; localized chapter narratives live in each locale's `journey` object. Mobile retains a capture of the original rendered scene before optional live effects. See docs/performance-comparison.json for measured limits.
 
+Each project's **Explore the story** link opens an on-demand theater with four authored scenes: challenge, decision, tradeoff and evidence. `project-cinema.mjs` and `cinema.css` load only on request; the narrative comes from server-rendered details, so it also works without JavaScript. The eight project-specific Canvas diagrams advance with each scene. Playback is manual by default, with an optional 12-second advance, a pause control, keyboard tabs and stable `#story-prisma`-style links. Reduced motion prevents autoplay; close, background visibility and offscreen state stop the animation. Mobile uses at most 30 Canvas updates per second. The underlying world pauses while the theater is open.
+
 - content/profile.json: identity, contact links and the list of locales.
 - content/locales/en.json, es.json, pt.json: every visible string, the experience timeline, impact figures and project narratives. All three files must keep the same structure (enforced by a test).
 - scripts/build.mjs: generates index.html and profile.html for each locale (/, /es/, /pt/) plus sitemap.xml.

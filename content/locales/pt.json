@@ -261,7 +261,7 @@
     "source": "Explorar código",
     "demo": "Abrir demonstração online",
     "evidence": "Saiba mais",
-    "hint": "Continue rolando — a galeria se move",
+    "hint": "Escolha um projeto · explore suas quatro cenas",
     "deep": "Três casos em profundidade",
     "cursorOpen": "Abrir",
     "galleryLabel": "Galeria de projetos"
@@ -299,7 +299,33 @@
           "url": "https://github.com/Finithe-Phoenix/prisma/tree/main/docs"
         }
       ],
-      "scene": "translator"
+      "scene": "translator",
+      "story": {
+        "nodes": [
+          "x86_64",
+          "IR",
+          "ARM64",
+          "Runtime"
+        ],
+        "beats": [
+          {
+            "title": "Código fora do seu mundo",
+            "text": "Como executar em outro conjunto de instruções um binário e manter exatamente o mesmo comportamento?"
+          },
+          {
+            "title": "Uma linguagem intermediária",
+            "text": "Um fluxo por etapas: decodificação, representação intermediária, otimização, emissão e execução. Cada interface entre etapas pode ser inspecionada e testada de forma independente."
+          },
+          {
+            "title": "Velocidade encontra correção",
+            "text": "A velocidade de tradução compete com a correção e a compatibilidade. A divisão em etapas torna a validação explícita, ao custo de estruturas intermediárias e mais trabalho de engenharia."
+          },
+          {
+            "title": "Um motor em evolução",
+            "text": "Um fluxo de tradução público, uma área de especificação formal em Lean 4 e uma migração para Rust em andamento. Um projeto de pesquisa em evolução."
+          }
+        ]
+      }
     },
     {
       "id": "fleet",
@@ -318,7 +344,33 @@
       "name": "Quality Automation Fleet",
       "status": "Framework aberto",
       "summary": "71 agentes de IA, 42 skills e 15 suítes de testes com uma meta — cobertura real de pelo menos 90% — orquestrados de ponta a ponta com Jenkins.",
-      "number": "02"
+      "number": "02",
+      "story": {
+        "nodes": [
+          "Solicitação",
+          "Agentes",
+          "Testes",
+          "Controle"
+        ],
+        "beats": [
+          {
+            "title": "Um prompt não é uma estratégia",
+            "text": "O trabalho de qualidade abrange várias especialidades. Um único prompt não explica como coordená-las."
+          },
+          {
+            "title": "Especialistas com um fluxo comum",
+            "text": "O repositório reúne agentes especializados, habilidades reutilizáveis e suítes de teste em um fluxo orquestrado."
+          },
+          {
+            "title": "Um teste precisa conquistar confiança",
+            "text": "Testes gerados ainda precisam de controles e revisão. Uma meta de cobertura não prova que um sistema já a atingiu."
+          },
+          {
+            "title": "Um framework aberto para inspecionar",
+            "text": "Explore o framework e sua documentação. Esta história ilustra sua estrutura; não afirma uma cobertura medida de forma independente."
+          }
+        ]
+      }
     },
     {
       "id": "novapay",
@@ -337,7 +389,33 @@
       "name": "Laboratório de testes NovaPay",
       "status": "Laboratório didático · domínio fictício",
       "summary": "Um serviço de transferências criado para exercitar toda a pirâmide de testes: tarifas por faixas, idempotência, uma máquina de seis estados e um core mainframe simulado.",
-      "number": "03"
+      "number": "03",
+      "story": {
+        "nodes": [
+          "Solicitação",
+          "Regras",
+          "Estado",
+          "Núcleo simulado"
+        ],
+        "beats": [
+          {
+            "title": "Tornar os casos extremos visíveis",
+            "text": "Um serviço de transferências precisa explicar mais que uma solicitação bem-sucedida: tarifas, tentativas e mudanças de estado importam."
+          },
+          {
+            "title": "Seguir o ciclo da transferência",
+            "text": "O laboratório combina tarifas por faixa, idempotência, uma máquina de seis estados e um core mainframe simulado."
+          },
+          {
+            "title": "O core é uma simulação",
+            "text": "Um domínio fictício permite estudar falhas. Não demonstra uma integração com uma plataforma real de pagamentos."
+          },
+          {
+            "title": "Um laboratório que você pode inspecionar",
+            "text": "Inspecione o código e os exercícios. O valor do laboratório é tornar os limites importantes visíveis e testáveis."
+          }
+        ]
+      }
     },
     {
       "id": "clinic",
@@ -371,7 +449,33 @@
           "url": "https://github.com/Finithe-Phoenix/PulmonogyClinic/blob/main/docs/VALIDATION.md"
         }
       ],
-      "scene": "clinic"
+      "scene": "clinic",
+      "story": {
+        "nodes": [
+          "Agenda",
+          "Estoque",
+          "Compras",
+          "Auditoria"
+        ],
+        "beats": [
+          {
+            "title": "A clínica é um sistema conectado",
+            "text": "A operação de uma clínica envolve agendas, estoque, compras e prestação de contas. Como conectar tudo isso sem perder o controle?"
+          },
+          {
+            "title": "Separar exploração e autoridade",
+            "text": "Uma demo pública, com um portal autenticado e uma API separados. Estoque e compras modelam mudanças de estado explícitas, permissões e registros de auditoria."
+          },
+          {
+            "title": "A conveniência tem um limite",
+            "text": "Os dados locais no navegador facilitam a exploração da demo, mas não oferecem persistência compartilhada nem autorização no servidor. A API privada atende a essas necessidades."
+          },
+          {
+            "title": "Uma demonstração com escopo claro",
+            "text": "Fluxos da demo documentados e um portal local com autenticação. Todos os dados da demo são sintéticos; identidade e implantação em produção são trabalhos separados."
+          }
+        ]
+      }
     },
     {
       "id": "nexus",
@@ -389,7 +493,33 @@
       "name": "NEXUS ONE",
       "status": "Demo ao vivo · dados sintéticos",
       "summary": "Um centro de controle multioperadora de SIM e eSIM: estoque, carteira, crédito, vendas e comissões, com um modo de história para a diretoria.",
-      "number": "05"
+      "number": "05",
+      "story": {
+        "nodes": [
+          "Operador",
+          "SIM/eSIM",
+          "Carteira",
+          "Operação"
+        ],
+        "beats": [
+          {
+            "title": "Tornar a operação compreensível",
+            "text": "Estoque, saldos e vendas ficam difíceis de entender quando seu contexto está disperso."
+          },
+          {
+            "title": "Conectar a visão operacional",
+            "text": "A demo pública conecta operações SIM/eSIM, carteira, crédito, vendas e comissões em um painel explorável."
+          },
+          {
+            "title": "Um painel não é uma operadora real",
+            "text": "A visão operacional usa dados sintéticos. Sua interface não estabelece uma conexão com uma operadora real."
+          },
+          {
+            "title": "Explorar o fluxo sintético",
+            "text": "Abra a demonstração ou inspecione o repositório. Siga a história operacional mantendo seu escopo simulado em vista."
+          }
+        ]
+      }
     },
     {
       "id": "chadwallet",
@@ -408,7 +538,33 @@
       "name": "Terminal ChadWallet",
       "status": "Demo ao vivo · sem operações reais",
       "summary": "Uma landing page e terminal de trading social em Solana: tokens em alta, gráficos ao vivo, boleta de ordens e posições, com dados de demonstração seguros por padrão.",
-      "number": "06"
+      "number": "06",
+      "story": {
+        "nodes": [
+          "Token",
+          "Mercado",
+          "Ordem",
+          "Demo"
+        ],
+        "beats": [
+          {
+            "title": "Um mercado precisa de contexto",
+            "text": "Uma interface de trading precisa conectar descoberta, contexto e as ações que o usuário considera."
+          },
+          {
+            "title": "Conectar as peças do terminal",
+            "text": "A demo reúne descoberta de tokens, gráficos, painel de ordens e posições no mesmo terminal."
+          },
+          {
+            "title": "O modo demo é uma escolha",
+            "text": "Dados de demonstração são a opção inicial. Adaptadores de dados e a interface não significam operações reais."
+          },
+          {
+            "title": "Inspecionar o produto e os adaptadores",
+            "text": "Explore a demo e o código. A implementação separa a interface do produto, os adaptadores e o limite de execução."
+          }
+        ]
+      }
     },
     {
       "id": "playwright",
@@ -427,7 +583,33 @@
       "name": "Playwright in Motion",
       "status": "Curso aberto",
       "summary": "Doze videoaulas narradas e animadas — cerca de 87 minutos — com projetos de teste em TypeScript, Python e Java e um simulador de terminal mainframe.",
-      "number": "07"
+      "number": "07",
+      "story": {
+        "nodes": [
+          "Cenário",
+          "Teste",
+          "Rastro",
+          "Aprendizado"
+        ],
+        "beats": [
+          {
+            "title": "Transformar uma ideia em um teste",
+            "text": "Conceitos de teste se tornam úteis quando se conectam a um exemplo executável."
+          },
+          {
+            "title": "Aprender vendo o movimento",
+            "text": "O curso combina animação narrada com projetos TypeScript, Python e Java e um simulador de terminal."
+          },
+          {
+            "title": "A aula precisa de prática executável",
+            "text": "Assistir a uma aula e demonstrar competência são resultados diferentes. Os projetos complementares abrem o caminho para a prática."
+          },
+          {
+            "title": "Continuar dentro do curso",
+            "text": "Explore o repositório e os materiais. A história leva da explicação a exemplos de testes executáveis."
+          }
+        ]
+      }
     },
     {
       "id": "devops",
@@ -461,7 +643,33 @@
           "url": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso/tree/main/guias"
         }
       ],
-      "scene": "pipeline"
+      "scene": "pipeline",
+      "story": {
+        "nodes": [
+          "Código",
+          "Contêiner",
+          "Implantação",
+          "Observação"
+        ],
+        "beats": [
+          {
+            "title": "Ferramentas contam uma entrega",
+            "text": "Ensinar ferramentas isoladamente esconde como o software se torna um serviço em operação."
+          },
+          {
+            "title": "Uma aplicação percorre todo o ciclo",
+            "text": "Uma aplicação percorre controle de versão, contêineres, automação de entregas, orquestração, monitoramento e segurança, com guias bilíngues e exercícios de depuração."
+          },
+          {
+            "title": "Reprodutibilidade diante da complexidade",
+            "text": "Uma trilha de aprendizado coerente prioriza um ambiente pequeno e reproduzível em relação à complexidade completa de uma plataforma em produção. Falhas intencionais permitem ensinar seus limites."
+          },
+          {
+            "title": "Conhecimento que outros podem executar",
+            "text": "Um programa de quatro dias com aplicações de exemplo, manifestos de implantação, material para instrutores e exercícios de resolução de problemas."
+          }
+        ]
+      }
     }
   ],
   "lab": {
@@ -662,5 +870,29 @@
     "nextProject": "Próximo projeto →",
     "effects": "Ativar efeitos cinematográficos",
     "replay": "Reconstruir escultura"
+  },
+  "cinema": {
+    "open": "Explorar a história",
+    "tag": "4 cenas · interativa",
+    "label": "Histórias de projetos",
+    "close": "Fechar história",
+    "previous": "Cena anterior",
+    "next": "Próxima cena",
+    "play": "Reproduzir história",
+    "pause": "Pausar história",
+    "source": "Ver código",
+    "demo": "Abrir demo",
+    "case": "Ler o caso completo",
+    "previousProject": "Projeto anterior",
+    "nextProject": "Próximo projeto",
+    "acts": [
+      "O desafio",
+      "A decisão",
+      "O compromisso técnico",
+      "A evidência"
+    ],
+    "note": "Diagrama ilustrativo · narrativa baseada no repositório público",
+    "all": "Oito histórias de projetos",
+    "act": "Cena"
   }
 }

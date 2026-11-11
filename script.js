@@ -279,7 +279,7 @@ replayButton.className='sculpture-replay';
 replayButton.disabled=reduce;
 let mobileFxEnabled = false;
 replayButton.addEventListener('click',()=>{
-  if(reduce || fx.still)return;
+  if(reduce || fx.still || root.classList.contains('cinema-open'))return;
   if(matchMedia('(max-width:600px)').matches && !mobileFxEnabled){initFx(true);return;}
   fx.particles?.burst();
 });
@@ -293,12 +293,34 @@ function updateChapters(index) {
   });
 }
 journey=mountJourney(scenes,text.journey,{onChange(){sceneIndex=-1;measureScenes();queue();}});
+let cinemaPromise;
+async function openStory(id, trigger=null){
+  trigger?.setAttribute('aria-busy','true');
+  try {
+    cinemaPromise ||= import('./project-cinema.mjs').then(m=>m.mountCinema(text.cinema)).catch(error=>{cinemaPromise=null;throw error;});
+    const cinema=await cinemaPromise;
+    if(location.hash!=='#'+id)return;
+    if(cinema)cinema.open(id,trigger);
+    else {const fallback=document.getElementById(id);if(fallback){fallback.open=true;fallback.scrollIntoView();}}
+  } catch {const fallback=document.getElementById(id);if(fallback&&location.hash==='#'+id){fallback.open=true;fallback.scrollIntoView();}}
+  finally {trigger?.removeAttribute('aria-busy');}
+}
+document.addEventListener('click',event=>{
+  const link=event.target.closest?.('[data-story-trigger]');
+  if(!link||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();if(location.hash!==link.hash)history.pushState(null,'',link.hash);openStory(link.hash.slice(1),link);
+});
+if(location.hash.startsWith('#story-'))openStory(location.hash.slice(1));
+addEventListener('portfolio:cinema',event=>{
+  const still=event.detail.open||reduce||fx.still||root.classList.contains('cinema-open');
+  fx.world?.setReduced(still);fx.particles?.setReduced(still);fx.scenes.forEach(scene=>scene.setReduced(still));
+});
 updateChapters(journey.index);
 addEventListener('portfolio:motion', () => {
-  fx.world?.setReduced(reduce || fx.still);
-  fx.particles?.setReduced(reduce || fx.still);
-  fx.scenes.forEach(scene => scene.setReduced(reduce || fx.still));
-  replayButton.disabled = reduce || fx.still;
+  fx.world?.setReduced(reduce || fx.still || root.classList.contains('cinema-open'));
+  fx.particles?.setReduced(reduce || fx.still || root.classList.contains('cinema-open'));
+  fx.scenes.forEach(scene => scene.setReduced(reduce || fx.still || root.classList.contains('cinema-open')));
+  replayButton.disabled = reduce || fx.still || root.classList.contains('cinema-open');
 });
 function initFx(enableMobile = false) {
   const compact = matchMedia('(max-width:600px)').matches;
@@ -310,7 +332,7 @@ function initFx(enableMobile = false) {
   mobileFxEnabled = compact;
   replayButton.textContent = chapterCopy[1];
   import('./fx/particles.js').then(module => {
-    fx.particles = module.mountParticles($('#particles'), { reduced: reduce, compact, shapes: scenes.map(scene => scene.shape) });
+    fx.particles = module.mountParticles($('#particles'), { reduced: reduce || root.classList.contains('cinema-open'), compact, shapes: scenes.map(scene => scene.shape) });
     if (!fx.particles) { replayButton.hidden=true; return; }
     if(fx.still)fx.particles.setReduced(true);
     $('.hero-art').classList.add('canvas-ready');
@@ -330,7 +352,7 @@ function initFx(enableMobile = false) {
     let samples = [], previous = 0, settle = 0, probeId = 0, finished = false;
     const probe = now => {
       probeId = 0;
-      if (finished || fx.still || reduce || document.hidden) { previous = 0; samples = []; return; }
+      if (finished || fx.still || reduce || document.hidden || root.classList.contains('cinema-open')) { previous = 0; samples = []; return; }
       else if (previous && ++settle > 45) samples.push(now - previous);
       previous = now;
       if (samples.length >= 40) {
@@ -347,10 +369,11 @@ function initFx(enableMobile = false) {
     const syncProbe = () => {
       if (probeId) cancelAnimationFrame(probeId);
       probeId=0; previous=0; samples=[];
-      if (!finished && !fx.still && !reduce && !document.hidden) probeId=requestAnimationFrame(probe);
+      if (!finished && !fx.still && !reduce && !document.hidden && !root.classList.contains('cinema-open')) probeId=requestAnimationFrame(probe);
     };
     document.addEventListener('visibilitychange',syncProbe);
     addEventListener('portfolio:motion',syncProbe);
+    addEventListener('portfolio:cinema',syncProbe);
     syncProbe();
     if (!('IntersectionObserver' in window)) return;
     const watcher = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -369,7 +392,7 @@ function initProjects(){if(projectsLoaded)return;projectsLoaded=true;
       let scene=byCanvas.get(entry.target);
       if(entry.isIntersecting&&!scene){
         const accent=getComputedStyle(entry.target).getPropertyValue('--art-color').trim()||'#55c5ff';
-        scene=module.mountScene(entry.target,entry.target.dataset.scene,{reduced:reduce||fx.still,accent});
+        scene=module.mountScene(entry.target,entry.target.dataset.scene,{reduced:reduce||fx.still||root.classList.contains('cinema-open'),accent});
         byCanvas.set(entry.target,scene);fx.scenes.push(scene);entry.target.classList.add('ready');
       }
       scene?.setActive(entry.isIntersecting);

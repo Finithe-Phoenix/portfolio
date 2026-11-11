@@ -261,7 +261,7 @@
     "source": "Explore source",
     "demo": "Open live demo",
     "evidence": "Go deeper",
-    "hint": "Keep scrolling — the gallery moves",
+    "hint": "Choose a project · explore its four scenes",
     "deep": "Three deep dives",
     "cursorOpen": "Open",
     "galleryLabel": "Project gallery"
@@ -299,7 +299,33 @@
           "url": "https://github.com/Finithe-Phoenix/prisma/tree/main/docs"
         }
       ],
-      "scene": "translator"
+      "scene": "translator",
+      "story": {
+        "nodes": [
+          "x86_64",
+          "IR",
+          "ARM64",
+          "Runtime"
+        ],
+        "beats": [
+          {
+            "title": "Code outside its world",
+            "text": "How can a binary built for one instruction set run on another and behave exactly the same?"
+          },
+          {
+            "title": "An intermediate language",
+            "text": "A staged pipeline: decoding, an intermediate representation, optimization, emission and runtime. Each boundary can be inspected and tested on its own."
+          },
+          {
+            "title": "Speed meets correctness",
+            "text": "Translation speed competes with correctness and compatibility. Staging makes validation explicit, at the cost of intermediate structures and more engineering."
+          },
+          {
+            "title": "An engine in evolution",
+            "text": "A public translation pipeline, a formal specification area in Lean 4 and an ongoing Rust migration. An evolving research project."
+          }
+        ]
+      }
     },
     {
       "id": "fleet",
@@ -318,7 +344,33 @@
       "name": "Quality Automation Fleet",
       "status": "Open framework",
       "summary": "71 AI agents, 42 skills and 15 test suites with one goal — real coverage of at least 90% — orchestrated end to end with Jenkins.",
-      "number": "02"
+      "number": "02",
+      "story": {
+        "nodes": [
+          "Request",
+          "Agents",
+          "Suites",
+          "Gate"
+        ],
+        "beats": [
+          {
+            "title": "One prompt is not a strategy",
+            "text": "Quality work spans many specialties. A single prompt cannot explain how all of them coordinate."
+          },
+          {
+            "title": "Specialists with a shared workflow",
+            "text": "The repository groups specialized agents, reusable skills and test suites into an orchestrated workflow."
+          },
+          {
+            "title": "A test must earn trust",
+            "text": "Generated tests still need explicit gates and review. A coverage goal is not proof that a system has achieved it."
+          },
+          {
+            "title": "An open framework to inspect",
+            "text": "Explore the framework and its documentation. This story illustrates its structure; it does not claim an independently measured coverage result."
+          }
+        ]
+      }
     },
     {
       "id": "novapay",
@@ -337,7 +389,33 @@
       "name": "NovaPay testing lab",
       "status": "Teaching lab · fictional domain",
       "summary": "A transfer service built to exercise the whole testing pyramid: tiered fees, idempotency, a six-state machine and a simulated mainframe core.",
-      "number": "03"
+      "number": "03",
+      "story": {
+        "nodes": [
+          "Request",
+          "Rules",
+          "State",
+          "Mock core"
+        ],
+        "beats": [
+          {
+            "title": "Make the edge cases visible",
+            "text": "A transfer service has more to explain than a successful request: fees, retries and state changes matter."
+          },
+          {
+            "title": "Follow the transfer lifecycle",
+            "text": "The teaching lab combines tiered fees, idempotency, a six-state machine and a simulated mainframe core."
+          },
+          {
+            "title": "The core is a simulation",
+            "text": "A fictional domain makes failure scenarios approachable. It is not evidence of a live payment integration."
+          },
+          {
+            "title": "A laboratory you can inspect",
+            "text": "Inspect the source and testing exercises. The value of this lab is making important boundaries visible and testable."
+          }
+        ]
+      }
     },
     {
       "id": "clinic",
@@ -371,7 +449,33 @@
           "url": "https://github.com/Finithe-Phoenix/PulmonogyClinic/blob/main/docs/VALIDATION.md"
         }
       ],
-      "scene": "clinic"
+      "scene": "clinic",
+      "story": {
+        "nodes": [
+          "Agenda",
+          "Inventory",
+          "Purchasing",
+          "Audit"
+        ],
+        "beats": [
+          {
+            "title": "A clinic is a connected system",
+            "text": "Clinic operations cross several boundaries: scheduling, stock, purchasing and accountability. How do you connect them without losing control?"
+          },
+          {
+            "title": "Separate exploration from authority",
+            "text": "A public demo and a separate authenticated portal and API. Inventory and purchasing model explicit state changes, permissions and audit records."
+          },
+          {
+            "title": "Convenience has a boundary",
+            "text": "Browser-local demo data makes exploring effortless, but cannot offer shared persistence or server authorization. The private API covers that path."
+          },
+          {
+            "title": "A bounded product demonstration",
+            "text": "Documented demo workflows and a local authenticated portal. All demo data is synthetic; production identity and deployment are separate work."
+          }
+        ]
+      }
     },
     {
       "id": "nexus",
@@ -389,7 +493,33 @@
       "name": "NEXUS ONE",
       "status": "Live demo · synthetic data",
       "summary": "A multi-operator SIM and eSIM operations cockpit: inventory, wallet, credit, sales and commissions, with an executive story mode.",
-      "number": "05"
+      "number": "05",
+      "story": {
+        "nodes": [
+          "Operator",
+          "SIM/eSIM",
+          "Wallet",
+          "Operation"
+        ],
+        "beats": [
+          {
+            "title": "Make operations understandable",
+            "text": "Inventory, balances and sales become difficult to follow when their context is scattered."
+          },
+          {
+            "title": "Connect the operational view",
+            "text": "The public demo connects SIM/eSIM operations, wallet, credit, sales and commissions in an exploratory cockpit."
+          },
+          {
+            "title": "A cockpit is not a live operator",
+            "text": "The operating view uses synthetic data. Its interface does not establish a connection to a real telecommunications operator."
+          },
+          {
+            "title": "Explore the synthetic workflow",
+            "text": "Open the demonstration or inspect the repository. Follow the operational story while keeping its simulated scope in view."
+          }
+        ]
+      }
     },
     {
       "id": "chadwallet",
@@ -408,7 +538,33 @@
       "name": "ChadWallet terminal",
       "status": "Live demo · no real trades",
       "summary": "A Solana social-trading landing page and terminal: trending tokens, live charts, an order ticket and positions, with safe demo data by default.",
-      "number": "06"
+      "number": "06",
+      "story": {
+        "nodes": [
+          "Token",
+          "Market",
+          "Ticket",
+          "Demo"
+        ],
+        "beats": [
+          {
+            "title": "A market needs context",
+            "text": "A trading interface needs to connect discovery, context and the actions a user is considering."
+          },
+          {
+            "title": "Bring the terminal together",
+            "text": "The assignment demo brings token discovery, charts, an order ticket and positions into a single terminal."
+          },
+          {
+            "title": "Demo mode is a deliberate choice",
+            "text": "Safe demo data is the default. Real-data adapters and a trading interface do not mean real trades are executed."
+          },
+          {
+            "title": "Inspect the product and adapters",
+            "text": "Explore the demo and source. The implementation separates the product interface from its data adapters and execution boundary."
+          }
+        ]
+      }
     },
     {
       "id": "playwright",
@@ -427,7 +583,33 @@
       "name": "Playwright in Motion",
       "status": "Open course",
       "summary": "Twelve narrated, animated video lessons — about 87 minutes — with TypeScript, Python and Java test projects and a mainframe terminal simulator.",
-      "number": "07"
+      "number": "07",
+      "story": {
+        "nodes": [
+          "Scenario",
+          "Test",
+          "Trace",
+          "Learning"
+        ],
+        "beats": [
+          {
+            "title": "Turn a concept into a test",
+            "text": "Testing concepts become useful when a learner can connect them to an executable example."
+          },
+          {
+            "title": "Learn by watching it move",
+            "text": "The course combines narrated animation with TypeScript, Python and Java test projects and a terminal simulator."
+          },
+          {
+            "title": "A lesson needs runnable practice",
+            "text": "Watching a lesson and demonstrating competence are different outcomes. The accompanying projects provide a path into practice."
+          },
+          {
+            "title": "Continue into the course",
+            "text": "Explore the course repository and its materials. The story leads from explanation to runnable testing examples."
+          }
+        ]
+      }
     },
     {
       "id": "devops",
@@ -461,7 +643,33 @@
           "url": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso/tree/main/guias"
         }
       ],
-      "scene": "pipeline"
+      "scene": "pipeline",
+      "story": {
+        "nodes": [
+          "Code",
+          "Container",
+          "Deploy",
+          "Observe"
+        ],
+        "beats": [
+          {
+            "title": "Tools become a delivery story",
+            "text": "Teaching tools in isolation hides how software actually becomes an operated service."
+          },
+          {
+            "title": "One application through the lifecycle",
+            "text": "One application travels from source control through containers, delivery automation, orchestration, monitoring and security, with bilingual guides and debugging exercises."
+          },
+          {
+            "title": "Reproducibility over complexity",
+            "text": "A coherent learning path favors a small, reproducible environment over the full complexity of a production platform. Intentional failures make the limits teachable."
+          },
+          {
+            "title": "Knowledge others can run",
+            "text": "A four-day curriculum with application examples, deployment manifests, instructor material and troubleshooting exercises."
+          }
+        ]
+      }
     }
   ],
   "lab": {
@@ -662,5 +870,29 @@
     "nextProject": "Next project →",
     "effects": "Enable cinematic effects",
     "replay": "Rebuild sculpture"
+  },
+  "cinema": {
+    "open": "Explore the story",
+    "tag": "4 scenes · interactive",
+    "label": "Project cinema",
+    "close": "Close story",
+    "previous": "Previous scene",
+    "next": "Next scene",
+    "play": "Play story",
+    "pause": "Pause story",
+    "source": "View source",
+    "demo": "Open demo",
+    "case": "Read the full case",
+    "previousProject": "Previous project",
+    "nextProject": "Next project",
+    "acts": [
+      "The challenge",
+      "The decision",
+      "The tradeoff",
+      "The evidence"
+    ],
+    "note": "Illustrative system map · narrative based on the public repository",
+    "all": "Eight project stories",
+    "act": "Scene"
   }
 }

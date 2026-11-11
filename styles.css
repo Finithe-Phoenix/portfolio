@@ -564,6 +564,17 @@ html.guided main>section[id],html.guided main>.marquee,html.guided main>.manifes
 html.guided[data-chapter=top] #top,html.guided[data-chapter=impact] #impact,html.guided[data-chapter=experience] #experience,html.guided[data-chapter=ai] #ai,html.guided[data-chapter=work] #work,html.guided[data-chapter=lab] #lab,html.guided[data-chapter=about] #about,html.guided[data-chapter=contact] #contact{display:block}
 html.guided[data-chapter=impact] main>.marquee,html.guided[data-chapter=impact] main>.manifesto{display:block}
 .sculpture-replay{display:none}.js .sculpture-replay{display:block}
+.project-card{display:flex;flex-direction:column}.project-card .project-open{height:auto;flex:1}
+.project-story-link{display:flex;align-items:center;gap:14px;min-height:60px;padding:14px 22px;background:#0d1d30;border:1px solid #36536b;border-top:0;color:#bce7ff;font:12px var(--mono);border-radius:0 0 6px 6px}
+.project-story-link small{margin-left:auto;color:#b0c5d7;font-size:10px}.project-story-link b{color:#ff5668}
+.project-story-link:hover,.project-story-link:focus-visible{background:#172e45;border-color:#55c5ff}
+.project-stories{margin-top:45px}.project-stories>h3{font-size:20px;margin-bottom:20px}
+.project-story{border-bottom:1px solid #2c4359;padding:16px 0;scroll-margin-top:96px}.project-story summary{cursor:pointer;min-height:44px;color:#bce7ff;font-size:14px}
+.story-content{max-width:850px;padding:12px 0 24px}.story-content section{margin:25px 0}.story-content h4{font-size:23px;margin:8px 0}.story-content p{font-size:14px;line-height:1.8;color:#c2d2df}
+.story-nodes{display:flex;gap:24px;flex-wrap:wrap;padding-left:20px;color:#9cddff;font:11px var(--mono)}.story-sources{display:flex;flex-wrap:wrap;gap:25px}
+@media(max-width:600px){.project-story-link{padding:14px;font-size:11px;gap:8px}.project-story-link small{font-size:9px}}
+@media(max-width:900px){html:not(.js) .site-header{position:relative}}
+html:not(.js){scroll-behavior:auto}
 .js .motion-toggle[hidden]{display:block!important;visibility:hidden}
 @media(min-width:1101px){.motion-toggle{width:160px}.sculpture-replay{min-width:230px}}
 h1 .ch,h1 .line-em>span,.hero-enter{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}

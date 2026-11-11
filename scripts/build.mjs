@@ -33,8 +33,9 @@ function page(t, locale) {
     const internal = Boolean(p.problem);
     const href = internal ? '#case-' + p.id : (p.demo || p.repo);
     const label = internal ? `${esc(t.work.explore)} ${esc(p.name)}` : `${esc(p.name)} — ${esc(p.demo ? t.work.demo : t.work.source)}`;
-    return `<article class="project-card art-${p.color}"><a class="project-open" href="${esc(href)}"${internal ? '' : ' target="_blank" rel="noopener noreferrer"'} data-cursor="${esc(t.work.cursorOpen)}"><div class="project-art" aria-hidden="true"><div class="art-grid"></div><span class="art-ghost">${p.number}</span><canvas class="scene" data-scene="${p.scene}"></canvas></div><div class="project-copy"><div class="project-meta"><span>${p.number} / ${esc(p.category)}</span><span class="project-status">${esc(p.status)}</span></div><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p>${tags(p.stack)}<span class="read-case">${label} <span aria-hidden="true">${internal ? '→' : '↗'}</span></span></div></a></article>`;
+    return `<article class="project-card art-${p.color}"><a class="project-open" href="${esc(href)}"${internal ? '' : ' target="_blank" rel="noopener noreferrer"'} data-cursor="${esc(t.work.cursorOpen)}"><div class="project-art" aria-hidden="true"><div class="art-grid"></div><span class="art-ghost">${p.number}</span><canvas class="scene" data-scene="${p.scene}"></canvas></div><div class="project-copy"><div class="project-meta"><span>${p.number} / ${esc(p.category)}</span><span class="project-status">${esc(p.status)}</span></div><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p>${tags(p.stack)}<span class="read-case">${label} <span aria-hidden="true">${internal ? '→' : '↗'}</span></span></div></a><a class="project-story-link" href="#story-${p.id}" data-story-trigger><span>${esc(t.cinema.open)}</span><small>${esc(t.cinema.tag)}</small><b aria-hidden="true">▶</b></a></article>`;
   }).join('');
+  const stories = t.projects.map(p => `<details class="project-story" id="story-${p.id}" data-kind="${p.scene}" data-color="${p.color}"><summary>${esc(p.name)} · ${esc(t.cinema.open)}</summary><div class="story-content"><p class="story-status">${esc(p.status)}</p><ol class="story-nodes">${p.story.nodes.map(n => `<li>${esc(n)}</li>`).join('')}</ol>${p.story.beats.map((b,i) => `<section data-beat><p class="eyebrow">${esc(t.cinema.acts[i])}</p><h4>${esc(b.title)}</h4><p>${esc(b.text)}</p></section>`).join('')}<div class="story-sources">${external(p.repo, esc(t.cinema.source))}${p.demo ? external(p.demo, esc(t.cinema.demo)) : ''}${p.problem ? `<a href="#case-${p.id}">${esc(t.cinema.case)}</a>` : ''}</div></div></details>`).join('');
   const total = String(t.projects.length).padStart(2, '0');
   const cases = t.projects.filter(p => p.problem).map(p => `<details class="case-study" id="case-${p.id}"><summary><span class="case-index">${p.number}</span><span><small>${esc(p.category)}</small><strong>${esc(p.name)}</strong></span><span class="case-plus" aria-hidden="true">+</span></summary><div class="case-body"><p class="case-status">${esc(p.status)}</p><div class="case-grid">${['problem', 'approach', 'tradeoff', 'outcome', 'lesson'].map(k => `<section><h4>${esc(t.work.sections[k])}</h4><p>${esc(p[k])}</p></section>`).join('')}</div><div class="case-links">${external(p.repo, esc(t.work.source))}${p.demo ? external(p.demo, esc(t.work.demo)) : ''}</div><div class="evidence"><span>${esc(t.work.evidence)}</span>${p.evidence.map(e => external(e.url, esc(e.label))).join('')}</div></div></details>`).join('');
   const n = t.lab.nodes, sc = t.lab.scenarios.healthy;
@@ -43,7 +44,7 @@ function page(t, locale) {
     .map(([cls, d]) => `<path d="${d}" class="route ${cls}"/><path d="${d}" pathLength="100" class="pulse ${cls}"/>`).join('');
   const principles = t.about.principles.map((p, i) => `<article class="reveal" style="--i:${i}"><span>${String(i + 1).padStart(2, '0')}</span><div><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`).join('');
   const credentials = t.about.credentials.map((c, i) => `<article class="reveal" style="--i:${i}"><span>${esc(c.label)}</span><h3>${esc(c.title)}</h3><p>${esc(c.text)}</p></article>`).join('');
-  const clientData = JSON.stringify({ journey:t.journey, motionOn: t.ui.motionOn, motionReduced: t.ui.motionReduced, motionAriaOn: t.ui.motionAriaOn, motionAriaReduced: t.ui.motionAriaReduced, scenarios: t.lab.scenarios }).replace(/</g, '\\u003c');
+  const clientData = JSON.stringify({ cinema:t.cinema, journey:t.journey, motionOn: t.ui.motionOn, motionReduced: t.ui.motionReduced, motionAriaOn: t.ui.motionAriaOn, motionAriaReduced: t.ui.motionAriaReduced, scenarios: t.lab.scenarios }).replace(/</g, '\\u003c');
   const resume = `<a class="text-link" href="profile.html">${esc(t.contact.resume)} ${arrow}</a>`;
   return `<!doctype html>
 <html lang="${t.lang}"><head>
@@ -60,7 +61,7 @@ function page(t, locale) {
 <link rel="canonical" href="${url}">${alternates}
 <link rel="icon" href="${base}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="${base}styles.css">
 <title>${esc(t.meta.title)}</title>
-<script>document.documentElement.classList.add('js');try{if(sessionStorage.getItem('dg-view')!=='all'){document.documentElement.classList.add('guided');let id=location.hash.slice(1);document.documentElement.dataset.chapter=id.startsWith('case-')?'work':(['top','impact','experience','ai','work','lab','about','contact'].includes(id)?id:'top')}}catch{document.documentElement.classList.add('guided');document.documentElement.dataset.chapter='top'}</script>
+<script>document.documentElement.classList.add('js');try{if(sessionStorage.getItem('dg-view')!=='all'){document.documentElement.classList.add('guided');let id=location.hash.slice(1);document.documentElement.dataset.chapter=(id.startsWith('case-')||id.startsWith('story-'))?'work':(['top','impact','experience','ai','work','lab','about','contact'].includes(id)?id:'top')}}catch{document.documentElement.classList.add('guided');document.documentElement.dataset.chapter='top'}</script>
 <script type="application/json" id="i18n">${clientData}</script><script src="${base}script.js" type="module"></script>
 </head><body>
 <a class="skip-link" href="#main">${esc(t.ui.skip)}</a>
@@ -98,7 +99,7 @@ ${sectionHead('work-title', t.work.eyebrow, t.work.title, t.work.lead)}</div>
 <div class="gallery"><div class="gallery-sticky"><div class="gallery-track" role="region" aria-label="${esc(t.work.galleryLabel)}" tabindex="0">${cards}</div>
 <div class="gallery-bar wrap" aria-hidden="true"><span class="gallery-hint">${esc(t.work.hint)}</span><i class="gallery-line"><i></i></i><span class="gallery-count"><b>01</b> / ${total}</span></div></div></div>
 <div class="wrap"><h3 class="deep-title reveal">${esc(t.work.deep)}</h3>
-<div class="case-studies" role="region" aria-label="${esc(t.work.casesLabel)}">${cases}</div></div></section>
+<div class="case-studies" role="region" aria-label="${esc(t.work.casesLabel)}">${cases}</div><div class="project-stories"><h3>${esc(t.cinema.all)}</h3>${stories}</div></div></section>
 <section id="lab" class="thinking-section section-space" aria-labelledby="lab-title"><div class="wrap">
 ${sectionHead('lab-title', t.lab.eyebrow, t.lab.title, t.lab.lead)}
 <div class="lab reveal"><div class="lab-top"><span><i class="status-dot" aria-hidden="true"></i> ${esc(t.lab.topLeft)}</span><span>${esc(t.lab.topRight)}</span></div>
@@ -144,6 +145,6 @@ for (const locale of site.locales) {
 }
 await writeFile(new URL('sitemap.xml', root), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${outputs.map(o => `<url><loc>${site.siteUrl}${o.replace(/index\.html$/, '')}</loc></url>`).join('')}</urlset>`);
 await mkdir(new URL('dist/', root), { recursive: true });
-for (const path of [...outputs, 'styles.css', 'script.js', 'journey.mjs', 'lab.mjs', 'fx', 'profile.css', 'profile.js', 'sitemap.xml', '.nojekyll', 'assets']) await cp(new URL(path, root), new URL('dist/' + path, root), { recursive: true });
+for (const path of [...outputs, 'styles.css', 'cinema.css', 'script.js', 'journey.mjs', 'project-cinema.mjs', 'lab.mjs', 'fx', 'profile.css', 'profile.js', 'sitemap.xml', '.nojekyll', 'assets']) await cp(new URL(path, root), new URL('dist/' + path, root), { recursive: true });
 await writeFile(new URL('dist/release.json', root), JSON.stringify({ revision: process.env.GITHUB_SHA || 'local', name: 'Daniel Gonzalez portfolio' }));
 console.log(`Built ${outputs.length} pages for ${site.locales.length} locales → dist/`);

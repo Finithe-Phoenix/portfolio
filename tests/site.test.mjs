@@ -56,6 +56,9 @@ test('critical content is server-rendered in every language',async()=>{
   assert.equal(count(html,/<article class="project-card /g),8);
   assert.equal(count(html,/<canvas class="scene" data-scene="/g),8);
   assert.equal(count(html,/class="case-study"/g),3);
+  assert.equal(count(html,/class="project-story"/g),8);
+  assert.equal(count(html,/data-story-trigger/g),8);
+  assert.equal(count(html,/<section data-beat>/g),32);
   assert.equal(count(html,/class="evidence"/g),3);
   assert.equal(count(html,/class="tl-item /g),5);
   assert.equal(count(html,/data-count="/g),6);
@@ -86,7 +89,7 @@ test('motion never hides content without JavaScript and honours reduced motion',
  assert.ok(!/(^|[},\n])\.manifesto-text span\{[^}]*opacity:\.\d/.test(css),'Manifesto dimmed before JS');
 });
 test('static delivery stays within source budgets',async()=>{
- const budgets={'index.html':62000,'es/index.html':64000,'pt/index.html':64000,'styles.css':56000,'script.js':28000,'lab.mjs':2000,'fx/world.js':60000,'fx/scenes.js':90000,'fx/particles.js':60000};
+ const budgets={'index.html':62000,'es/index.html':64000,'pt/index.html':64000,'styles.css':56000,'cinema.css':9000,'project-cinema.mjs':12000,'script.js':28000,'lab.mjs':2000,'fx/world.js':60000,'fx/scenes.js':90000,'fx/particles.js':60000};
  for(const [path,max] of Object.entries(budgets))assert.ok((await stat(resolve(root,path))).size<max,path+' exceeds budget');
 });
 test('the published effects folder contains only the three effect modules',async()=>{

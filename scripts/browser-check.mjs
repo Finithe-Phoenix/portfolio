@@ -95,6 +95,15 @@ try{
  await staticPage.locator('#case-clinic summary').click();
  assert.ok(await staticPage.locator('#case-clinic .case-body').isVisible());
  check('No-JavaScript mobile content, navigation and case studies usable');
+ const mobileFx=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,reducedMotion:'no-preference'});
+ const mobileFxPage=await mobileFx.newPage();
+ await mobileFxPage.goto(base);
+ await mobileFxPage.locator('html.fx-done').waitFor({state:'attached'});
+ assert.equal(await mobileFxPage.locator('html.world-ready').count(),0,'Mobile must not initialize WebGL before opt-in');
+ await mobileFxPage.locator('.sculpture-replay').click();
+ await mobileFxPage.locator('html.particles-ready').waitFor({state:'attached'});
+ await mobileFx.close();
+ check('Mobile defers the cinematic engine until the visitor enables it');
  await noJS.close();
  const limited=await browser.newContext({viewport:{width:390,height:844}});
  await limited.addInitScript(()=>{

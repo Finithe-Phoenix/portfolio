@@ -43,6 +43,7 @@ Target rendering: about 60fps on the desktop reference; record measured frame du
 
 Reduced motion: OS preference always wins. Preference changes apply during the session. Storage-denied browsers continue without persistence.
 The quality governor now pauses its sampling loop when the page is hidden or motion is reduced, and freezes all three effect layers if low resolution is still too slow. Native wheel navigation is preserved; the previous wheel interception has been removed.
+On compact screens, the static scene renders first. A localized control enables the cinematic engine explicitly; desktop starts it after the first paint. This avoids compiling multiple graphics contexts during the initial mobile load.
 No JavaScript: all editorial content, navigation, native details and profile remain accessible; lab remains an explained diagram.
 Canvas unavailable: static SVG remains visible.
 Deep links open their relevant case after reload. Native summaries retain keyboard interaction.

@@ -311,7 +311,12 @@ const chapterLinks = scenes.map((scene,index) => {
 const replayButton=document.createElement('button');
 replayButton.className='sculpture-replay';
 replayButton.textContent=chapterCopy[1]; replayButton.disabled=reduce;
-replayButton.addEventListener('click',()=>{if(!reduce&&!fx.still)fx.particles?.burst();});
+let mobileFxEnabled = false;
+replayButton.addEventListener('click',()=>{
+  if(reduce || fx.still)return;
+  if(matchMedia('(max-width:600px)').matches && !mobileFxEnabled){initFx(true);return;}
+  fx.particles?.burst();
+});
 document.querySelector('.hero-actions').append(replayButton);
 document.body.append(chapterNav);
 function updateChapters(index) {
@@ -327,8 +332,15 @@ addEventListener('portfolio:motion', () => {
   fx.scenes.forEach(scene => scene.setReduced(reduce || fx.still));
   replayButton.disabled = reduce || fx.still;
 });
-function initFx() {
+function initFx(enableMobile = false) {
   const compact = matchMedia('(max-width:600px)').matches;
+  if(compact && !enableMobile){
+    root.classList.add('fx-done');
+    replayButton.textContent = root.lang.startsWith('es') ? 'Activar efectos cinematográficos' : root.lang.startsWith('pt') ? 'Ativar efeitos cinematográficos' : 'Enable cinematic effects';
+    return;
+  }
+  mobileFxEnabled = compact;
+  replayButton.textContent = chapterCopy[1];
   import('./fx/particles.js').then(module => {
     fx.particles = module.mountParticles($('#particles'), { reduced: reduce, compact, shapes: scenes.map(scene => scene.shape) });
     if (!fx.particles) { replayButton.hidden=true; return; }

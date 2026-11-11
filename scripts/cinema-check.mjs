@@ -87,4 +87,3 @@ try{
  assert.ok(await plainPage.locator('#story-novapay .story-sources a').first().isVisible());
  await plain.close();console.log('PASS project stories and sources work without JavaScript');
 }finally{await writeFile('test-results/cinema-report.json',JSON.stringify(results,null,2));await browser.close();await new Promise(r=>server.close(r));}
-

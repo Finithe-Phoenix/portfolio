@@ -62,4 +62,3 @@ html.cinema-open{overflow:hidden}
 @media(max-width:360px){.cinema-brand{display:none}.cinema-frame{inset:18% 12% 28%}.cinema-controls{padding-inline:10px;gap:5px}}
 html[data-motion=reduce] .cinema *,html[data-motion=reduce] .cinema *:before,html[data-motion=reduce] .cinema *:after{transition:none!important}
 @media(prefers-reduced-motion:reduce){.cinema *,.cinema *:before,.cinema *:after{transition:none!important}}
-

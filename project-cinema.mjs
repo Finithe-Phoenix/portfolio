@@ -132,4 +132,3 @@ export async function mountCinema(copy) {
  window.addEventListener('popstate',restore);window.addEventListener('hashchange',restore);
  return {open};
 }
-

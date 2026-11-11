@@ -6,6 +6,7 @@ Concept: Clarity through complexity.
 Midnight black, electric blue and signal red. Geometric sans-serif typography, illuminated edges and a procedural grid inspired by TRON Legacy. Three reading depths: hero overview, project summary, expandable evidence.
 
 Scenes:
+0. Optical gateways: three segmented red/blue arcs rendered analytically in the existing world pass. Eight keyboard-accessible chapter anchors follow the scene index; sculpture replay respects both user motion preference and the quality governor.
 1. Hero: scattered points assemble into a latitude/longitude sphere, light pulses travel its rings and meridians, points yield to the pointer, and the sphere settles toward a lattice on scroll. Clicking replays the assembly.
 2. Impact counters, a technology marquee and a career timeline whose line fills with scroll.
 3. Applied-AI pipeline: seven stages light in sequence beside nineteen agent indicators.
@@ -41,6 +42,7 @@ Target: LCP <=2.5s, CLS <=0.1; synthetic event-duration samples <=200ms. Field I
 Target rendering: about 60fps on the desktop reference; record measured frame durations rather than claiming all devices achieve that.
 
 Reduced motion: OS preference always wins. Preference changes apply during the session. Storage-denied browsers continue without persistence.
+The quality governor now pauses its sampling loop when the page is hidden or motion is reduced, and freezes all three effect layers if low resolution is still too slow. Native wheel navigation is preserved; the previous wheel interception has been removed.
 No JavaScript: all editorial content, navigation, native details and profile remain accessible; lab remains an explained diagram.
 Canvas unavailable: static SVG remains visible.
 Deep links open their relevant case after reload. Native summaries retain keyboard interaction.

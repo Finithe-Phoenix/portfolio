@@ -287,42 +287,52 @@ function stage(y) {
   }
   const frames = Math.floor(y / 4.2), pad = value => String(value).padStart(2, '0');
   hudTime.textContent = pad(Math.floor(frames / 86400) % 100) + ':' + pad(Math.floor(frames / 1440) % 60) + ':' + pad(Math.floor(frames / 24) % 60) + ':' + pad(frames % 24);
-  if (index !== sceneIndex) { sceneIndex = index; hudScene.textContent = 'SCENE ' + pad(index + 1) + ' / ' + scenes[index].id.toUpperCase(); }
+  if (index !== sceneIndex) { sceneIndex = index; hudScene.textContent = 'SCENE ' + pad(index + 1) + ' / ' + scenes[index].id.toUpperCase(); updateChapters(index); }
 }
 addEventListener('resize', measureScenes);
 addEventListener('load', () => { measureScenes(); queue(); });
 if ('ResizeObserver' in window) new ResizeObserver(() => { measureScenes(); queue(); }).observe(document.body);
 measureScenes();
 
-/* Wheel smoothing for notched mouse wheels only; trackpads, touch and keyboards keep native scrolling. */
-let glideTarget = scrollY, glideId = 0, stalled = 0;
-function glide() {
-  const before = scrollY, distance = glideTarget - before;
-  if (Math.abs(distance) < .6 || stalled > 4) { glideId = 0; stalled = 0; return; }
-  scrollTo({ top: before + distance * .13, behavior: 'instant' });
-  stalled = Math.abs(scrollY - before) < .05 ? stalled + 1 : 0;
-  glideId = requestAnimationFrame(glide);
-}
-addEventListener('wheel', event => {
-  if (reduce || !finePointer.matches || event.ctrlKey || event.deltaMode !== 0 || Math.abs(event.deltaY) < 50 || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-  event.preventDefault();
-  if (!glideId) glideTarget = scrollY;
-  glideTarget = clamp(glideTarget + event.deltaY, 0, root.scrollHeight - innerHeight);
-  if (!glideId) glideId = requestAnimationFrame(glide);
-}, { passive: false });
-
 const moods = { top: 'blue', impact: 'blue', experience: 'ice', ai: 'violet', work: 'blue', lab: 'red', about: 'ice', contact: 'red' };
 const fx = { world: null, particles: null, scenes: [], still: false };
+const chapterCopy = root.lang.startsWith('es') ? ['Capítulos','Reconstruir escultura'] : root.lang.startsWith('pt') ? ['Capítulos','Reconstruir escultura'] : ['Chapters','Rebuild sculpture'];
+const chapterNav = document.createElement('nav');
+chapterNav.className = 'scene-dock';
+chapterNav.setAttribute('aria-label', chapterCopy[0]);
+const chapterLinks = scenes.map((scene,index) => {
+  const heading = document.querySelector('#'+scene.id+' h1, #'+scene.id+' h2');
+  const label = heading?.getAttribute('aria-label') || heading?.textContent.trim() || scene.id;
+  const link=document.createElement('a');
+  link.href='#'+scene.id; link.setAttribute('aria-label', label);
+  link.title=label; link.textContent=String(index+1).padStart(2,'0');
+  chapterNav.append(link); return link;
+});
+const replayButton=document.createElement('button');
+replayButton.className='sculpture-replay';
+replayButton.textContent=chapterCopy[1]; replayButton.disabled=reduce;
+replayButton.addEventListener('click',()=>{if(!reduce&&!fx.still)fx.particles?.burst();});
+document.querySelector('.hero-actions').append(replayButton);
+document.body.append(chapterNav);
+function updateChapters(index) {
+  chapterLinks.forEach((link,i)=>{
+    if(i===index)link.setAttribute('aria-current','step');
+    else link.removeAttribute('aria-current');
+  });
+}
+updateChapters(Math.max(0,sceneIndex));
 addEventListener('portfolio:motion', () => {
   fx.world?.setReduced(reduce || fx.still);
-  fx.particles?.setReduced(reduce);
-  fx.scenes.forEach(scene => scene.setReduced(reduce));
+  fx.particles?.setReduced(reduce || fx.still);
+  fx.scenes.forEach(scene => scene.setReduced(reduce || fx.still));
+  replayButton.disabled = reduce || fx.still;
 });
 function initFx() {
   const compact = matchMedia('(max-width:600px)').matches;
   import('./fx/particles.js').then(module => {
     fx.particles = module.mountParticles($('#particles'), { reduced: reduce, compact, shapes: scenes.map(scene => scene.shape) });
-    if (!fx.particles) return;
+    if (!fx.particles) { replayButton.hidden=true; return; }
+    if(fx.still)fx.particles.setReduced(true);
     $('.hero-art').classList.add('canvas-ready');
     root.classList.add('particles-ready');
     stage(scrollY);
@@ -336,24 +346,31 @@ function initFx() {
     root.classList.add('world-ready');
     // Quality governor: sample frame times; a slow device first drops to a quarter of the pixels,
     // then to a still frame. It only ever steps down.
-    let samples = [], previous = 0, settle = 0;
+    let samples = [], previous = 0, settle = 0, probeId = 0, finished = false;
     const probe = now => {
-      if (fx.still) return;
-      if (reduce || document.hidden) { previous = 0; samples = []; }
+      probeId = 0;
+      if (finished || fx.still || reduce || document.hidden) { previous = 0; samples = []; return; }
       else if (previous && ++settle > 45) samples.push(now - previous);
       previous = now;
       if (samples.length >= 40) {
         const median = samples.sort((a, b) => a - b)[20];
         samples = []; settle = 0;
         if (median > 30) {
-          if (!canvas.classList.contains('lite')) canvas.classList.add('lite');
-          else { fx.still = true; fx.world.setReduced(true); return; }
-        } else if (canvas.dataset.checked) return;
+          if (!canvas.classList.contains('lite')) { canvas.classList.add('lite'); root.dataset.quality='lite'; }
+          else { fx.still = true; finished = true; fx.world.setReduced(true); fx.particles?.setReduced(true); fx.scenes.forEach(scene=>scene.setReduced(true)); replayButton.disabled=true; root.dataset.quality='still'; return; }
+        } else if (canvas.dataset.checked) { finished = true; return; }
         canvas.dataset.checked = '1';
       }
-      requestAnimationFrame(probe);
+      probeId = requestAnimationFrame(probe);
     };
-    requestAnimationFrame(probe);
+    const syncProbe = () => {
+      if (probeId) cancelAnimationFrame(probeId);
+      probeId=0; previous=0; samples=[];
+      if (!finished && !fx.still && !reduce && !document.hidden) probeId=requestAnimationFrame(probe);
+    };
+    document.addEventListener('visibilitychange',syncProbe);
+    addEventListener('portfolio:motion',syncProbe);
+    syncProbe();
     if (!('IntersectionObserver' in window)) return;
     const watcher = new IntersectionObserver(entries => entries.forEach(entry => {
       if (entry.isIntersecting) fx.world.setMood(moods[entry.target.id]);
@@ -366,7 +383,7 @@ function initFx() {
     const watcher = new IntersectionObserver(entries => entries.forEach(entry => byCanvas.get(entry.target)?.setActive(entry.isIntersecting)), { threshold: .15 });
     $$('.scene').forEach(canvas => {
       const accent = getComputedStyle(canvas).getPropertyValue('--art-color').trim() || '#55c5ff';
-      const scene = module.mountScene(canvas, canvas.dataset.scene, { reduced: reduce, accent });
+      const scene = module.mountScene(canvas, canvas.dataset.scene, { reduced: reduce || fx.still, accent });
       byCanvas.set(canvas, scene); fx.scenes.push(scene);
       canvas.classList.add('ready');
       watcher.observe(canvas);

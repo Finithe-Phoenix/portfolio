@@ -20,6 +20,7 @@ uniform float uTravel;
 uniform float uScroll;
 uniform float uBoost;
 uniform float uCalm;
+uniform float uPortal;
 uniform vec3 uPrimary;
 uniform vec3 uSecondary;
 uniform vec3 uSignal;
@@ -239,6 +240,21 @@ void main() {
     color += uPrimary * exp(-abs(p.x - vx) * 12.0) * exp(dy * 12.0) * 0.09;
   }
 
+
+  // Nested optical arcs, evaluated in the existing single render pass.
+  vec2 gateway = vec2((p.x-vx)*1.02, dy-0.026);
+  float gateRadius = length(gateway);
+  float gateAngle = atan(gateway.y,gateway.x);
+  float gateVisibility = smoothstep(-0.035,0.04,dy);
+  for (int ring=0; ring<3; ring++) {
+    float layer=float(ring);
+    float distanceToGate=abs(gateRadius-(0.12+layer*0.057));
+    float segment=smoothstep(-0.45,-0.25,sin(gateAngle*(3.0+layer)+phase*(0.9-layer*0.6)));
+    float core=line(distanceToGate,0.00055,px);
+    float halo=exp(-distanceToGate*240.0)*0.16;
+    vec3 gateColor=mix(uPrimary,vec3(1.0,0.12,0.21),step(0.5,mod(layer,2.0)));
+    color+=gateColor*(core*0.55+halo)*segment*gateVisibility*uPortal;
+  }
   // Sparse, drifting motes use one hashed cell per pixel, with soft halos.
   // Periodic drift matches the phase wrap; reduced mode freezes it naturally.
   vec2 dust = p * 24.0 + vec2(sin(phase), cos(phase)) * 0.32;
@@ -264,8 +280,8 @@ void main() {
 const PALETTES = {
   blue: [0.333, 0.773, 1, 0.086, 0.545, 1, 1, 0.325, 0.396],
   red: [1, 0.16, 0.105, 0.78, 0.035, 0.075, 1, 0.48, 0.12],
-  ice: [0.78, 1, 0.94, 0.32, 0.78, 0.76, 0.68, 0.86, 1],
-  violet: [0.80, 0.28, 1, 0.40, 0.085, 0.82, 1, 0.20, 0.59],
+  ice: [0.72, 0.88, 1, 0.16, 0.47, 0.92, 0.55, 0.78, 1],
+  violet: [0.28, 0.65, 1, 0.07, 0.24, 0.62, 1, 0.16, 0.24],
 };
 
 /** Mount a self-sizing, opaque WebGL background; failures are intentionally quiet. */
@@ -298,6 +314,7 @@ export function mountWorld(canvas, options = {}) {
   let pointerY = 0;
   let smoothX = 0;
   let smoothY = 0;
+  let targetPortal = 0.65, portal = targetPortal;
   let targetPalette = PALETTES.blue;
   const palette = new Float32Array(targetPalette);
   const removers = [];
@@ -337,7 +354,7 @@ export function mountWorld(canvas, options = {}) {
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
       bundle.position = gl.getAttribLocation(bundle.program, 'aPosition');
       if (bundle.position < 0) throw new Error();
-      for (const name of ['uResolution', 'uPointer', 'uPhase', 'uTravel', 'uScroll', 'uBoost', 'uCalm', 'uPrimary', 'uSecondary', 'uSignal']) {
+      for (const name of ['uResolution', 'uPointer', 'uPhase', 'uTravel', 'uScroll', 'uBoost', 'uCalm', 'uPortal', 'uPrimary', 'uSecondary', 'uSignal']) {
         bundle.uniforms[name] = gl.getUniformLocation(bundle.program, name);
       }
       gl.disable(gl.DEPTH_TEST);
@@ -378,6 +395,7 @@ export function mountWorld(canvas, options = {}) {
       gl.uniform1f(u.uScroll, reduced ? 0 : Math.tanh(smoothScroll / 2400));
       gl.uniform1f(u.uBoost, reduced ? 0 : boost);
       gl.uniform1f(u.uCalm, reduced ? 1 : 0);
+      gl.uniform1f(u.uPortal, portal);
       gl.uniform3f(u.uPrimary, palette[0], palette[1], palette[2]);
       gl.uniform3f(u.uSecondary, palette[3], palette[4], palette[5]);
       gl.uniform3f(u.uSignal, palette[6], palette[7], palette[8]);
@@ -409,6 +427,7 @@ export function mountWorld(canvas, options = {}) {
     smoothX += (pointerX - smoothX) * ease;
     smoothY += (pointerY - smoothY) * ease;
     for (let i = 0; i < palette.length; i++) palette[i] += (targetPalette[i] - palette[i]) * ease;
+    portal += (targetPortal-portal)*ease;
     phase = (phase + dt) % 48;
     flight = (flight + dt * (1.65 + boost * 15)) % 96;
     size(); // Also catches DPR changes when moving between monitors.
@@ -534,6 +553,8 @@ export function mountWorld(canvas, options = {}) {
     },
     setMood(name) {
       if (disposed || !Object.prototype.hasOwnProperty.call(PALETTES, name)) return;
+      targetPortal = name === 'red' ? 1 : name === 'ice' ? 0.28 : 0.65;
+      if (reduced) portal = targetPortal;
       const next = PALETTES[name];
       if (targetPalette === next) return;
       targetPalette = next;

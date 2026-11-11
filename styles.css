@@ -529,3 +529,13 @@ html.anim .hud{display:block}
   .stats strong{font-size:46px}
 }
 @media print{#particles,.hud{display:none!important}}
+
+.scene-dock{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:36;display:flex;flex-direction:column;gap:5px;padding:8px;background:#050811eb;border:1px solid #23344d;border-radius:3px}
+.scene-dock a{display:grid;place-items:center;min-width:36px;min-height:30px;font:10px var(--mono);color:#acbdd2;border-left:2px solid transparent;transition:color .25s,border-color .25s}
+.scene-dock a[aria-current=step]{color:#95ddff;border-left-color:#ff5365;background:#10243a}
+.scene-dock a:hover{color:#edf6ff}
+.sculpture-replay{min-height:44px;font:11px var(--mono);border-bottom:1px solid #34628c;padding:10px 0;color:#95ddff}
+.sculpture-replay:disabled{opacity:.5;cursor:default}
+h1 .line-em em{color:var(--ice);text-shadow:0 2px 22px #050811}
+@media(max-width:1100px){.scene-dock{display:none}}
+@media print{.scene-dock,.sculpture-replay{display:none!important}}

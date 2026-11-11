@@ -46,6 +46,15 @@ try{
  check('Scroll reveals every section and counters settle on their real values');
  report.performance.desktop=await page.evaluate(()=>({...window.__perf,resources:performance.getEntriesByType('resource').map(r=>({name:new URL(r.name).pathname,bytes:r.transferSize})),navigation:performance.getEntriesByType('navigation')[0].toJSON()}));
  check('Desktop renders without overflow or blocking loader');
+ assert.equal(await page.locator('.scene-dock a').count(),8);
+ await page.locator('.motion-toggle').click();
+ assert.ok(await page.locator('.sculpture-replay').isDisabled());
+ await page.locator('.scene-dock a[href="#about"]').focus();
+ await page.keyboard.press('Enter');
+ await page.waitForFunction(()=>document.querySelector('.scene-dock a[href="#about"]').getAttribute('aria-current')==='step');
+ await page.locator('.motion-toggle').click();
+ await page.goto(base);
+ check('Chapter navigation works by keyboard and reduced motion disables sculpture replay');
  await page.locator('.project-open').first().click();
  assert.equal(await page.locator('#case-prisma').getAttribute('open'),'');
  assert.ok(page.url().endsWith('#case-prisma'));

@@ -4,6 +4,8 @@ Date: 2026-11-10. Branch: feat/epic-motion-i18n.
 
 ## Executed locally
 
+- Continuation from `e9381a4`: ten Node cases pass. Browser coverage now includes chapter navigation by keyboard and the disabled sculpture replay under reduced motion. Optical portals use the existing WebGL pass; palette variants stay within blue/red. The quality governor suspends sampling while hidden/reduced and applies its still-frame fallback to world, sculpture and project scenes together. Physical GPU/device performance remains unverified.
+
 - Build completed using Node 24.16.0: six pages (index and résumé for en, es, pt).
 - Second pass (cinematic layer): ten Node test cases and the same sixteen browser checks pass with the WebGL world, eight project scenes, intro, pinned gallery and manifesto in place. New guards: only allowlisted public repositories are linked, and dist/fx holds only the two effect modules.
 - Eight Node test cases passed (first pass): scenario transitions, repeatable latency trace, identical locale structure, all local links/resources/fragments in every page, server-rendered content per language (including a guard that no phone number is published), motion safety rules in CSS, source-size budgets and the release manifest.

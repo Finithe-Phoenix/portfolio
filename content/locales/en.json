@@ -1,0 +1,634 @@
+{
+  "lang": "en",
+  "langName": "English",
+  "meta": {
+    "title": "Daniel González — Clarity through complexity",
+    "description": "Daniel González — Senior Full-Stack Engineer and AI Champion. Real-time payment systems, enterprise platforms and AI-assisted engineering.",
+    "ogDescription": "Tier-0 payment systems, enterprise platforms and AI-assisted engineering — built to stay up.",
+    "ogAlt": "Daniel González — Clarity through complexity. Senior Full-Stack Engineer and AI Champion."
+  },
+  "ui": {
+    "skip": "Skip to content",
+    "home": "Daniel González, home",
+    "menu": "Menu",
+    "navLabel": "Main navigation",
+    "nav": {
+      "impact": "Impact",
+      "experience": "Experience",
+      "work": "Work",
+      "lab": "Lab",
+      "about": "About",
+      "contact": "Let’s talk"
+    },
+    "langLabel": "Language",
+    "motionOn": "Motion on",
+    "motionReduced": "Motion reduced",
+    "motionAriaOn": "Reduce animations",
+    "motionAriaReduced": "Animations reduced; toggle motion preference",
+    "backTop": "Back to top",
+    "viewSource": "Built with intent. View source",
+    "scroll": "Scroll to discover"
+  },
+  "hero": {
+    "eyebrow": "Daniel González / Senior Full-Stack Engineer · AI Champion",
+    "title": [
+      "Clarity",
+      "through",
+      "complexity."
+    ],
+    "intro": "I build payment systems that cannot afford to fail — and the AI workflows that help engineering teams ship them faster.",
+    "ctaPrimary": "See the impact",
+    "ctaSecondary": "Break a system",
+    "artAlt": "A cloud of scattered points organizing into a connected sphere",
+    "artTop": "Complexity → Clarity",
+    "artVersion": "Live render / 001",
+    "labels": [
+      "01 / Architecture",
+      "02 / Execution",
+      "03 / People"
+    ],
+    "artBottom": "Make the connections that matter.",
+    "role": "Senior Full-Stack Engineer & AI Champion",
+    "location": "Toluca, MX",
+    "locationNote": "Global mindset"
+  },
+  "stats": {
+    "label": "Impact in numbers",
+    "source": "Figures from my professional record at HSBC México, 2020 — today.",
+    "items": [
+      {
+        "value": 7,
+        "suffix": "+",
+        "label": "years building enterprise software"
+      },
+      {
+        "value": 4,
+        "suffix": "",
+        "label": "Tier-0 payment initiatives under my engineering governance"
+      },
+      {
+        "value": 22,
+        "suffix": "+",
+        "label": "applications with stronger CI/CD, security scanning and observability"
+      },
+      {
+        "value": 6,
+        "suffix": "",
+        "label": "development teams mentored on secure delivery"
+      },
+      {
+        "value": 500,
+        "prefix": "~",
+        "suffix": "",
+        "label": "colleagues reached by my AI enablement program"
+      },
+      {
+        "value": 19,
+        "suffix": "",
+        "label": "AI agents in the legacy-modernization framework I designed"
+      }
+    ]
+  },
+  "manifesto": {
+    "label": "What I do",
+    "text": "I turn complicated systems into software people can trust — fast enough for the market, safe enough for a bank."
+  },
+  "marquee": [
+    "Real-time payments",
+    "SPEI 2.0",
+    "Java / Spring Boot",
+    "Apache Kafka",
+    "Kubernetes on GCP",
+    "Angular / React",
+    "DevSecOps",
+    "AI-assisted SDLC",
+    "Agentic workflows",
+    "Observability"
+  ],
+  "experience": {
+    "eyebrow": "01 / Experience",
+    "title": [
+      "Seven years.",
+      "Systems that have to work."
+    ],
+    "lead": "From first web applications to the payment rails a country relies on every day.",
+    "now": "Now",
+    "items": [
+      {
+        "period": "2025 — Now",
+        "company": "HSBC México · Corporate & Institutional Banking",
+        "role": "Senior Full-Stack Software Engineer",
+        "tag": "Tier-0 payments & engineering governance",
+        "points": [
+          "Drive HSBC México’s engineering workstreams for its migration to SPEI 2.0 — Mexico’s real-time interbank payment rail: testing strategy, fallback and rollback planning, release readiness and Day-0 issue management.",
+          "Govern the GitHub organizations behind four Tier-0 initiatives: access, branching, peer review, security policy and code-quality gates.",
+          "Translate business, regulatory and audit requirements into technical workstreams with QA, cybersecurity, infrastructure and operations.",
+          "Support 24/7 payment operations with incident response, root-cause analysis and release validation."
+        ],
+        "stack": [
+          "Java",
+          "Spring Boot",
+          "Playwright",
+          "Tosca",
+          "GitHub"
+        ]
+      },
+      {
+        "period": "2026 — Now",
+        "company": "HSBC · CIB Latin America",
+        "role": "AI Subject-Matter Expert & Regional AI Champion",
+        "tag": "AI-assisted engineering at enterprise scale",
+        "points": [
+          "Designed a 19-agent framework for Java legacy modernization, from discovery to migration planning.",
+          "Publish recurring AI capsules, demos, prompts and exercises for about 500 colleagues, including regional senior leadership.",
+          "Define reusable AI-assisted SDLC workflows and evaluate AI tooling under corporate constraints."
+        ],
+        "stack": [
+          "LLMs",
+          "Agentic workflows",
+          "Context engineering",
+          "Copilot",
+          "Claude Code"
+        ]
+      },
+      {
+        "period": "2022 — 2025",
+        "company": "HSBC México · Global Payments Solutions",
+        "role": "Senior Full-Stack Software Engineer",
+        "tag": "Payments platform, data and delivery",
+        "points": [
+          "Built and modernized Java / Spring Boot, Angular and React components for SPEI, SPID, CoDi and International Payments.",
+          "Architected and ran Apache Kafka clusters for event-driven messaging between payment and analytics services.",
+          "Designed and operated an internal Kubernetes platform on Google Cloud, standardizing how teams deploy and run services.",
+          "Raised CI/CD, security scanning and observability across 22+ applications, and mentored six development teams."
+        ],
+        "stack": [
+          "Java",
+          "Spring Security",
+          "Kafka",
+          "Kubernetes",
+          "GCP",
+          "Oracle",
+          "OpenTelemetry"
+        ]
+      },
+      {
+        "period": "2020 — 2022",
+        "company": "Infosys · Client: HSBC México, Payments",
+        "role": "Systems Engineer / Full-Stack Developer",
+        "tag": "Full-stack delivery for payments",
+        "points": [
+          "Developed Spring Boot and Angular applications for CoDi, SPEI and SPID.",
+          "Led full-stack delivery for three internal products and built Jenkins pipelines for controlled releases."
+        ],
+        "stack": [
+          "Java 8",
+          "Spring Boot",
+          "Angular",
+          "Oracle",
+          "Jenkins"
+        ]
+      },
+      {
+        "period": "2019 — 2020",
+        "company": "Manpower · Nissan",
+        "role": "Web Project Lead / Software Developer",
+        "tag": "Where it started",
+        "points": [
+          "Led Laravel and Java web delivery for supply-chain, purchasing and planning teams, with dashboards for decision support."
+        ],
+        "stack": [
+          "Laravel",
+          "PHP",
+          "Java",
+          "JavaScript"
+        ]
+      }
+    ]
+  },
+  "ai": {
+    "eyebrow": "02 / Applied AI",
+    "title": [
+      "Nineteen agents.",
+      "One modernization pipeline."
+    ],
+    "lead": "As AI Champion for CIB Latin America, I turn AI from a demo into a way of working: repeatable workflows, shared prompts and a framework that takes legacy Java from discovery to a migration plan.",
+    "pipelineLabel": "Legacy-modernization pipeline",
+    "pipelineAlt": "Seven stages of the modernization pipeline, activated one after another",
+    "input": "Legacy Java",
+    "output": "Migration plan",
+    "stages": [
+      "Discovery",
+      "Architecture analysis",
+      "Refactoring",
+      "Test generation",
+      "Documentation",
+      "Security analysis",
+      "Migration planning"
+    ],
+    "facts": [
+      {
+        "title": "A framework, not a prompt.",
+        "text": "Nineteen specialized agents, each with one responsibility and a clear handoff to the next."
+      },
+      {
+        "title": "Adoption at scale.",
+        "text": "Recurring capsules, demos, repositories and exercises for about 500 colleagues, including regional senior leadership."
+      },
+      {
+        "title": "Built for real constraints.",
+        "text": "Tools and workflows evaluated for enterprise development, mainframe and COBOL modernization and test automation."
+      }
+    ],
+    "note": "Internal enterprise work, described at the level of my public résumé. The animation is an illustration, not the system itself."
+  },
+  "work": {
+    "eyebrow": "03 / Open work",
+    "title": [
+      "Different challenges.",
+      "One engineering mindset."
+    ],
+    "lead": "My day job runs behind a bank’s walls. These eight public builds show how I think — with source you can read.",
+    "explore": "Explore",
+    "casesLabel": "Project case studies",
+    "sections": {
+      "problem": "The question",
+      "approach": "The approach",
+      "tradeoff": "The tradeoff",
+      "outcome": "What’s built",
+      "lesson": "The takeaway"
+    },
+    "source": "Explore source",
+    "demo": "Open live demo",
+    "evidence": "Go deeper",
+    "hint": "Keep scrolling — the gallery moves",
+    "deep": "Three deep dives",
+    "cursorOpen": "Open",
+    "galleryLabel": "Project gallery"
+  },
+  "projects": [
+    {
+      "id": "prisma",
+      "number": "01",
+      "color": "blue",
+      "category": "Systems engineering",
+      "title": "Across architectures.",
+      "name": "Prisma",
+      "stack": [
+        "C++",
+        "Rust",
+        "ARM64",
+        "Lean 4"
+      ],
+      "status": "Research & development",
+      "summary": "A binary translator exploring the boundary between machine instructions and portable execution.",
+      "problem": "How can a binary built for one instruction set run on another and behave exactly the same?",
+      "approach": "A staged pipeline: decoding, an intermediate representation, optimization, emission and runtime. Each boundary can be inspected and tested on its own.",
+      "tradeoff": "Translation speed competes with correctness and compatibility. Staging makes validation explicit, at the cost of intermediate structures and more engineering.",
+      "outcome": "A public translation pipeline, a formal specification area in Lean 4 and an ongoing Rust migration. An evolving research project.",
+      "lesson": "Ambitious systems are built from small, testable contracts. The most valuable artifact is often the boundary that makes a failure understandable.",
+      "repo": "https://github.com/Finithe-Phoenix/prisma",
+      "demo": null,
+      "evidence": [
+        {
+          "label": "Repository & architecture",
+          "url": "https://github.com/Finithe-Phoenix/prisma/blob/main/README.md"
+        },
+        {
+          "label": "Engineering decisions",
+          "url": "https://github.com/Finithe-Phoenix/prisma/tree/main/docs"
+        }
+      ],
+      "scene": "translator"
+    },
+    {
+      "id": "fleet",
+      "color": "blue",
+      "scene": "fleet",
+      "stack": [
+        "GitHub Copilot",
+        "Jenkins",
+        "Playwright",
+        "Java · COBOL"
+      ],
+      "repo": "https://github.com/Finithe-Phoenix/Testing-Agents-Worflows",
+      "demo": "https://finithe-phoenix.github.io/Testing-Agents-Worflows/",
+      "category": "AI for quality engineering",
+      "title": "A fleet, not a bot.",
+      "name": "Quality Automation Fleet",
+      "status": "Open framework",
+      "summary": "71 AI agents, 42 skills and 15 test suites with one goal — real coverage of at least 90% — orchestrated end to end with Jenkins.",
+      "number": "02"
+    },
+    {
+      "id": "novapay",
+      "color": "red",
+      "scene": "payments",
+      "stack": [
+        "Java",
+        "PostgreSQL",
+        "WireMock",
+        "Playwright"
+      ],
+      "repo": "https://github.com/Finithe-Phoenix/LabNovaTesting",
+      "demo": null,
+      "category": "Payments testing",
+      "title": "Every edge case, on purpose.",
+      "name": "NovaPay testing lab",
+      "status": "Teaching lab · fictional domain",
+      "summary": "A transfer service built to exercise the whole testing pyramid: tiered fees, idempotency, a six-state machine and a simulated mainframe core.",
+      "number": "03"
+    },
+    {
+      "id": "clinic",
+      "number": "04",
+      "color": "red",
+      "category": "Product engineering",
+      "title": "Carefully connected.",
+      "name": "Clinic platform",
+      "stack": [
+        "Angular",
+        "Java",
+        "PostgreSQL",
+        "Keycloak"
+      ],
+      "status": "Live demo · synthetic data",
+      "summary": "Appointments, inventory and purchasing connected in one product, with a live demo you can click through.",
+      "problem": "Clinic operations cross several boundaries: scheduling, stock, purchasing and accountability. How do you connect them without losing control?",
+      "approach": "A public demo and a separate authenticated portal and API. Inventory and purchasing model explicit state changes, permissions and audit records.",
+      "tradeoff": "Browser-local demo data makes exploring effortless, but cannot offer shared persistence or server authorization. The private API covers that path.",
+      "outcome": "Documented demo workflows and a local authenticated portal. All demo data is synthetic; production identity and deployment are separate work.",
+      "lesson": "A convincing product shows its operating limits. Being clear about what is simulated lets a reviewer judge the architecture honestly.",
+      "repo": "https://github.com/Finithe-Phoenix/PulmonogyClinic",
+      "demo": "https://finithe-phoenix.github.io/PulmonogyClinic/",
+      "evidence": [
+        {
+          "label": "Scope & implementation",
+          "url": "https://github.com/Finithe-Phoenix/PulmonogyClinic/blob/main/README.md"
+        },
+        {
+          "label": "Validation record",
+          "url": "https://github.com/Finithe-Phoenix/PulmonogyClinic/blob/main/docs/VALIDATION.md"
+        }
+      ],
+      "scene": "clinic"
+    },
+    {
+      "id": "nexus",
+      "color": "ice",
+      "scene": "operations",
+      "stack": [
+        "JavaScript",
+        "Data visualization",
+        "Accessibility"
+      ],
+      "repo": "https://github.com/Finithe-Phoenix/Discovery-Nexus-One",
+      "demo": "https://finithe-phoenix.github.io/Discovery-Nexus-One/",
+      "category": "Product storytelling",
+      "title": "Operations you can explore.",
+      "name": "NEXUS ONE",
+      "status": "Live demo · synthetic data",
+      "summary": "A multi-operator SIM and eSIM operations cockpit: inventory, wallet, credit, sales and commissions, with an executive story mode.",
+      "number": "05"
+    },
+    {
+      "id": "chadwallet",
+      "color": "blue",
+      "scene": "trading",
+      "stack": [
+        "Next.js",
+        "TypeScript",
+        "Solana",
+        "Supabase"
+      ],
+      "repo": "https://github.com/Finithe-Phoenix/chadwallet-founder-screen-pro",
+      "demo": "https://chadwallet-founder-screen-pro.vercel.app",
+      "category": "Web3 product",
+      "title": "Markets, in real time.",
+      "name": "ChadWallet terminal",
+      "status": "Live demo · no real trades",
+      "summary": "A Solana social-trading landing page and terminal: trending tokens, live charts, an order ticket and positions, with safe demo data by default.",
+      "number": "06"
+    },
+    {
+      "id": "playwright",
+      "color": "ice",
+      "scene": "course",
+      "stack": [
+        "Playwright",
+        "TypeScript",
+        "Python",
+        "Java"
+      ],
+      "repo": "https://github.com/Finithe-Phoenix/Playwright-Curso",
+      "demo": null,
+      "category": "Engineering education",
+      "title": "Testing, in motion.",
+      "name": "Playwright in Motion",
+      "status": "Open course",
+      "summary": "Twelve narrated, animated video lessons — about 87 minutes — with TypeScript, Python and Java test projects and a mainframe terminal simulator.",
+      "number": "07"
+    },
+    {
+      "id": "devops",
+      "number": "08",
+      "color": "ice",
+      "category": "Engineering enablement",
+      "title": "Knowledge that ships.",
+      "name": "DevOps learning lab",
+      "stack": [
+        "Docker",
+        "Kubernetes",
+        "CI/CD",
+        "Observability"
+      ],
+      "status": "Open courseware",
+      "summary": "One application. An entire delivery lifecycle. A four-day course that teaches systems thinking by doing.",
+      "problem": "Teaching tools in isolation hides how software actually becomes an operated service.",
+      "approach": "One application travels from source control through containers, delivery automation, orchestration, monitoring and security, with bilingual guides and debugging exercises.",
+      "tradeoff": "A coherent learning path favors a small, reproducible environment over the full complexity of a production platform. Intentional failures make the limits teachable.",
+      "outcome": "A four-day curriculum with application examples, deployment manifests, instructor material and troubleshooting exercises.",
+      "lesson": "Technical leadership scales through artifacts people can use on their own: runnable examples, decision guides and clear recovery paths.",
+      "repo": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso",
+      "demo": null,
+      "evidence": [
+        {
+          "label": "Curriculum & source",
+          "url": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso/blob/main/README.md"
+        },
+        {
+          "label": "Hands-on guides",
+          "url": "https://github.com/Finithe-Phoenix/devops-contenedores-kubernetes-curso/tree/main/guias"
+        }
+      ],
+      "scene": "pipeline"
+    }
+  ],
+  "lab": {
+    "eyebrow": "04 / Think in systems",
+    "title": [
+      "The interesting part?",
+      "What happens when it breaks."
+    ],
+    "lead": "Fallback and rollback planning is part of my daily work on Tier-0 payments. Here is the idea in miniature: take down the primary and watch the traffic move.",
+    "topLeft": "Resilience lab",
+    "topRight": "Interactive model / simulated traffic",
+    "svgTitle": "Request routing model",
+    "svgDesc": "A client connects to a router, which uses the primary service or a standby service. Both lead to a response.",
+    "nodes": {
+      "client": "CLIENT",
+      "clientSub": "request",
+      "router": "ROUTER",
+      "routerSub": "health-aware",
+      "primary": "PRIMARY",
+      "primarySub": "region A",
+      "standby": "STANDBY",
+      "standbySub": "region B",
+      "response": "RESPONSE",
+      "responseSub": "delivered"
+    },
+    "mobileLabel": "Active request route",
+    "mobile": [
+      "Client request",
+      "Health-aware router",
+      "Response"
+    ],
+    "legendActive": "Active route",
+    "legendStandby": "Standby route",
+    "consoleEyebrow": "Change the conditions",
+    "buttons": {
+      "healthy": "Normal operation",
+      "failed": "Take down the primary",
+      "recovered": "Controlled recovery"
+    },
+    "noscript": "The diagram shows normal operation. JavaScript enables the failure and recovery scenarios.",
+    "metricLatency": "Model latency",
+    "metricRoute": "Routing state",
+    "metricRouted": "Requests routed",
+    "metricRerouted": "Rerouted to standby",
+    "sparkLabel": "Latency, last 40 requests",
+    "tradeoffLabel": "The tradeoff",
+    "disclaimer": "Illustrative simulation: latencies are fixed scenario values, not measurements from a live service. Real failover also needs data consistency, capacity and health-check policies.",
+    "scenarios": {
+      "healthy": {
+        "title": "Primary route active",
+        "description": "The router sends every request to the primary service. The standby stays warm, ready for a failover.",
+        "route": "Primary",
+        "mobile": "Primary service",
+        "tradeoff": "Redundancy buys recovery options, at the cost of running an additional service."
+      },
+      "failed": {
+        "title": "Standby route active",
+        "description": "The primary is down. The router detects it and redirects new requests to the standby; the extra hop raises latency, but nothing is dropped.",
+        "route": "Standby",
+        "mobile": "Standby service",
+        "tradeoff": "Availability is preserved at the cost of an extra hop. Real systems must also validate standby capacity and data consistency."
+      },
+      "recovered": {
+        "title": "Primary restored after health checks",
+        "description": "Recovery checks have passed. New requests return to the primary while the standby stays ready.",
+        "route": "Primary",
+        "mobile": "Primary service",
+        "tradeoff": "Returning traffic only after recovery checks avoids flapping. Real systems need a stabilization window and explicit failback criteria."
+      }
+    }
+  },
+  "about": {
+    "eyebrow": "05 / The person behind the system",
+    "title": [
+      "Deep in the details.",
+      "Connected to the whole."
+    ],
+    "paragraphs": [
+      "I’m Daniel, a Senior Full-Stack Engineer based in Toluca, México.",
+      "I have built enterprise software for more than seven years, most of them where software meets money: real-time payments, the platforms that run them and the teams that keep them healthy. I’m drawn to the moment a hard technical problem becomes something people can understand, use and trust."
+    ],
+    "focus": "Java and Spring · distributed systems · Angular and React · cloud delivery · applied AI.",
+    "principles": [
+      {
+        "title": "Start with the question.",
+        "text": "Understand the people, the constraints and the cost of getting it wrong."
+      },
+      {
+        "title": "Make the tradeoffs visible.",
+        "text": "Good architecture gives a team a decision it can explain and a system it can operate."
+      },
+      {
+        "title": "Leave a clearer path.",
+        "text": "Turn the work into code, documentation and practices others can build on."
+      }
+    ],
+    "credentials": [
+      {
+        "label": "Certified",
+        "title": "Scaled Agile · 2024 — 2025",
+        "text": "SAFe 6 Scrum Master, Lean Portfolio Manager, SAFe 5 Architect, Release Train Engineer, Advanced Scrum Master, DevOps Practitioner and Agile Software Engineer."
+      },
+      {
+        "label": "On stage",
+        "title": "FLISoL speaker & organizer",
+        "text": "Talks on OWASP Top 10 and on landing a first developer job; General Manager and Technology Lead for FLISoL México, 2018 — 2019."
+      },
+      {
+        "label": "Studying",
+        "title": "AI Engineering · Software Engineering",
+        "text": "Two B.S. programs in progress at Hybridge Education (expected 2028), after Computer Systems Engineering coursework at Instituto Tecnológico de Toluca."
+      },
+      {
+        "label": "Languages",
+        "title": "Spanish · English",
+        "text": "Spanish, native. English, B2 with professional technical working proficiency."
+      }
+    ],
+    "capabilities": [
+      "Java / Spring",
+      "Real-time payments",
+      "Kafka / Kubernetes",
+      "Angular / React",
+      "DevSecOps",
+      "Applied AI"
+    ]
+  },
+  "contact": {
+    "eyebrow": "A good conversation is a good start.",
+    "title": [
+      "What could we",
+      "build together?"
+    ],
+    "text": "Complex problems. Thoughtful teams. I’d like to hear what you’re working on.",
+    "email": "Write to me",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "resume": "Résumé"
+  },
+  "profile": {
+    "title": "Daniel González — Résumé",
+    "eyebrow": "Résumé",
+    "back": "Back to portfolio",
+    "print": "Print / Save as PDF",
+    "role": "Senior Full-Stack Software Engineer · AI Subject-Matter Expert",
+    "summary": "Senior Full-Stack Software Engineer with 7+ years of enterprise development across banking and business applications. Built Java / Spring Boot services and Angular / React components for Tier-0 payments, Kafka and Oracle data pipelines and an internal Kubernetes platform on Google Cloud. AI Subject-Matter Expert and regional AI Champion for CIB Latin America, focused on AI-assisted engineering and legacy modernization.",
+    "experience": "Experience",
+    "projects": "Public projects",
+    "skills": "Skills",
+    "skillGroups": [
+      {
+        "label": "Engineering",
+        "text": "Java, Spring Boot, Spring Security, REST APIs, Angular, React, TypeScript, SQL, Python, Bash."
+      },
+      {
+        "label": "Platform & data",
+        "text": "GCP, Kubernetes, Docker, Apache Kafka, Oracle, CI/CD, GitHub Actions, Jenkins, Ansible, Splunk, OpenTelemetry."
+      },
+      {
+        "label": "Security & quality",
+        "text": "OAuth2, RBAC, OWASP Top 10, JUnit, Selenium, Playwright, Tosca, SonarQube, Checkmarx, Nexus IQ."
+      },
+      {
+        "label": "Applied AI",
+        "text": "Generative AI, LLMs, agentic workflows, prompt and context engineering, AI-assisted SDLC."
+      }
+    ],
+    "credentials": "Credentials & community"
+  }
+}

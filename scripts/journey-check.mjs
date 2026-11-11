@@ -21,6 +21,11 @@ try{
   await page.locator('.journey-next').click();
   assert.ok(await page.locator('#impact').isVisible());
   assert.equal(await page.locator('#journey-select').inputValue(),'impact');
+  await page.goBack();
+  assert.equal(await page.locator('#journey-select').inputValue(),'top');
+  assert.ok(await page.locator('#top').isVisible());
+  await page.goForward();
+  assert.equal(await page.locator('#journey-select').inputValue(),'impact');
   assert.ok(await page.locator('.journey-status').textContent());
   await page.locator('#journey-select').selectOption('work');
   assert.ok(await page.locator('#work').isVisible());

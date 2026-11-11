@@ -44,7 +44,7 @@ export function mountJourney(scenes, copy, options={}) {
   const target=document.getElementById(id);
   return target?chapters.findIndex(el=>el===target||el.contains(target)):-1;
  }
- function restore(){const i=findTarget(location.hash);if(i>=0){index=i;render(false,false);}}
+ function restore(){const i=location.hash?findTarget(location.hash):0;if(i>=0){index=i;render(false,false);}}
  previous.addEventListener('click',()=>navigate(index-1));
  next.addEventListener('click',()=>navigate(index+1));
  select.addEventListener('change',()=>navigate(scenes.findIndex(s=>s.id===select.value)));

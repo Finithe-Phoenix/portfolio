@@ -36,11 +36,15 @@ float noise(vec2 p) {
              mix(hash(i + vec2(0.0, 1.0)), hash(i + 1.0), f.x), f.y);
 }
 float mist(vec2 p) {
-  return noise(p) * 0.57 + noise(p * 2.03 + 7.1) * 0.28
-       + noise(p * 4.07 + 13.7) * 0.15;
+  return noise(p) * 0.68 + noise(p * 2.03 + 7.1) * 0.32;
 }
 float line(float distanceToLine, float width, float pixel) {
   return 1.0 - smoothstep(width, width + pixel, distanceToLine);
+}
+// Piecewise linear noise makes angular peaks instead of rounded cloud shapes.
+float ridge(float x, float seed) {
+  float cell = floor(x);
+  return mix(hash(vec2(cell, seed)), hash(vec2(cell + 1.0, seed)), fract(x));
 }
 
 void main() {
@@ -53,16 +57,29 @@ void main() {
   float px = 1.0 / uResolution.y;
   float center = exp(-abs(p.x - vx) * 1.25);
   vec3 color = vec3(0.0196, 0.0314, 0.0667);
+  vec3 hot = mix(uPrimary, vec3(1.0), 0.65);
+  float pulse = 0.94 + 0.06 * sin(phase * 2.0);
 
   // Broad atmosphere stays very dark; energy lives on the horizon itself.
   float atmosphere = exp(-abs(dy) * 10.0);
-  color += uSecondary * atmosphere * (0.052 + center * 0.075);
-  color += uPrimary * exp(-abs(dy) * 65.0) * center * 0.085;
-  color += uPrimary * exp(-abs(dy) * 520.0) * (0.12 + center * 0.25);
-  float core = exp(-abs(p.x - vx) * 4.0);
-  color += uPrimary * core * exp(-abs(dy) * 110.0) * 0.13;
-  color += mix(uPrimary, vec3(0.72, 0.88, 1.0), 0.4) * core
-           * exp(-abs(dy) * 900.0) * 0.27;
+  color += uSecondary * atmosphere * (0.045 + center * 0.08);
+  // Analytic bloom: a small sun, a luminous rim and a long anamorphic flare.
+  // No extra scene samples or render targets; the upper sky stays near black.
+  vec2 sun = vec2(p.x - vx, dy - 0.026);
+  float radius = length(sun);
+  float rim = abs(radius - 0.081);
+  float sunMask = smoothstep(-0.012, 0.012, dy);
+  color += uSecondary * exp(-radius * 12.0) * 0.23 * pulse;
+  color += uPrimary * exp(-radius * 28.0) * 0.25 * pulse;
+  color += uPrimary * (exp(-rim * 115.0) * 0.24
+           + line(rim, 0.00065, px) * 0.9) * sunMask * pulse;
+  float disc = 1.0 - smoothstep(0.077, 0.081, radius);
+  color += uPrimary * disc * exp(-max(dy, 0.0) * 22.0) * sunMask * 0.12;
+  float flare = exp(-abs(p.x - vx) * 3.8);
+  color += uPrimary * flare * exp(-abs(dy) * 105.0) * 0.48 * pulse;
+  color += hot * flare * line(abs(dy), 0.00055, px) * 1.35 * pulse;
+  color += uPrimary * exp(-abs(p.x - vx) * 1.6)
+           * exp(-abs(dy) * 420.0) * 0.19;
 
   if (dy > 0.0) {
     vec2 sky = vec2((p.x - vx) * 1.25, dy);
@@ -81,13 +98,56 @@ void main() {
     color += uSecondary * exp(-abs(ribbon2) * 48.0) * veil * 0.055;
 
     // Far-away signal shafts dissolve upward into the haze.
-    float column = (p.x - vx) * 92.0;
+    float column = (p.x - vx) * 18.0;
     float columnSeed = hash(vec2(floor(column), 4.8));
-    float shaftHeight = 0.006 + pow(columnSeed, 4.0) * 0.07;
-    float shaft = exp(-abs(fract(column) - 0.5) * 14.0)
+    float shaftHeight = 0.045 + pow(columnSeed, 4.0) * 0.19;
+    float shaft = (exp(-abs(fract(column) - 0.5) * 110.0)
+                   + exp(-abs(fract(column) - 0.5) * 18.0) * 0.16)
                 * (1.0 - smoothstep(0.0, shaftHeight, dy))
-                * step(0.57, columnSeed);
-    color += mix(uSecondary, uSignal, step(0.91, columnSeed)) * shaft * 0.11;
+                * step(0.72, columnSeed)
+                * pow(0.5 + 0.5 * sin(phase * 2.0 + columnSeed * 30.0), 6.0);
+    color += mix(uPrimary, uSignal, step(0.91, columnSeed)) * shaft * 0.65;
+
+    // Three faceted heightfields, back to front. A wide central valley frames
+    // the portal; layer-specific camera offsets provide restrained parallax.
+    // Restrict the work to the horizon strip, not the whole sky.
+    if (dy < 0.24) {
+      for (int i = 0; i < 3; i++) {
+        float layer = float(i);
+        float mx = p.x - vx * (0.3 + layer * 0.4)
+                   + sin(phase) * (0.002 + layer * 0.003);
+        float valley = smoothstep(0.12 + layer * 0.045, 0.46 + layer * 0.055, abs(mx));
+        float sampleX = mx * (6.0 + layer * 1.7) + layer * 17.3;
+        float terrain = ridge(sampleX, 2.7 + layer * 4.1) * 0.72
+                      + ridge(sampleX * 2.0, 9.1 + layer * 3.7) * 0.28;
+        float peak = (0.065 + terrain * (0.16 - layer * 0.025)) * valley;
+        float base = 0.009 + layer * 0.005;
+        float altitude = dy + base;
+        float inside = (1.0 - smoothstep(peak - px, peak + px, altitude)) * valley;
+        float edge = abs(altitude - peak);
+        float brightness = 0.25 + layer * 0.12;
+        color = mix(color, vec3(0.008, 0.012, 0.027) + uSecondary * 0.018, inside * 0.95);
+        // Converging meridians and height contours form the retro wire mesh.
+        float level = altitude / max(peak, 0.012);
+        float meshX = mx * (25.0 + layer * 7.0) / (1.15 - level * 0.42);
+        float meshY = level * 7.0;
+        vec2 meshPixel;
+#ifdef HAS_DERIVATIVES
+        meshPixel = max(fwidth(vec2(meshX, meshY)), vec2(0.001));
+#else
+        meshPixel = vec2(55.0, 24.0 / max(peak, 0.012)) * px;
+#endif
+        vec2 meshDistance = abs(fract(vec2(meshX, meshY) + 0.5) - 0.5);
+        vec2 mesh = (1.0 - smoothstep(vec2(0.018), vec2(0.018) + meshPixel, meshDistance))
+                    * (1.0 - smoothstep(vec2(0.25), vec2(0.8), meshPixel));
+        color += uSecondary * max(mesh.x, mesh.y) * inside * brightness * 0.46;
+        color += uPrimary * (line(edge, 0.0005, px * 1.4) * brightness
+                 + exp(-edge * 270.0) * 0.09) * valley;
+      }
+    }
+
+    // Scattered light hangs in front of the ridges without filling the sky.
+    color += uPrimary * exp(-dy * 48.0) * (0.035 + cloud * 0.065);
 
     // Sparse subpixel stars. Fixed cells avoid shimmering during camera flight.
     vec2 stars = (p + vec2(vx * 0.12, uPointer.y * 0.006)) * 85.0;
@@ -105,8 +165,9 @@ void main() {
   } else {
     float height = 0.78 + uScroll * 0.09;
     float depth = min(height / max(-dy, 0.008), 96.0);
-    float stretch = 1.0 + uBoost * 0.24;
-    vec2 world = vec2((p.x - vx) * depth * 1.45 + 0.55 + sin(phase) * 0.12,
+    float stretch = 1.0 + uBoost * 0.65;
+    float edgeWarp = (p.x - vx) * (1.0 + uBoost * dot(p, p) * 0.32);
+    vec2 world = vec2(edgeWarp * depth * 1.45 + 0.55 + sin(phase) * 0.12,
                       depth * stretch + uTravel);
     vec2 footprint;
 #ifdef HAS_DERIVATIVES
@@ -125,47 +186,71 @@ void main() {
     float gridLight = max(grid.x * 0.72, grid.y * 0.55);
     float bloomX = exp(-gridDistance.x / max(0.035, footprint.x * 1.5));
     float bloomZ = exp(-gridDistance.y / max(0.04, footprint.y * 1.2));
-    float bloom = (bloomX + bloomZ) * 0.026
+    float bloom = (bloomX + bloomZ) * 0.095
                 * (1.0 - smoothstep(0.1, 0.8, footprint.y));
-    color += uSecondary * (gridLight * 0.45 + bloom) * fog * nearFade;
-    color += uPrimary * grid.x * grid.y * fog * 0.10;
+    color += uSecondary * (gridLight * 0.62 + bloom) * fog * nearFade;
+    color += hot * grid.x * grid.y * fog * 0.24;
 
     // Each lane has its own speed, phase and signal colour. A bright nose pulls
     // a tapered, soft trail through the perspective projection.
     float lane = floor(world.x / 1.4 + 0.5);
     float seed = hash(vec2(mod(lane, 64.0), 9.7));
-    float active = step(0.35, seed);
+    float active = step(0.14, seed);
     float speed = 2.0 + floor(seed * 4.0);
-    float race = mod(world.y - uPhase * speed + seed * 48.0, 48.0);
-    float trailLength = (4.5 + seed * 5.0) * (1.0 + uBoost * 1.7);
+    float race = mod(world.y - uPhase * speed + seed * 24.0, 24.0);
+    float trailLength = (7.0 + seed * 6.0) * (1.0 + uBoost * 2.6);
     float tail = exp(-race / trailLength) * (1.0 - smoothstep(trailLength, trailLength * 2.0, race));
-    float nose = exp(-race * 6.0);
+    // Let the glow spill just ahead of a head, including across the period
+    // boundary, so nearby pulses do not have a hard rectangular bloom cutoff.
+    float lead = exp(-(24.0 - race) * 6.0);
+    tail = max(tail, lead);
+    float nose = exp(-min(race, 24.0 - race) * 6.0);
     float thread = line(gridDistance.x, 0.014 + uBoost * 0.006, footprint.x);
-    float halo = exp(-gridDistance.x / max(0.065, footprint.x * 2.0));
+    float halo = exp(-gridDistance.x / max(0.095, footprint.x * 2.0));
     float isSignal = step(0.77, hash(vec2(mod(lane, 64.0), 31.2)));
-    vec3 cycleColor = mix(uPrimary, uSignal, isSignal);
+    vec3 cycleColor = mix(uPrimary, vec3(1.0, 0.075, 0.14), isSignal);
     float intensity = active * fog * smoothstep(0.008, 0.045, -dy)
                     * (1.0 - smoothstep(0.35, 1.4, footprint.x));
     intensity *= mix(1.0, 0.32, uCalm);
-    color += cycleColor * (thread * tail * 0.85 + halo * tail * 0.12
-                         + thread * nose * 0.8) * intensity;
+    color += cycleColor * (thread * tail * 1.45 + halo * tail * 0.27
+                         + thread * nose * 1.3) * intensity;
+    color += hot * thread * nose * intensity * 0.42;
 
     // Cross-track packets are shorter and rarer than the longitudinal cycles.
     float row = floor(world.y * 0.5 + 0.5);
     float rowSeed = hash(vec2(mod(row, 48.0), 5.2));
     float packet = abs(mod(world.x - uPhase * 2.0 + rowSeed * 32.0 + 16.0, 32.0) - 16.0);
-    float crossTrail = exp(-packet * 1.5) * step(0.82, rowSeed);
+    float crossTrail = exp(-packet * 0.85) * step(0.68, rowSeed);
     color += mix(uPrimary, uSignal, step(0.92, rowSeed)) * grid.y
-           * crossTrail * fog * 0.65 * mix(1.0, 0.3, uCalm);
+           * crossTrail * fog * 1.05 * mix(1.0, 0.3, uCalm);
 
     // Slight coloured fringes during a boost, without a second scene sample.
-    float fringe = line(abs(gridDistance.x - footprint.x * (1.0 + uBoost)),
-                        0.009, footprint.x);
-    color += mix(uSignal, uPrimary, step(0.0, p.x)) * fringe * tail
-           * intensity * uBoost * 0.13;
+    float split = uBoost * smoothstep(0.12, 0.8, abs(p.x - vx)) * depth * 0.007;
+    vec2 splitDistance = abs(mod(world.xx + vec2(split, -split) + 0.7, 1.4) - 0.7);
+    vec2 fringe = vec2(line(splitDistance.x, 0.012, footprint.x),
+                       line(splitDistance.y, 0.012, footprint.x));
+    color += (vec3(1.0, 0.08, 0.2) * fringe.x + vec3(0.1, 0.65, 1.0) * fringe.y)
+           * tail * intensity * uBoost * 0.48;
+    // Long lane-aligned exposures exaggerate speed, then follow the existing
+    // smoothed boost back to stillness. No temporal buffers are needed.
+    float exposure = max(exp(-race / 22.0), lead) * halo * active * fog;
+    color += cycleColor * exposure * uBoost * 0.38;
     // A faint reflection of the atmospheric core connects floor and sky.
-    color += uSecondary * exp(-abs(p.x - vx) * 6.0) * exp(dy * 9.0) * 0.025;
+    color += uPrimary * exp(-abs(p.x - vx) * 12.0) * exp(dy * 12.0) * 0.09;
   }
+
+  // Sparse, drifting motes use one hashed cell per pixel, with soft halos.
+  // Periodic drift matches the phase wrap; reduced mode freezes it naturally.
+  vec2 dust = p * 24.0 + vec2(sin(phase), cos(phase)) * 0.32;
+  vec2 dustCell = floor(dust);
+  float dustSeed = hash(dustCell + 51.7);
+  vec2 dustDelta = (fract(dust) - vec2(0.2 + dustSeed * 0.6,
+                    0.2 + hash(dustCell + 8.3) * 0.6)) / 24.0;
+  dustDelta.y /= 1.0 + uBoost * 6.0;
+  float dustRadius = length(dustDelta);
+  float mote = line(dustRadius, 0.0004, px) + exp(-dustRadius * 600.0) * 0.16;
+  color += hot * mote * step(0.976, dustSeed) * 0.23
+           * (0.55 + 0.45 * sin(phase + dustSeed * 60.0));
 
   float vignette = 1.0 - smoothstep(0.22, 0.91, length((uv - 0.5) * vec2(0.92, 1.0)));
   color *= 0.57 + vignette * 0.43;
@@ -178,9 +263,9 @@ void main() {
 
 const PALETTES = {
   blue: [0.333, 0.773, 1, 0.086, 0.545, 1, 1, 0.325, 0.396],
-  red: [1, 0.325, 0.396, 0.88, 0.09, 0.20, 0.333, 0.773, 1],
-  ice: [0.69, 0.94, 1, 0.25, 0.65, 0.91, 0.58, 0.65, 1],
-  violet: [0.72, 0.44, 1, 0.35, 0.20, 0.88, 1, 0.325, 0.57],
+  red: [1, 0.16, 0.105, 0.78, 0.035, 0.075, 1, 0.48, 0.12],
+  ice: [0.78, 1, 0.94, 0.32, 0.78, 0.76, 0.68, 0.86, 1],
+  violet: [0.80, 0.28, 1, 0.40, 0.085, 0.82, 1, 0.20, 0.59],
 };
 
 /** Mount a self-sizing, opaque WebGL background; failures are intentionally quiet. */

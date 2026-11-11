@@ -64,8 +64,9 @@ function page(t, locale) {
 <script type="application/json" id="i18n">${clientData}</script><script src="${base}script.js" type="module"></script>
 </head><body>
 <a class="skip-link" href="#main">${esc(t.ui.skip)}</a>
-<canvas id="world" aria-hidden="true"></canvas><div class="grain" aria-hidden="true"></div>
+<canvas id="world" aria-hidden="true"></canvas><canvas id="particles" aria-hidden="true"></canvas><div class="grain" aria-hidden="true"></div>
 <div class="intro" aria-hidden="true"><i class="intro-shutter"></i><i class="intro-shutter"></i><div class="intro-core"><span class="intro-logo">dg<b>.</b></span><span class="intro-line"><i></i></span><span class="intro-name">${esc(site.name)}</span></div></div>
+<div class="hud" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="hud-rec"><b></b>REC</span><span class="hud-time">00:00:00:00</span><span class="hud-scene">SCENE 01 / TOP</span></div>
 <div class="cursor-glow" aria-hidden="true"></div><div class="cursor" aria-hidden="true"><i></i><span></span></div>
 <header class="site-header"><a href="#top" class="brand" aria-label="${esc(t.ui.home)}">dg<span class="brand-dot">.</span></a>
 <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">${esc(t.ui.menu)} <span aria-hidden="true">☰</span></button>
@@ -74,17 +75,13 @@ function page(t, locale) {
 <button class="motion-toggle" aria-pressed="false" hidden aria-label="${esc(t.ui.motionAriaOn)}"><span aria-hidden="true">◐</span> <span class="motion-label">${esc(t.ui.motionOn)}</span></button>
 <div class="scroll-progress" aria-hidden="true"></div></header>
 <main id="main">
-<section class="hero wrap" id="top" aria-labelledby="hero-title"><div class="hero-copy">
+<section class="hero" id="top" aria-labelledby="hero-title"><div class="wrap hero-inner">
 <p class="eyebrow hero-enter" style="--i:0"><span class="status-dot" aria-hidden="true"></span> ${esc(t.hero.eyebrow)}</p>
 <h1 id="hero-title" aria-label="${esc(t.hero.title.join(' '))}"><span aria-hidden="true">${title}</span></h1>
-<p class="hero-intro hero-enter" style="--i:1">${esc(t.hero.intro)}</p>
+<div class="hero-row"><p class="hero-intro hero-enter" style="--i:1">${esc(t.hero.intro)}</p>
 <div class="hero-actions hero-enter" style="--i:2"><a class="button button-blue magnetic" href="#impact">${esc(t.hero.ctaPrimary)} <span aria-hidden="true">↘</span></a><a class="subtle-link" href="#lab">${esc(t.hero.ctaSecondary)} <span aria-hidden="true">→</span></a></div></div>
-<div class="hero-art" role="img" aria-label="${esc(t.hero.artAlt)}">
-<div class="art-topline"><span>${esc(t.hero.artTop)}</span><span class="art-version">${esc(t.hero.artVersion)}</span></div><canvas id="network" aria-hidden="true"></canvas>
-<svg class="network-fallback" viewBox="0 0 600 600" aria-hidden="true"><g fill="none" stroke="#55c5ff" stroke-width="1"><ellipse cx="300" cy="300" rx="215" ry="215"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(-35 300 300)"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(35 300 300)"/><path d="M85 300H515M300 85V515"/></g><circle cx="300" cy="300" r="52" fill="#55c5ff"/></svg>
-${t.hero.labels.map((l, i) => `<div class="hero-art-label label-${['architecture', 'execution', 'people'][i]}">${esc(l)}</div>`).join('')}
-<div class="art-bottomline"><span class="cross" aria-hidden="true">+</span><span>${esc(t.hero.artBottom)}</span><span class="cross" aria-hidden="true">+</span></div></div>
-<div class="hero-bottom"><span>${esc(t.hero.role)}</span><span>${esc(t.hero.location)} <span class="tiny-dot">·</span> ${esc(t.hero.locationNote)}</span><a href="#impact">${esc(t.ui.scroll)} ↓</a></div></section>
+<div class="hero-art" aria-hidden="true"><svg class="network-fallback" viewBox="0 0 600 600"><g fill="none" stroke="#55c5ff" stroke-width="1"><ellipse cx="300" cy="300" rx="215" ry="215"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(-35 300 300)"/><ellipse cx="300" cy="300" rx="215" ry="80" transform="rotate(35 300 300)"/><path d="M85 300H515M300 85V515"/></g><circle cx="300" cy="300" r="52" fill="#55c5ff"/></svg></div>
+<div class="hero-bottom"><span>${esc(t.hero.role)}</span><span>${esc(t.hero.location)} <span class="tiny-dot">·</span> ${esc(t.hero.locationNote)}</span><a href="#impact">${esc(t.ui.scroll)} ↓</a></div></div></section>
 <section id="impact" class="stats" aria-label="${esc(t.stats.label)}"><div class="wrap"><ul>${stats}</ul><p class="stats-source">${esc(t.stats.source)}</p></div></section>
 <div class="marquee" aria-hidden="true"><div class="marquee-track"><div>${marqueeItems}</div><div>${marqueeItems}</div></div><div class="marquee-track reverse"><div>${marqueeItems}</div><div>${marqueeItems}</div></div></div>
 <section class="manifesto" aria-label="${esc(t.manifesto.label)}"><div class="wrap"><p class="eyebrow">${esc(t.manifesto.label)}</p><p class="manifesto-text">${manifesto}</p></div></section>

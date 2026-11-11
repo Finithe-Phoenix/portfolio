@@ -128,7 +128,8 @@ function frame() {
   velocity += ((y - lastY) - velocity) * .35; lastY = y;
   const scrollable = root.scrollHeight - innerHeight;
   root.style.setProperty('--scroll', scrollable > 0 ? clamp(y / scrollable).toFixed(4) : 0);
-  root.style.setProperty('--world', (1 - .62 * clamp(y / (innerHeight * .9))).toFixed(3));
+  root.style.setProperty('--world', (1 - .66 * clamp(y / (innerHeight * .8))).toFixed(3));
+  stage(y);
   const line = timeline.getBoundingClientRect();
   timeline.style.setProperty('--tl', reduce ? 1 : clamp((innerHeight * .62 - line.top) / line.height).toFixed(4));
   // Manifesto words light once and stay lit, so the sentence is never left half-dimmed.
@@ -168,7 +169,6 @@ track.addEventListener('focusin', event => {
   scrollTo({ top: gallery.getBoundingClientRect().top + scrollY - pinTop + wanted * travel, behavior: 'instant' });
 });
 layoutGallery();
-frame();
 
 /* Pointer effects: ambient light, card tilt and magnetic buttons. Fine pointers only. */
 const glow = $('.cursor-glow'), ring = $('.cursor');
@@ -252,159 +252,83 @@ if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { la
 addEventListener('portfolio:motion', syncLab);
 document.addEventListener('visibilitychange', syncLab);
 
-/* Hero: scattered points assemble into a sphere, then carry light along its edges.
-   Local 2D canvas only. No tracking, network requests or WebGL dependency. */
-function initNetwork() {
-  const canvas = $('#network');
-  let ctx;
-  try { ctx = canvas.getContext('2d'); } catch {}
-  if (!ctx) return;
-  const art = $('.hero-art');
-  let width = 0, height = 0, frame = 0, visible = true, last = 0, time = 0, born = root.classList.contains('intro-on') ? 1500 : 0;
-  let pointer = { x: 0, y: 0 }, current = { x: 0, y: 0 }, cursor = null;
-  const compact = matchMedia('(max-width:600px)').matches;
-  const rows = compact ? 9 : 15, cols = compact ? 18 : 28;
-  let seed = 7;
-  const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  const points = Array.from({ length: rows * cols }, (_, i) => {
-    const row = Math.floor(i / cols), col = i % cols;
-    const phi = (row + .5) / rows * Math.PI, theta = col / cols * Math.PI * 2;
-    return { x: Math.sin(phi) * Math.cos(theta), y: Math.cos(phi), z: Math.sin(phi) * Math.sin(theta), row, col,
-      chaosX: (random() - .5) * 3.4, chaosY: (random() - .5) * 3.4, delay: random() * 900 };
-  });
-  // Light pulses travel along rings (rows) and meridians (columns).
-  const pulses = Array.from({ length: compact ? 5 : 9 }, (_, i) => ({ ring: i % 2 === 0, lane: Math.floor(random() * (i % 2 === 0 ? rows : cols)), at: random(), speed: .00009 + random() * .00012, red: i % 4 === 3 }));
-  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  function resize() {
-    const box = art.getBoundingClientRect();
-    width = box.width; height = box.height;
-    const dpr = Math.min(devicePixelRatio || 1, compact ? 1.25 : 1.75);
-    canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    draw();
-  }
-  function draw() {
-    if (!width || !height) return;
-    ctx.clearRect(0, 0, width, height);
-    const radius = Math.min(width, height) * .375;
-    const turn = (reduce ? .4 : time * .00011) + current.x * .2;
-    const tilt = .28 + current.y * .14;
-    const scrolled = reduce ? 0 : clamp(scrollY / (innerHeight * .9));
-    const age = time - born;
-    let formed = 1;
-    const projected = points.map(p => {
-      const wave = reduce ? 0 : Math.sin(time * .0006 + p.row * .55) * .035;
-      let x = p.x * Math.cos(turn) + p.z * Math.sin(turn);
-      let z = -p.x * Math.sin(turn) + p.z * Math.cos(turn);
-      let y = p.y * Math.cos(tilt) - z * Math.sin(tilt);
-      z = p.y * Math.sin(tilt) + z * Math.cos(tilt);
-      // As the reader moves on, the curved network settles into a structured lattice.
-      const gridX = (p.col / (cols - 1) - .5) * 1.8, gridY = (p.row / (rows - 1) - .5) * 1.8;
-      x = x * (1 - scrolled * .65) + gridX * scrolled * .65;
-      y = y * (1 - scrolled * .65) + gridY * scrolled * .65;
-      const perspective = 2.8 / (2.8 - z * .45) * (1 + wave);
-      x *= perspective; y *= perspective;
-      // Chaos resolves into structure once, on arrival (or again on click).
-      const order = reduce ? 1 : ease(clamp((age - p.delay) / 1900));
-      if (order < formed) formed = order;
-      x = p.chaosX + (x - p.chaosX) * order; y = p.chaosY + (y - p.chaosY) * order;
-      let px = width / 2 + x * radius, py = height / 2 + y * radius;
-      if (cursor) {
-        const dx = px - cursor.x, dy = py - cursor.y, distance = Math.hypot(dx, dy);
-        if (distance < 110 && distance > .01) { const push = Math.pow(1 - distance / 110, 2) * 22; px += dx / distance * push; py += dy / distance * push; }
-      }
-      return { x: px, y: py, z };
-    });
-    const glow = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, radius * 1.2);
-    glow.addColorStop(0, 'rgba(22,139,255,.1)'); glow.addColorStop(1, 'rgba(22,139,255,0)');
-    ctx.fillStyle = glow; ctx.fillRect(0, 0, width, height);
-    ctx.lineWidth = .55;
-    // Batch paths by depth: eight draw calls instead of two per node.
-    for (let depth = 0; depth < 4; depth++) {
-      const members = [];
-      projected.forEach((p, i) => { if (Math.min(3, Math.floor((p.z + 1) * 2)) === depth) members.push(i); });
-      if (formed > .02) {
-        ctx.strokeStyle = 'rgba(55,169,255,' + ((.1 + depth * .065) * formed) + ')';
-        ctx.beginPath();
-        members.forEach(i => {
-          const p = projected[i], next = projected[Math.floor(i / cols) * cols + (i + 1) % cols], below = projected[i + cols];
-          ctx.moveTo(p.x, p.y); ctx.lineTo(next.x, next.y);
-          if (below) { ctx.moveTo(p.x, p.y); ctx.lineTo(below.x, below.y); }
-        });
-        ctx.stroke();
-      }
-      ctx.fillStyle = 'rgba(85,197,255,' + (.25 + depth * .18) + ')';
-      ctx.beginPath();
-      members.forEach(i => { const p = projected[i], r = depth > 2 ? 1.65 : .9; ctx.moveTo(p.x + r, p.y); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); });
-      ctx.fill();
-    }
-    if (formed > .98 && !reduce) {
-      for (const pulse of pulses) {
-        const count = pulse.ring ? cols : rows - 1;
-        for (let tail = 0; tail < 6; tail++) {
-          const at = ((pulse.at - tail * .012) % 1 + 1) % 1 * count;
-          const a = Math.floor(at), mix = at - a;
-          const from = pulse.ring ? projected[pulse.lane * cols + a % cols] : projected[a * cols + pulse.lane];
-          const to = pulse.ring ? projected[pulse.lane * cols + (a + 1) % cols] : projected[Math.min(rows - 1, a + 1) * cols + pulse.lane];
-          const depthFade = .35 + (from.z + 1) * .32;
-          ctx.fillStyle = (pulse.red ? 'rgba(255,83,101,' : 'rgba(190,235,255,') + ((1 - tail / 6) * depthFade) + ')';
-          ctx.beginPath(); ctx.arc(from.x + (to.x - from.x) * mix, from.y + (to.y - from.y) * mix, tail ? 1.6 : 2.6, 0, Math.PI * 2); ctx.fill();
-        }
-      }
-    }
-    // Orbital arc gives the network depth without expensive blur filters.
-    ctx.save(); ctx.globalAlpha = formed; ctx.translate(width / 2, height / 2); ctx.rotate(-.65 + current.x * .1);
-    ctx.strokeStyle = 'rgba(255,65,87,.4)'; ctx.lineWidth = .75;
-    ctx.beginPath(); ctx.ellipse(0, 0, radius * 1.21, radius * .4, 0, 0, Math.PI * 2); ctx.stroke();
-    const orbit = reduce ? 1.7 : time * .0003;
-    ctx.fillStyle = '#ff5365'; ctx.beginPath(); ctx.arc(Math.cos(orbit) * radius * 1.21, Math.sin(orbit) * radius * .4, 3, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-  }
-  function tick(now) {
-    frame = 0;
-    if (!visible || document.hidden || reduce) return;
-    if (last && now - last < (compact ? 32 : 15)) { frame = requestAnimationFrame(tick); return; }
-    const elapsed = Math.min(now - (last || now), 50); last = now; time += elapsed;
-    for (const pulse of pulses) pulse.at = (pulse.at + pulse.speed * elapsed) % 1;
-    current.x += (pointer.x - current.x) * .04; current.y += (pointer.y - current.y) * .04;
-    draw(); frame = requestAnimationFrame(tick);
-  }
-  function sync() {
-    if (frame) cancelAnimationFrame(frame);
-    frame = 0; last = 0;
-    if (reduce) { current = { x: 0, y: 0 }; cursor = null; draw(); }
-    else if (visible && !document.hidden) frame = requestAnimationFrame(tick);
-  }
-  art.addEventListener('pointermove', event => {
-    if (event.pointerType === 'touch' || reduce) return;
-    const rect = art.getBoundingClientRect();
-    cursor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    pointer = { x: cursor.x / rect.width - .5, y: cursor.y / rect.height - .5 };
-  }, { passive: true });
-  art.addEventListener('pointerleave', () => { pointer = { x: 0, y: 0 }; cursor = null; });
-  art.addEventListener('click', () => { if (!reduce) born = time; });
-  addEventListener('portfolio:motion', sync);
-  document.addEventListener('visibilitychange', sync);
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(art);
-  new ResizeObserver(resize).observe(art);
-  resize(); art.classList.add('canvas-ready'); sync();
-}
-// Let the document paint before initializing the decorative canvas.
-requestAnimationFrame(() => requestAnimationFrame(() => {
-  if ('requestIdleCallback' in window) requestIdleCallback(initNetwork, { timeout: 600 });
-  else setTimeout(initNetwork, 60);
-}));
-
 /* Cinematic layer: a WebGL world behind the page and a motion scene per project.
    Both load after first paint and the page is complete without them. */
+/* Story: each section is a scene. The particle protagonist morphs between them, and the HUD names the shot. */
+const scenes = [
+  { id: 'top', shape: { type: 'sphere' }, x: .46, y: .02, scale: 1.05, dim: 1 },
+  { id: 'impact', shape: { type: 'wave' }, x: 0, y: -.25, scale: 1.5, dim: .5 },
+  { id: 'experience', shape: { type: 'helix' }, x: .62, y: 0, scale: 1, dim: .6 },
+  { id: 'ai', shape: { type: 'network' }, x: .5, y: .1, scale: 1.1, dim: .7 },
+  { id: 'work', shape: { type: 'grid' }, x: 0, y: 0, scale: 1.5, dim: .22 },
+  { id: 'lab', shape: { type: 'rings' }, x: -.55, y: 0, scale: 1, dim: .55 },
+  { id: 'about', shape: { type: 'text', text: 'dg.' }, x: .5, y: .15, scale: 1, dim: .5 },
+  { id: 'contact', shape: { type: 'sphere' }, x: .55, y: 0, scale: 1.2, dim: .8 }
+];
+const hudTime = $('.hud-time'), hudScene = $('.hud-scene');
+let tops = [], sceneIndex = -1;
+function measureScenes() { tops = scenes.map(scene => document.getElementById(scene.id).getBoundingClientRect().top + scrollY); }
+function stage(y) {
+  if (!tops.length) return;
+  const focus = y + innerHeight * .5;
+  let index = 0;
+  while (index < scenes.length - 1 && focus >= tops[index + 1]) index++;
+  // The morph happens in the last third of each scene, so shapes hold still while a section is read.
+  const next = tops[index + 1] ?? root.scrollHeight;
+  const through = clamp((focus - tops[index]) / Math.max(1, next - tops[index]));
+  const morph = index < scenes.length - 1 ? clamp((through - .66) / .34) : 0;
+  const eased = morph * morph * (3 - 2 * morph);
+  if (fx.particles) {
+    const from = scenes[index], to = scenes[Math.min(index + 1, scenes.length - 1)], narrow = innerWidth < 901;
+    const mix = key => from[key] + (to[key] - from[key]) * eased;
+    fx.particles.setShape(index + morph);
+    fx.particles.setAnchor(narrow ? 0 : mix('x'), narrow ? (index ? 0 : -.3) : mix('y'), mix('scale') * (narrow ? .8 : 1));
+    fx.particles.setDim(mix('dim') * (narrow && index ? .28 : 1));
+  }
+  const frames = Math.floor(y / 4.2), pad = value => String(value).padStart(2, '0');
+  hudTime.textContent = pad(Math.floor(frames / 86400) % 100) + ':' + pad(Math.floor(frames / 1440) % 60) + ':' + pad(Math.floor(frames / 24) % 60) + ':' + pad(frames % 24);
+  if (index !== sceneIndex) { sceneIndex = index; hudScene.textContent = 'SCENE ' + pad(index + 1) + ' / ' + scenes[index].id.toUpperCase(); }
+}
+addEventListener('resize', measureScenes);
+addEventListener('load', () => { measureScenes(); queue(); });
+if ('ResizeObserver' in window) new ResizeObserver(() => { measureScenes(); queue(); }).observe(document.body);
+measureScenes();
+
+/* Wheel smoothing for notched mouse wheels only; trackpads, touch and keyboards keep native scrolling. */
+let glideTarget = scrollY, glideId = 0, stalled = 0;
+function glide() {
+  const before = scrollY, distance = glideTarget - before;
+  if (Math.abs(distance) < .6 || stalled > 4) { glideId = 0; stalled = 0; return; }
+  scrollTo({ top: before + distance * .13, behavior: 'instant' });
+  stalled = Math.abs(scrollY - before) < .05 ? stalled + 1 : 0;
+  glideId = requestAnimationFrame(glide);
+}
+addEventListener('wheel', event => {
+  if (reduce || !finePointer.matches || event.ctrlKey || event.deltaMode !== 0 || Math.abs(event.deltaY) < 50 || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+  event.preventDefault();
+  if (!glideId) glideTarget = scrollY;
+  glideTarget = clamp(glideTarget + event.deltaY, 0, root.scrollHeight - innerHeight);
+  if (!glideId) glideId = requestAnimationFrame(glide);
+}, { passive: false });
+
 const moods = { top: 'blue', impact: 'blue', experience: 'ice', ai: 'violet', work: 'blue', lab: 'red', about: 'ice', contact: 'red' };
-const fx = { world: null, scenes: [] };
+const fx = { world: null, particles: null, scenes: [], still: false };
 addEventListener('portfolio:motion', () => {
   fx.world?.setReduced(reduce || fx.still);
+  fx.particles?.setReduced(reduce);
   fx.scenes.forEach(scene => scene.setReduced(reduce));
 });
 function initFx() {
   const compact = matchMedia('(max-width:600px)').matches;
+  import('./fx/particles.js').then(module => {
+    fx.particles = module.mountParticles($('#particles'), { reduced: reduce, compact, shapes: scenes.map(scene => scene.shape) });
+    if (!fx.particles) return;
+    $('.hero-art').classList.add('canvas-ready');
+    root.classList.add('particles-ready');
+    stage(scrollY);
+    // Replay the entrance once the intro shutters open.
+    if (root.classList.contains('intro-on') && !reduce) setTimeout(() => fx.particles.burst(), 1450);
+  }).catch(() => {}).finally(() => root.classList.add('fx-done'));
   import('./fx/world.js').then(module => {
     const canvas = $('#world');
     fx.world = module.mountWorld(canvas, { reduced: reduce, compact });
@@ -450,3 +374,5 @@ function initFx() {
   }).catch(() => {});
 }
 requestAnimationFrame(() => setTimeout(initFx, 120));
+
+frame();

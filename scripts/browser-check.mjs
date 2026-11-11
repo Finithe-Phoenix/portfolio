@@ -27,7 +27,7 @@ try{
   new PerformanceObserver(list=>{for(const e of list.getEntries())window.__perf.longTasks.push(e.duration);}).observe({type:'longtask',buffered:true});
  });
  await page.goto(base);
- await page.locator('.canvas-ready').waitFor();
+ await page.locator('html.fx-done').waitFor({state:'attached'});
  await page.waitForTimeout(1100);
  assert.equal(await page.locator('h1').count(),1);
  assert.ok(await page.locator('h1').isVisible());

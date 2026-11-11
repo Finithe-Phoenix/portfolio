@@ -86,11 +86,11 @@ test('motion never hides content without JavaScript and honours reduced motion',
  assert.ok(!/(^|[},\n])\.manifesto-text span\{[^}]*opacity:\.\d/.test(css),'Manifesto dimmed before JS');
 });
 test('static delivery stays within source budgets',async()=>{
- const budgets={'index.html':62000,'es/index.html':64000,'pt/index.html':64000,'styles.css':50000,'script.js':28000,'lab.mjs':2000,'fx/world.js':40000,'fx/scenes.js':90000};
+ const budgets={'index.html':62000,'es/index.html':64000,'pt/index.html':64000,'styles.css':56000,'script.js':28000,'lab.mjs':2000,'fx/world.js':60000,'fx/scenes.js':90000,'fx/particles.js':60000};
  for(const [path,max] of Object.entries(budgets))assert.ok((await stat(resolve(root,path))).size<max,path+' exceeds budget');
 });
-test('the published effects folder contains only the two effect modules',async()=>{
- assert.deepEqual((await readdir(resolve(root,'fx'))).sort(),['scenes.js','world.js']);
+test('the published effects folder contains only the three effect modules',async()=>{
+ assert.deepEqual((await readdir(resolve(root,'fx'))).sort(),['particles.js','scenes.js','world.js']);
 });
 test('release manifest identifies the artifact source revision',async()=>{
  const release=JSON.parse(await readFile(resolve(root,'release.json'),'utf8'));

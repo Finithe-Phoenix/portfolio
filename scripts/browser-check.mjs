@@ -39,9 +39,9 @@ try{
  await page.waitForTimeout(2600);
  await page.screenshot({path:'test-results/hero.png'});
  // Sections reveal on scroll; walk the page so the full-page capture shows every section.
- const revealAll=async target=>{const total=await target.evaluate(()=>document.documentElement.scrollHeight);for(let y=0;y<total;y+=600){await target.evaluate(top=>scrollTo({top,behavior:'instant'}),y);await target.waitForTimeout(120);}await target.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await target.waitForTimeout(900);};
+ const revealAll=async target=>{const total=await target.evaluate(()=>document.documentElement.scrollHeight);for(let y=0;y<total;y+=600){await target.evaluate(top=>new Promise(done=>{scrollTo({top,behavior:'instant'});requestAnimationFrame(()=>requestAnimationFrame(()=>done()));}),y);await target.waitForTimeout(120);}await target.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await target.waitForTimeout(900);};
  await revealAll(page);
- assert.equal(await page.locator('.reveal:not(.in)').count(),0,'Every section reveals after scrolling');
+ assert.deepEqual(await page.locator('.reveal:not(.in)').evaluateAll(nodes=>nodes.map(n=>({class:n.className,text:n.textContent.slice(0,80)}))),[],'Every section reveals after scrolling');
  assert.equal(await page.locator('.count').first().textContent(),'7');
  await page.screenshot({path:'test-results/desktop.png',fullPage:true});
  check('Scroll reveals every section and counters settle on their real values');

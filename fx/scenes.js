@@ -3,7 +3,7 @@ export const sceneKinds = ['translator', 'fleet', 'payments', 'clinic', 'operati
 
 const TAU = Math.PI * 2;
 const FONT = '"Cascadia Code", Consolas, monospace';
-const ICE = '#95ddff', MUTED = '#acbdd2', RED = '#ff5365', GREEN = '#77e6be';
+const ICE = '#95ddff', MUTED = '#acbdd2', RED = '#ff5365', BLUE = '#55c5ff';
 const clamp = x => Math.max(0, Math.min(1, x));
 const ease = x => { x = clamp(x); return x * x * (3 - 2 * x); };
 const ramp = (p, a, b) => ease((p - a) / (b - a));
@@ -59,7 +59,7 @@ function painter(ctx, accent) {
     ctx.beginPath(); ctx.arc(x, y, r, start, start + TAU * Math.max(.0001, fraction));
     ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round'; ctx.stroke();
   };
-  const check = (x, y, color = GREEN, s = 1) => line([[x - 4 * s, y], [x - s, y + 3 * s], [x + 5 * s, y - 4 * s]], color, 1.6);
+  const check = (x, y, color = BLUE, s = 1) => line([[x - 4 * s, y], [x - s, y + 3 * s], [x + 5 * s, y - 4 * s]], color, 1.6);
   const packet = (points, t, color = accent) => {
     const lengths = points.slice(1).map((p, i) => Math.hypot(p[0] - points[i][0], p[1] - points[i][1]));
     let distance = clamp(t) * lengths.reduce((a, b) => a + b, 0);
@@ -150,10 +150,10 @@ function fleet(d, p, still) {
   box(282, 169, 85, 4, '#263b4e', null, 2);
   if (progress > 0) box(282, 169, 85 * progress, 4, accent, null, 2);
   if (still || p > .8) {
-    check(359, 185); text('VERIFIED', 282, 185, 7, GREEN);
+    check(359, 185); text('VERIFIED', 282, 185, 7, BLUE);
     if (!still && p < .88) {
       ctx.save(); ctx.globalAlpha *= 1 - ramp(p, .8, .88);
-      ring(359, 185, 6 + ramp(p, .8, .88) * 8, 1, GREEN); ctx.restore();
+      ring(359, 185, 6 + ramp(p, .8, .88) * 8, 1, BLUE); ctx.restore();
     }
   }
   text('DISTRIBUTED / IN SYNC', 155, 235, 8, MUTED, 'center');
@@ -266,8 +266,8 @@ function trading(d, p, still) {
   const priceY = 124 + Math.sin(TAU * p * 2) * 12;
   ctx.setLineDash([3, 4]); line([[30, priceY], [246, priceY]], ICE, .8, .7); ctx.setLineDash([]);
   const buy = still ? 1 : ramp(p, .3, .4) * (1 - ramp(p, .8, .9));
-  ctx.globalAlpha *= buy; box(91, 154, 39, 18, '#173b42', GREEN, 4); text('BUY', 110, 164, 8, GREEN, 'center');
-  line([[110, 154], [110, 145]], GREEN); dot(110, 144, 2, GREEN); ctx.restore();
+  ctx.globalAlpha *= buy; box(91, 154, 39, 18, '#173b42', BLUE, 4); text('BUY', 110, 164, 8, BLUE, 'center');
+  line([[110, 154], [110, 145]], BLUE); dot(110, 144, 2, BLUE); ctx.restore();
   text('ORDER BOOK', 280, 68, 8, ICE);
   text('PRICE', 280, 85, 7, MUTED); text('SIZE', 370, 85, 7, MUTED, 'right');
   for (let i = 0; i < 8; i++) {
@@ -292,16 +292,16 @@ function course(d, p, still) {
   text(first ? 'dev@example.test' : 'you@example.test', 44, 138, 9, first ? ICE : '#67819b');
   box(35, 162, 11, 11, second ? '#194c61' : '#102237', second ? accent : '#39516b', 2);
   if (second) check(40, 168, ICE, .6); text('Enable test mode', 54, 168, 8, MUTED);
-  box(35, 190, 201, 25, third ? '#194c4a' : '#1a4964', third ? GREEN : accent, 4);
-  text(third ? 'WORKSPACE READY' : 'CREATE WORKSPACE', 135, 203, 8, third ? GREEN : ICE, 'center');
+  box(35, 190, 201, 25, third ? '#173951' : '#1a4964', third ? BLUE : accent, 4);
+  text(third ? 'WORKSPACE READY' : 'CREATE WORKSPACE', 135, 203, 8, third ? BLUE : ICE, 'center');
   text('TEST RUNNER', 274, 68, 8, ICE);
   const labels = ['Fill form', 'Select mode', 'Submit'];
   [first, second, third].forEach((done, i) => {
-    const y = 101 + i * 31; ring(279, y, 6, 1, done ? '#345c55' : '#294058');
-    if (done) check(279, y, GREEN, .65); else text(String(i + 1), 279, y, 7, MUTED, 'center');
+    const y = 101 + i * 31; ring(279, y, 6, 1, done ? '#345575' : '#294058');
+    if (done) check(279, y, BLUE, .65); else text(String(i + 1), 279, y, 7, MUTED, 'center');
     text(labels[i], 292, y, 8, done ? ICE : MUTED);
   });
-  line([[273, 185], [369, 185]], '#294058'); text(`${Number(first) + Number(second) + Number(third)} OF 3 PASSED`, 273, 204, 8, third ? GREEN : MUTED);
+  line([[273, 185], [369, 185]], '#294058'); text(`${Number(first) + Number(second) + Number(third)} OF 3 PASSED`, 273, 204, 8, third ? BLUE : MUTED);
   const route = [[206, 108], [151, 138], [41, 168], [144, 202], [219, 219]];
   let position;
   if (still) position = route[4];
@@ -375,7 +375,7 @@ const titles = {
 /** Mount inactive. The host owns intersection visibility and reduced-motion preference. */
 export function mountScene(canvas, kind, options) {
   const noop = () => {};
-  const inert = { setReduced: noop, setActive: noop, destroy: noop };
+  const inert = { setReduced: noop, setActive: noop, setShot: noop, destroy: noop };
   let ctx, view, doc;
   try {
     ctx = canvas?.getContext('2d');
@@ -386,7 +386,7 @@ export function mountScene(canvas, kind, options) {
 
   let active = false, reduced = false, destroyed = false, failed = false;
   let observer, raf = null, previous = null, elapsed = 0, width = 0, height = 0, ratio = 1;
-  let accent = '#55c5ff';
+  let accent = '#55c5ff', shot = null;
   const safely = fn => (...args) => { try { return fn(...args); } catch { /* Decorative content must never break its host. */ } };
   const stop = safely(() => {
     if (raf !== null) view.cancelAnimationFrame(raf);
@@ -402,7 +402,7 @@ export function mountScene(canvas, kind, options) {
   const tick = safely(now => {
     raf = null;
     if (!running()) { previous = null; paint(); return; }
-    if(previous!==null&&now-previous<16){raf=view.requestAnimationFrame(tick);return;}
+    if(previous!==null&&now-previous<(options?.maxFps===30?32:16)){raf=view.requestAnimationFrame(tick);return;}
     if (previous !== null) elapsed += Math.max(0, now - previous);
     previous = now;
     paint();
@@ -442,7 +442,8 @@ export function mountScene(canvas, kind, options) {
       if (!width || !height) return;
       const still = !active || reduced || !visible();
       const duration = kind === 'fleet' ? 9600 : 8400;
-      const p = still ? .84 : (elapsed % duration) / duration;
+      // A selected shot breathes inside its phase instead of snapping back at a loop seam.
+      const p = shot === null ? (still ? .84 : (elapsed % duration) / duration) : .14 + shot * .22 + (still ? 0 : Math.sin(elapsed / 1600) * .04);
       ctx.setTransform(canvas.width / 400, 0, 0, canvas.height / 250, 0, 0);
       ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.setLineDash([]);
       ctx.fillStyle = '#0a1220'; ctx.fillRect(0, 0, 400, 250);
@@ -455,7 +456,7 @@ export function mountScene(canvas, kind, options) {
       // their next opening pose, keeping the illustration present at the seam.
       const periodic = kind === 'translator' || kind === 'trading';
       const reset = still || periodic ? 0 : ramp(p, .92, 1);
-      ctx.save(); ctx.globalAlpha = 1 - reset; scenes[kind](d, p, still); ctx.restore();
+      ctx.save(); ctx.globalAlpha = 1 - reset; scenes[kind](d, p, still && shot === null); ctx.restore();
       if (reset > 0) {
         ctx.save(); ctx.globalAlpha = reset; scenes[kind](d, 0, false); ctx.restore();
       }
@@ -468,6 +469,7 @@ export function mountScene(canvas, kind, options) {
     resize();
   } catch { destroy(); return inert; }
   return {
+    setShot: safely(value => { shot = Number.isInteger(value) ? Math.max(0, Math.min(3, value)) : null; elapsed = 0; sync(); }),
     setReduced: safely(value => { if (!destroyed && reduced !== Boolean(value)) { reduced = Boolean(value); sync(); } }),
     setActive: safely(value => { if (!destroyed && active !== Boolean(value)) { active = Boolean(value); sync(); } }),
     destroy

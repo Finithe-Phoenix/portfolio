@@ -2,6 +2,16 @@
 
 Date: 2026-11-10. Branch: feat/epic-motion-i18n.
 
+## Project cinema continuation — feat/project-cinema
+
+Eight project narratives now have four authored scenes each in EN/ES/PT. The viewer uses the existing eight distinct Canvas diagrams with selected timeline phases, optical framing and transform/opacity transitions. Source and demo links remain available throughout. Career claims and measured project outcomes were not expanded; provenance is in CONTENT_SOURCES.md.
+
+Local verification: ten Node/static cases, eighteen existing browser checks, eight chapter/navigation checks, and eight theater checks passed. Theater coverage includes all 32 scenes in all six locale/viewport combinations (390/1440 px), keyboard tabs/Home/End, rapid scene changes, manual/optional playback with a clock-advanced automatic step, focus restoration, Back/Forward, reload, source links and full cases. The final paths also cover 320/360/430 px dialog overflow and native story details without JavaScript. axe reports no automated WCAG A/AA violations for each open theater. Screenshots in test-results/cinema-*.png were inspected on mobile and desktop. Physical Safari/iPhone and screen readers remain outside this Chromium validation.
+
+The viewer's 9.9 KB module and 7.2 KB stylesheet are requested only on opening a story; the browser suite asserts this. Existing HTML/CSS/entry-script budgets were retained. Mobile theater Canvas is capped at 30 updates/s and pauses offscreen or while hidden. Background world/particles/project loops and quality sampling pause during the theater. Reduced motion disables autoplay and moving transitions. This is bounded implementation/functional evidence, not a fresh field Core Web Vitals or physical-device FPS measurement.
+
+The no-JavaScript mobile header now scrolls with the document, and native fragments navigate immediately, preventing covered summaries and conflicting long smooth scrolls. The full-page screenshot walk waits for two actual animation frames per scroll step before testing reveal completeness; the original completeness assertion remains in place with better diagnostics. Publication remains gated by the complete suite, followed by verification of the exact release revision and all public resources, including the two lazy theater files.
+
 ## Executed locally
 
 - Continuation from `e9381a4`: ten Node cases pass. Browser coverage now includes chapter navigation by keyboard and the disabled sculpture replay under reduced motion. Optical portals use the existing WebGL pass; palette variants stay within blue/red. The quality governor suspends sampling while hidden/reduced and applies its still-frame fallback to world, sculpture and project scenes together. Physical GPU/device performance remains unverified.
@@ -43,4 +53,3 @@ These are lab measurements on a shared machine, not field data. Mobile LCP varie
 - Author read-through of every career statement, and a native reader for pt.json.
 - Physical-device Safari/iPhone and screen-reader review.
 - Live traffic for field Core Web Vitals.
-- Remote CI and public deployment verification.

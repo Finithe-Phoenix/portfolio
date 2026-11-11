@@ -41,7 +41,7 @@ The source snapshot was recovered via the GitHub connector because direct Git HT
 
 ## Budgets and edge cases
 
-Raw file budgets: HTML 52–54 KB per locale, CSS 40 KB, UI JavaScript 20 KB, model 2 KB.
+Raw file budgets: HTML 62 KB English / 64 KB Spanish and Portuguese, CSS 56 KB, UI JavaScript 28 KB, model 2 KB. The on-demand project theater has separate budgets of 12 KB JavaScript and 9 KB CSS; neither is fetched on the initial journey.
 Target: LCP <=2.5s, CLS <=0.1; synthetic event-duration samples <=200ms. Field INP and percentile-75 Core Web Vitals need real traffic and are not asserted by local measurements.
 Target rendering: about 60fps on the desktop reference; record measured frame durations rather than claiming all devices achieve that.
 
@@ -51,6 +51,7 @@ On compact screens, the static scene renders first. A localized control enables 
 No JavaScript: all editorial content, navigation, native details and profile remain accessible; lab remains an explained diagram.
 Canvas unavailable: static SVG remains visible.
 Deep links open their relevant case after reload. Native summaries retain keyboard interaction.
+Eight `project.story` records provide four localized scenes each. They are rendered as native details and enhanced on demand by a modal theater. Project links are stable fragments; scene selection does not add history entries. A native dialog contains focus; Escape closes and restores the trigger after history traversal. A single active 2D project canvas replaces the background motion while the theater is open. Scene changes select a phase of the existing diagram, with transform/opacity transitions. Autoplay is opt-in and pauses on manual input, visibility loss, close or reduced motion. On the no-JavaScript mobile path the expanded navigation scrolls with the document, and fragment navigation is immediate so it cannot cover or delay the story summary.
 Mobile menu closes on Escape (restoring focus), link selection and outside click.
 
 ## Publishing and rollback

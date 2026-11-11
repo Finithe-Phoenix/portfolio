@@ -29,6 +29,8 @@ Deliberate omissions: phone number (guarded by a test), salary or availability, 
 
 Cases distinguish documented implementation from this portfolio's validation. The explanations of tradeoffs are editorial interpretations of repository structure. Original system-map illustrations are labeled as maps and are not represented as application screenshots.
 
+The four-scene project narratives reuse the case material above for Prisma, Clinic and DevOps. The other five narratives are editorial explanations of the already documented project summaries: coordination and coverage gates (Fleet), transfer states and simulated core (NovaPay), synthetic operator workflows (NEXUS), demo adapters and terminal context (ChadWallet), and runnable multi-language practice (Playwright). They add no measured business outcome, coverage result, production integration or new career credential. Each theater retains source links and labels its diagram as illustrative. All eight stories have equivalent English, Spanish and Portuguese structure.
+
 ## Translations
 
 Spanish (Mexico) and Brazilian Portuguese were machine-translated from en.json and reviewed for structure and terminology. A native Portuguese reader has not reviewed pt.json.

@@ -117,7 +117,12 @@ export async function mountCinema(copy) {
  $('.cinema-picker select').addEventListener('change',e=>changeProject(Number(e.target.value)));
  $('.cinema-project-prev').addEventListener('click',()=>changeProject(project-1));
  $('.cinema-project-next').addEventListener('click',()=>changeProject(project+1));
- $('.cinema-links').addEventListener('click',event=>{if(event.target.closest('a[href^="#case-"]'))close(false);});
+ $('.cinema-links').addEventListener('click',event=>{
+  const link=event.target.closest('a[href^="#case-"]');if(!link)return;
+  close(false);
+  const target=document.getElementById(link.hash.slice(1));
+  if(target){target.open=true;requestAnimationFrame(()=>target.querySelector('summary')?.focus({preventScroll:true}));}
+ });
  // Let the existing chapter router handle full-case links after closing the theater.
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();scene?.setActive(dialog.open&&!document.hidden&&stageVisible);});
  if('IntersectionObserver' in window)new IntersectionObserver(entries=>{stageVisible=entries[0].isIntersecting;scene?.setActive(dialog.open&&stageVisible&&!document.hidden);},{root:$('.cinema-body')}).observe($('.cinema-stage'));

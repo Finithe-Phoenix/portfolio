@@ -55,6 +55,7 @@ try{
   assert.equal(await page.locator('#journey-select').inputValue(),'work');
   await page.locator('.cinema-links a[href^="#case-"]').click();
   await page.locator('#case-prisma[open]').waitFor();assert.equal(await page.locator('.cinema[open]').count(),0);
+  await page.waitForFunction(()=>document.activeElement.matches('#case-prisma summary'));
   assert.ok(page.url().endsWith('#case-prisma'));
   assert.deepEqual(errors,[]);
   results.push({locale:lang||'en',width,projects:8,scenes:32,status:'passed'});

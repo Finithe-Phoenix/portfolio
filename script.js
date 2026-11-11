@@ -1,3 +1,5 @@
+import { mountJourney } from './journey.mjs';
+let journey;
 import { scenarioFor, sampleLatency } from './lab.mjs';
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
@@ -72,6 +74,8 @@ revealCase();
 
 /* Scroll reveals, counters and the active navigation link. */
 if ('IntersectionObserver' in window) {
+  const visibleMotion=new IntersectionObserver(entries=>entries.forEach(entry=>entry.target.classList.toggle('motion-visible',entry.isIntersecting)));
+  document.querySelectorAll('main section').forEach(section=>visibleMotion.observe(section));
   const reveals = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) return;
     entry.target.classList.add('in');
@@ -106,68 +110,30 @@ if ('IntersectionObserver' in window) {
 const timeline = $('.timeline');
 const manifesto = $('.manifesto-text'), manifestoWords = $$('.manifesto-text span');
 const gallery = $('.gallery'), track = $('.gallery-track'), sticky = $('.gallery-sticky'), cards = $$('.project-card');
-const galleryCount = $('.gallery-count b');
-const marquees = $$('.marquee-track');
-let travel = 0, pinTop = 0, pinned = false, centers = [], lastY = scrollY, velocity = 0, lit = 0, loopId = 0;
-function layoutGallery() {
-  pinned = !reduce && finePointer.matches && innerWidth > 900 && innerHeight >= 640;
-  gallery.classList.toggle('pinned', pinned);
-  cards.forEach(card => { card.style.removeProperty('--tilt'); card.style.removeProperty('--zoom'); });
-  track.style.removeProperty('--gx'); track.style.removeProperty('--gs');
-  if (!pinned) { gallery.style.removeProperty('--gallery-height'); return; }
-  sticky.scrollLeft = 0;
-  pinTop = parseFloat(getComputedStyle(sticky).top) || 0;
-  const box = track.getBoundingClientRect();
-  centers = cards.map(card => { const r = card.getBoundingClientRect(); return r.left + r.width / 2 - box.left; });
-  travel = Math.max(0, track.offsetWidth - innerWidth);
-  gallery.style.setProperty('--gallery-height', Math.round(sticky.offsetHeight + travel) + 'px');
+const progressBar=$('.scroll-progress'),worldCanvas=$('#world');
+let lit=0,loopId=0,geometry={height:1,lineTop:0,lineHeight:1,wordTop:0,wordHeight:1};
+function measureGeometry(){
+ const y=scrollY,l=timeline.getBoundingClientRect(),w=manifesto.getBoundingClientRect();
+ geometry={height:root.scrollHeight,lineTop:l.top+y,lineHeight:l.height,wordTop:w.top+y,wordHeight:w.height};
 }
+function layoutGallery(){gallery.classList.remove('pinned');gallery.style.removeProperty('--gallery-height');track.style.removeProperty('--gx');track.style.removeProperty('--gs');}
 function frame() {
   loopId = 0;
-  const y = scrollY;
-  velocity += ((y - lastY) - velocity) * .35; lastY = y;
-  const scrollable = root.scrollHeight - innerHeight;
-  root.style.setProperty('--scroll', scrollable > 0 ? clamp(y / scrollable).toFixed(4) : 0);
-  root.style.setProperty('--world', (1 - .66 * clamp(y / (innerHeight * .8))).toFixed(3));
+  const y=scrollY,span=geometry.height-innerHeight;
+  const target=reduce?manifestoWords.length:Math.round(clamp((innerHeight*.82-(geometry.wordTop-y))/(geometry.wordHeight+innerHeight*.3))*manifestoWords.length);
+  progressBar.style.transform='scaleX('+(span>0?clamp(y/span):0)+')';
+  if(root.classList.contains('world-ready'))worldCanvas.style.opacity=String(journey?.guided ? (journey.index===0?1:.34) : 1-.66*clamp(y/(innerHeight*.8)));
+  const fill=timeline.querySelector('.tl-line i');
+  if(fill)fill.style.transform='scaleY('+(reduce?1:clamp((innerHeight*.62-(geometry.lineTop-y))/Math.max(1,geometry.lineHeight)))+')';
+  while(lit<target)manifestoWords[lit++].classList.add('on');
   stage(y);
-  const line = timeline.getBoundingClientRect();
-  timeline.style.setProperty('--tl', reduce ? 1 : clamp((innerHeight * .62 - line.top) / line.height).toFixed(4));
-  // Manifesto words light once and stay lit, so the sentence is never left half-dimmed.
-  const words = manifesto.getBoundingClientRect();
-  const target = reduce ? manifestoWords.length : Math.round(clamp((innerHeight * .82 - words.top) / (words.height + innerHeight * .3)) * manifestoWords.length);
-  while (lit < target) manifestoWords[lit++].classList.add('on');
-  manifestoWords.forEach((word, i) => word.classList.toggle('spark', !reduce && lit < manifestoWords.length && i >= lit - 2 && i < lit));
-  if (pinned) {
-    const progress = travel ? clamp((pinTop - gallery.getBoundingClientRect().top) / travel) : 0;
-    const shift = -progress * travel;
-    track.style.setProperty('--gx', shift.toFixed(1) + 'px');
-    track.style.setProperty('--gs', clamp(velocity * -.035, -3.5, 3.5).toFixed(2) + 'deg');
-    gallery.style.setProperty('--gp', progress.toFixed(4));
-    centers.forEach((center, i) => {
-      const offset = (center + shift - innerWidth / 2) / innerWidth, distance = Math.abs(offset);
-      cards[i].style.setProperty('--tilt', (clamp(offset, -1, 1) * -11).toFixed(2) + 'deg');
-      cards[i].style.setProperty('--zoom', (1 - Math.min(distance, 1) * .09).toFixed(3));
-    });
-    galleryCount.textContent = String(Math.round(progress * (cards.length - 1)) + 1).padStart(2, '0');
-  }
-  // The marquee picks up speed with the scroll.
-  const boost = reduce ? 1 : 1 + Math.min(Math.abs(velocity) * .12, 7);
-  marquees.forEach(row => row.getAnimations().forEach(animation => { animation.playbackRate = boost; }));
-  if (Math.abs(velocity) > .05) queue();
 }
+
 function queue() { if (!loopId) loopId = requestAnimationFrame(frame); }
 addEventListener('scroll', queue, { passive: true });
 addEventListener('resize', () => { layoutGallery(); queue(); });
 addEventListener('portfolio:motion', () => { layoutGallery(); queue(); });
 finePointer.addEventListener('change', () => { layoutGallery(); queue(); });
-// Keyboard users reach every card: focusing one scrolls the page to where the gallery shows it.
-track.addEventListener('focusin', event => {
-  const index = cards.indexOf(event.target.closest('.project-card'));
-  if (!pinned || index < 0 || !travel) return;
-  sticky.scrollLeft = 0;
-  const wanted = clamp((centers[index] - innerWidth / 2) / travel);
-  scrollTo({ top: gallery.getBoundingClientRect().top + scrollY - pinTop + wanted * travel, behavior: 'instant' });
-});
 layoutGallery();
 
 /* Pointer effects: ambient light, card tilt and magnetic buttons. Fine pointers only. */
@@ -267,16 +233,16 @@ const scenes = [
 ];
 const hudTime = $('.hud-time'), hudScene = $('.hud-scene');
 let tops = [], sceneIndex = -1;
-function measureScenes() { tops = scenes.map(scene => document.getElementById(scene.id).getBoundingClientRect().top + scrollY); }
+function measureScenes() { measureGeometry(); tops = scenes.map(scene => document.getElementById(scene.id).getBoundingClientRect().top + scrollY); }
 function stage(y) {
   if (!tops.length) return;
   const focus = y + innerHeight * .5;
-  let index = 0;
-  while (index < scenes.length - 1 && focus >= tops[index + 1]) index++;
+  let index = journey?.guided ? journey.index : 0;
+  while (!journey?.guided && index < scenes.length - 1 && focus >= tops[index + 1]) index++;
   // The morph happens in the last third of each scene, so shapes hold still while a section is read.
-  const next = tops[index + 1] ?? root.scrollHeight;
+  const next = tops[index + 1] ?? geometry.height;
   const through = clamp((focus - tops[index]) / Math.max(1, next - tops[index]));
-  const morph = index < scenes.length - 1 ? clamp((through - .66) / .34) : 0;
+  const morph = !journey?.guided && index < scenes.length - 1 ? clamp((through - .66) / .34) : 0;
   const eased = morph * morph * (3 - 2 * morph);
   if (fx.particles) {
     const from = scenes[index], to = scenes[Math.min(index + 1, scenes.length - 1)], narrow = innerWidth < 901;
@@ -308,9 +274,9 @@ const chapterLinks = scenes.map((scene,index) => {
   link.title=label; link.textContent=String(index+1).padStart(2,'0');
   chapterNav.append(link); return link;
 });
-const replayButton=document.createElement('button');
+const replayButton=document.querySelector('.sculpture-replay');
 replayButton.className='sculpture-replay';
-replayButton.textContent=chapterCopy[1]; replayButton.disabled=reduce;
+replayButton.disabled=reduce;
 let mobileFxEnabled = false;
 replayButton.addEventListener('click',()=>{
   if(reduce || fx.still)return;
@@ -320,12 +286,14 @@ replayButton.addEventListener('click',()=>{
 document.querySelector('.hero-actions').append(replayButton);
 document.body.append(chapterNav);
 function updateChapters(index) {
+  journey?.sync(index);
   chapterLinks.forEach((link,i)=>{
     if(i===index)link.setAttribute('aria-current','step');
     else link.removeAttribute('aria-current');
   });
 }
-updateChapters(Math.max(0,sceneIndex));
+journey=mountJourney(scenes,text.journey,{onChange(){sceneIndex=-1;measureScenes();queue();}});
+updateChapters(journey.index);
 addEventListener('portfolio:motion', () => {
   fx.world?.setReduced(reduce || fx.still);
   fx.particles?.setReduced(reduce || fx.still);
@@ -336,7 +304,7 @@ function initFx(enableMobile = false) {
   const compact = matchMedia('(max-width:600px)').matches;
   if(compact && !enableMobile){
     root.classList.add('fx-done');
-    replayButton.textContent = root.lang.startsWith('es') ? 'Activar efectos cinematográficos' : root.lang.startsWith('pt') ? 'Ativar efeitos cinematográficos' : 'Enable cinematic effects';
+    replayButton.textContent = text.journey.effects;
     return;
   }
   mobileFxEnabled = compact;
@@ -356,6 +324,7 @@ function initFx(enableMobile = false) {
     fx.world = module.mountWorld(canvas, { reduced: reduce, compact });
     if (!fx.world) return;
     root.classList.add('world-ready');
+    queue();
     // Quality governor: sample frame times; a slow device first drops to a quarter of the pixels,
     // then to a still frame. It only ever steps down.
     let samples = [], previous = 0, settle = 0, probeId = 0, finished = false;
@@ -389,19 +358,26 @@ function initFx(enableMobile = false) {
     }), { rootMargin: '-45% 0px -50% 0px' });
     Object.keys(moods).forEach(id => { const section = document.getElementById(id); if (section) watcher.observe(section); });
   }).catch(() => {});
+
+}
+let projectsLoaded=false;
+function initProjects(){if(projectsLoaded)return;projectsLoaded=true;
   if (!('IntersectionObserver' in window)) return;
   import('./fx/scenes.js').then(module => {
-    const byCanvas = new Map();
-    const watcher = new IntersectionObserver(entries => entries.forEach(entry => byCanvas.get(entry.target)?.setActive(entry.isIntersecting)), { threshold: .15 });
-    $$('.scene').forEach(canvas => {
-      const accent = getComputedStyle(canvas).getPropertyValue('--art-color').trim() || '#55c5ff';
-      const scene = module.mountScene(canvas, canvas.dataset.scene, { reduced: reduce || fx.still, accent });
-      byCanvas.set(canvas, scene); fx.scenes.push(scene);
-      canvas.classList.add('ready');
-      watcher.observe(canvas);
-    });
+    const byCanvas=new Map();
+    const watcher=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      let scene=byCanvas.get(entry.target);
+      if(entry.isIntersecting&&!scene){
+        const accent=getComputedStyle(entry.target).getPropertyValue('--art-color').trim()||'#55c5ff';
+        scene=module.mountScene(entry.target,entry.target.dataset.scene,{reduced:reduce||fx.still,accent});
+        byCanvas.set(entry.target,scene);fx.scenes.push(scene);entry.target.classList.add('ready');
+      }
+      scene?.setActive(entry.isIntersecting);
+    }),{threshold:.15});
+    document.querySelectorAll('.scene').forEach(canvas=>watcher.observe(canvas));
   }).catch(() => {});
 }
+if('IntersectionObserver'in window){const gate=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){initProjects();gate.disconnect();}});gate.observe(document.getElementById('work'));}
 requestAnimationFrame(() => setTimeout(initFx, 120));
 
 frame();

@@ -414,7 +414,7 @@ export function mountWorld(canvas, options = {}) {
     frame = 0;
     if (disposed || lost || reduced || document.hidden || !resources) return;
     // A little tolerance permits 30 fps on both 60 Hz and 120 Hz displays.
-    if (compact && previousTime && now - previousTime < 32) {
+    if (previousTime && now - previousTime < (compact ? 32 : 16)) {
       frame = window.requestAnimationFrame(tick);
       return;
     }
@@ -430,7 +430,7 @@ export function mountWorld(canvas, options = {}) {
     portal += (targetPortal-portal)*ease;
     phase = (phase + dt) % 48;
     flight = (flight + dt * (1.65 + boost * 15)) % 96;
-    size(); // Also catches DPR changes when moving between monitors.
+    // ResizeObserver/window resize own backing-buffer dimensions.
     draw();
     frame = window.requestAnimationFrame(tick);
   }

@@ -57,7 +57,9 @@ export function mountJourney(scenes, copy, options={}) {
  document.addEventListener('click',event=>{
   const link=event.target.closest?.('a[href^="#"]');if(!link||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
   const hash=link.getAttribute('href'),i=findTarget(hash);if(i<0||!guided)return;
-  event.preventDefault();index=i;window.history.pushState(null,'',hash);render(true,true);
+  const storyLink=link.matches('[data-story-trigger]');
+  event.preventDefault();index=i;window.history.pushState(null,'',hash);render(!storyLink,!storyLink);
+  if(storyLink)return;
   const target=document.getElementById(hash.slice(1));
   if(target?.matches('details'))target.open=true;
   if(target&&target!==chapters[index])requestAnimationFrame(()=>target.scrollIntoView({behavior:'instant',block:'start'}));

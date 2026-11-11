@@ -144,6 +144,7 @@ try{
  // Focus is also exercised directly to avoid browser-specific initial tab order.
  await page.locator('.skip-link').focus();
  await page.keyboard.press('Enter');
+ await page.waitForURL('**/#main');
  assert.ok(page.url().endsWith('#main'));
  await page.locator('[data-scenario="failed"]').focus();
  await page.keyboard.press('Enter');

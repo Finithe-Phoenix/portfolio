@@ -32,8 +32,16 @@ try{
  assert.equal(await page.locator('h1').count(),1);
  assert.ok(await page.locator('h1').isVisible());
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
- await page.screenshot({path:'test-results/desktop.png',fullPage:true});
+ assert.equal(await page.locator('html').getAttribute('class'),'anim');
+ await page.waitForTimeout(2600);
  await page.screenshot({path:'test-results/hero.png'});
+ // Sections reveal on scroll; walk the page so the full-page capture shows every section.
+ const revealAll=async target=>{const total=await target.evaluate(()=>document.documentElement.scrollHeight);for(let y=0;y<total;y+=600){await target.evaluate(top=>scrollTo({top,behavior:'instant'}),y);await target.waitForTimeout(120);}await target.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await target.waitForTimeout(900);};
+ await revealAll(page);
+ assert.equal(await page.locator('.reveal:not(.in)').count(),0,'Every section reveals after scrolling');
+ assert.equal(await page.locator('.count').first().textContent(),'7');
+ await page.screenshot({path:'test-results/desktop.png',fullPage:true});
+ check('Scroll reveals every section and counters settle on their real values');
  report.performance.desktop=await page.evaluate(()=>({...window.__perf,resources:performance.getEntriesByType('resource').map(r=>({name:new URL(r.name).pathname,bytes:r.transferSize})),navigation:performance.getEntriesByType('navigation')[0].toJSON()}));
  check('Desktop renders without overflow or blocking loader');
  await page.locator('.project-open').first().click();
@@ -49,9 +57,17 @@ try{
   assert.equal(await page.locator('[data-scenario="'+scenario+'"]').getAttribute('aria-pressed'),'true');
  }
  check('Failure, recovery and normal scenarios update route, latency and selected state');
+ await page.locator('.lab').scrollIntoViewIfNeeded();
+ await page.waitForFunction(()=>Number(document.querySelector('#model-routed').textContent.replace(/D/g,''))>2);
+ check('Simulated traffic runs while the lab is visible');
  await page.locator('.lab').screenshot({path:'test-results/lab.png'});
  await page.locator('.motion-toggle').click();
  assert.equal(await page.locator('html').getAttribute('data-motion'),'reduce');
+ assert.equal(await page.locator('html').getAttribute('class'),'');
+ assert.equal(await page.locator('.reveal').last().evaluate(el=>getComputedStyle(el).opacity),'1');
+ const routedBefore=await page.locator('#model-routed').textContent();
+ await page.waitForTimeout(900);
+ assert.equal(await page.locator('#model-routed').textContent(),routedBefore,'Simulation pauses with reduced motion');
  await page.reload();
  assert.equal(await page.locator('html').getAttribute('data-motion'),'reduce');
  check('Motion preference persists');
@@ -89,7 +105,7 @@ try{
  await page.keyboard.press('Escape');
  assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');
  await page.locator('.menu-toggle').click();
- await page.locator('#main-nav a[href="#thinking"]').click();
+ await page.locator('#main-nav a[href="#lab"]').click();
  assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');
  for(const width of [320,390,768,1024]){
   await page.setViewportSize({width,height:900});
@@ -97,6 +113,7 @@ try{
  }
  await page.setViewportSize({width:390,height:844});
  await page.goto(base);
+ await revealAll(page);
  await page.screenshot({path:'test-results/mobile.png',fullPage:true});
  check('Mobile menu, Escape, anchor navigation and 320–1024px layout');
  await page.keyboard.press('Tab');
@@ -108,6 +125,32 @@ try{
  await page.keyboard.press('Enter');
  assert.equal(await page.locator('#model-route').textContent(),'Standby');
  check('Keyboard skip link and scenario controls');
+ for(const [dir,lang,route] of [['es/','es','Reserva'],['pt/','pt-BR','Reserva']]){
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto(base+dir);
+  assert.equal(await page.locator('html').getAttribute('lang'),lang);
+  assert.ok(await page.locator('h1').isVisible());
+  assert.equal(await page.locator('.lang-switch [aria-current]').getAttribute('lang'),dir.slice(0,2));
+  await page.locator('[data-scenario="failed"]').click();
+  assert.equal(await page.locator('#model-route').textContent(),route);
+  assert.equal(await page.locator('#model-latency').textContent(),'85 ms');
+  for(const width of [320,390,768,1024,1440]){
+   await page.setViewportSize({width,height:900});
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),dir+' overflow at '+width);
+  }
+  await page.setViewportSize({width:1440,height:1000});
+  await revealAll(page);
+  await page.screenshot({path:'test-results/desktop-'+dir.slice(0,2)+'.png',fullPage:true});
+  await page.goto(base+dir+'profile.html');
+  assert.ok(await page.locator('#resume h1').isVisible());
+ }
+ await page.goto(base+'es/');
+ await page.locator('.lang-switch a[lang="pt"]').click();
+ await page.waitForURL('**/pt/');
+ await page.locator('.lang-switch a[lang="en"]').click();
+ await page.waitForURL('**/portfolio/');
+ assert.equal(await page.locator('html').getAttribute('lang'),'en');
+ check('Spanish and Portuguese render, localize the lab and switch languages without overflow');
  await page.goto(base+'profile.html');
  await page.emulateMedia({media:'print'});
  await page.pdf({path:'test-results/daniel-gonzalez-profile.pdf',format:'A4',printBackground:true});
@@ -124,10 +167,13 @@ try{
  if(axePath){
   const axe=require(axePath);
   await page.setViewportSize({width:1440,height:1000});
-  await page.goto(base);
-  await page.addScriptTag({content:axe.source});
-  report.accessibility=await page.evaluate(async()=>{const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}});return {violations:r.violations,incomplete:r.incomplete.map(x=>({id:x.id,impact:x.impact,targets:x.nodes.map(n=>n.target)})),passes:r.passes.length};});
-  assert.equal(report.accessibility.violations.length,0,JSON.stringify(report.accessibility.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))));
+  for(const path of ['','es/','pt/','profile.html']){
+   await page.goto(base+path);
+   if(!path.endsWith('.html'))await revealAll(page);
+   await page.addScriptTag({content:axe.source});
+   report.accessibility=await page.evaluate(async()=>{const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}});return {violations:r.violations,incomplete:r.incomplete.map(x=>({id:x.id,impact:x.impact,targets:x.nodes.map(n=>n.target)})),passes:r.passes.length};});
+   assert.equal(report.accessibility.violations.length,0,path+' '+JSON.stringify(report.accessibility.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))));
+  }
   check('Automated WCAG A/AA checks have no violations');
  }
  assert.deepEqual(errors,[]);

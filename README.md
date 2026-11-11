@@ -1,6 +1,6 @@
 # Daniel González — Clarity through complexity
 
-A static-first professional portfolio: editorial typography, a procedural network, three evidence-linked case studies and an interactive resilience model.
+A static-first professional portfolio in English, Spanish and Portuguese: a procedural hero that resolves chaos into structure, career impact and timeline, an applied-AI pipeline, three evidence-linked case studies and an interactive resilience lab.
 
 ## Run
 
@@ -19,23 +19,26 @@ The browser suite generates desktop/mobile screenshots, a printable profile PDF,
 
 ## Edit
 
-- content/profile.json: identity, project narratives, source links and optional LinkedIn/CV.
-- scripts/build.mjs: generates index.html, profile.html and sitemap.xml.
+- content/profile.json: identity, contact links and the list of locales.
+- content/locales/en.json, es.json, pt.json: every visible string, the experience timeline, impact figures and project narratives. All three files must keep the same structure (enforced by a test).
+- scripts/build.mjs: generates index.html and profile.html for each locale (/, /es/, /pt/) plus sitemap.xml.
 - styles.css: one responsive visual system.
-- script.js: navigation, motion preferences, native case-study links and procedural Canvas.
-- lab.mjs: deterministic educational scenarios, independently tested.
+- script.js: navigation, motion preferences, scroll reveals, counters, pointer effects, the lab simulation and the procedural Canvas.
+- lab.mjs: deterministic scenario behaviour and the repeatable latency trace, independently tested.
 - assets/social-card.svg: original social composition; browser-check generates its PNG.
 - docs/CONTENT_SOURCES.md: claim provenance and remaining author inputs.
 - docs/VALIDATION.md: measured results and limits.
 - docs/IMPLEMENTATION.md: architecture, design and acceptance map.
 
-The HTML is generated and committed for direct static hosting. Run npm run build after editing content or templates. Do not edit index.html directly.
+The HTML is generated and committed for direct static hosting. Run npm run build after editing content or templates. Do not edit index.html, profile.html, es/ or pt/ directly.
 
 ## Motion and resilience
 
 Content and native details work without JavaScript. The optional Canvas initializes after first paint, caps device-pixel ratio, and stops when hidden or outside the viewport. The operating-system reduced-motion setting takes precedence over the persistent local toggle. Storage failures do not prevent use.
 
-The lab is an educational state model. Its values are constants, not observed production metrics. The clinic case is explicitly a synthetic demo. Project descriptions are based on linked public artifacts, not a claim that their complete test suites ran during the portfolio review.
+Scroll reveals are armed by script.js (html.anim), so nothing is hidden when JavaScript is unavailable or motion is reduced.
+
+The lab is an educational state model. Its values are constants plus a repeatable jitter, not observed production metrics. The clinic case is explicitly a synthetic demo. Career figures come from the author's résumé; see docs/CONTENT_SOURCES.md. The phone number is deliberately not published (a test guards this).
 
 ## Delivery
 

@@ -2,12 +2,13 @@
 
 Review date: 2026-11-10. This is a repository-based editorial review, not an independent verification of employment or project-wide test results.
 
-## Identity
+## Identity and career
 
-Daniel González, Technical Lead / Full Stack Engineer, Toluca: existing portfolio index.html and README at source commit 00c35de81c935821a53576a2f17830913d2cb94e.
-https://github.com/Finithe-Phoenix/portfolio
+Source: the author's résumé (Daniel_Gonzalez_CV_Master_FullStack_EN, September 2026) and LinkedIn profile, supplied by the author on 2026-11-10. These are the author's own statements; they were not independently verified.
 
-The redesign retains this positioning and established technology focus. It omits unsupported throughput, reach and tenure counters. It makes no company endorsements, hiring guarantees or comparative superiority claims.
+Used on the site: role titles, employers and periods (HSBC México CIB 2025–present, AI SME & Regional AI Champion 2026–present, HSBC México GPS 2022–2025, Infosys 2020–2022, Manpower/Nissan 2019–2020) and these figures: 7+ years, four Tier-0 initiatives, 22+ applications/components, six teams mentored, approximately 500 colleagues, a 19-agent framework. No figure was added that the résumé does not state.
+
+Deliberate omissions: phone number (guarded by a test), salary or availability, and any internal detail beyond the résumé. Education is described as in progress / coursework completed, as in the résumé; no degree is claimed. English is stated as B2. Portuguese is a site language only, not a claimed spoken language.
 
 ## Project sources
 
@@ -21,15 +22,13 @@ The redesign retains this positioning and established technology focus. It omits
 
 Cases distinguish documented implementation from this portfolio's validation. The explanations of tradeoffs are editorial interpretations of repository structure. Original system-map illustrations are labeled as maps and are not represented as application screenshots.
 
-## Remaining author inputs
+## Translations
 
-- Exact personal LinkedIn URL: not supplied. The generic linkedin.com destination was removed. Add to profile.json only when confirmed.
-- Current résumé file: not supplied. The printable selected-work profile is available and is labeled as a profile, not a verified employment CV.
-- Exact target role/company: default positioning is Technical Lead / Full Stack Engineer.
-- Employment timeline, individual contribution boundaries, business metrics and supporting evidence: require author confirmation before expanding professional claims.
+Spanish (Mexico) and Brazilian Portuguese were machine-translated from en.json and reviewed for structure and terminology. A native Portuguese reader has not reviewed pt.json.
 
 ## Assets and data
 
 All illustrations are original SVG/CSS/Canvas compositions. System fonts only, no third-party font requests.
-The resilience model uses synthetic constants (40 / 85 / 45 ms). These are instructional, not measurements.
-No analytics, tracking, authentication, external API calls or contact form submissions.
+The resilience model uses synthetic constants (40 / 85 / 45 ms) and a repeatable ±4 ms jitter for the trace. The request counters are simulated. These are instructional, not measurements.
+The applied-AI pipeline animation illustrates the seven stages named in the résumé; it does not depict the internal system.
+No analytics, tracking, authentication, external API calls or contact form submissions. Contact is a mailto link.

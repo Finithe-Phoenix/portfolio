@@ -139,14 +139,14 @@ if(ctx) {
       return {x:width/2+x*radius*perspective*(1+wave),y:height/2+y*radius*perspective*(1+wave),z};
     });
     const glow=ctx.createRadialGradient(width/2,height/2,0,width/2,height/2,radius*1.2);
-    glow.addColorStop(0,'rgba(176,204,119,.09)');glow.addColorStop(1,'rgba(176,204,119,0)');
+    glow.addColorStop(0,'rgba(22,139,255,.09)');glow.addColorStop(1,'rgba(22,139,255,0)');
     ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);
     ctx.lineWidth=.55;
     // Batch paths by depth: eight draw calls instead of two per node.
     for(let depth=0;depth<4;depth++) {
       const members=[];
       projected.forEach((p,i)=>{if(Math.min(3,Math.floor((p.z+1)*2))===depth)members.push(i);});
-      ctx.strokeStyle='rgba(185,209,150,'+(.1+depth*.065)+')';
+      ctx.strokeStyle='rgba(55,169,255,'+(.1+depth*.065)+')';
       ctx.beginPath();
       members.forEach(i=>{
         const p=projected[i],next=projected[Math.floor(i/cols)*cols+(i+1)%cols],below=projected[i+cols];
@@ -154,17 +154,17 @@ if(ctx) {
         if(below){ctx.moveTo(p.x,p.y);ctx.lineTo(below.x,below.y);}
       });
       ctx.stroke();
-      ctx.fillStyle='rgba(212,239,157,'+(.2+depth*.18)+')';
+      ctx.fillStyle='rgba(85,197,255,'+(.2+depth*.18)+')';
       ctx.beginPath();
       members.forEach(i=>{const p=projected[i],r=depth>2?1.65:.8;ctx.moveTo(p.x+r,p.y);ctx.arc(p.x,p.y,r,0,Math.PI*2);});
       ctx.fill();
     }
     // Orbital arcs give the network depth without expensive blur filters.
     ctx.save();ctx.translate(width/2,height/2);ctx.rotate(-.65+current.x*.1);
-    ctx.strokeStyle='rgba(175,217,214,.4)';ctx.lineWidth=.75;
+    ctx.strokeStyle='rgba(255,65,87,.4)';ctx.lineWidth=.75;
     ctx.beginPath();ctx.ellipse(0,0,radius*1.21,radius*.4,0,0,Math.PI*2);ctx.stroke();
     const orbit=reduce?1.7:time*.0003;
-    ctx.fillStyle='#afd9d6';ctx.beginPath();ctx.arc(Math.cos(orbit)*radius*1.21,Math.sin(orbit)*radius*.4,3,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#ff5365';ctx.beginPath();ctx.arc(Math.cos(orbit)*radius*1.21,Math.sin(orbit)*radius*.4,3,0,Math.PI*2);ctx.fill();
     ctx.restore();
   }
   function tick(now) {
